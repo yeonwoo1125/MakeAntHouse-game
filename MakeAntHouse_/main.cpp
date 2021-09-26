@@ -65,9 +65,10 @@ public:
 	Login() {
 		this->user_id = (rand() % 100000); //랜덤 아이디 제공
 	}
-	Login(string account, int id) {
+	Login(string account, string password) {
 		this->user_account = account;
-		this->user_id = id;
+		this->user_password = password;
+		this->user_id = (rand() % 100000);
 	}
 	void setUserAcc(string userAcc) {
 		this->user_account = userAcc;
@@ -580,9 +581,6 @@ bool upDownGame() {
 }
 
 
-
-
-
 //게임 정보 뷰
 void InfoGame() {
 	DrawInfoGame();
@@ -608,13 +606,16 @@ void CreateAccount() {//계정 생성
 
 	string acc;
 	string pw;
+	gotoxy(10, 8);
 	cout << "생성할 계정의 계정명 입력 : ";
 	cin >> acc;
 	user.setUserAcc(acc); //계정명 저장
-	cout << endl;
+	gotoxy(10, 10);
 	cout << "생성할 계정의 비밀번호 입력 : ";
 	cin >> pw;
 	user.setUserPw(pw);
+	gotoxy(14, 10);
+	cout << "계정이 생성되었습니다.";
 } 
 void LoginAccount() {//생성한 계정 확인, 로그인하기
 	system("cls");
