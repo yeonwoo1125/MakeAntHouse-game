@@ -58,13 +58,14 @@ void SetConsoleVIew() {
 
 class Login {
 	string user_account;
-	string user_id;
+	int user_id;
+	string user_password;
 public:
 
 	Login() {
-		this->user_id = (char*)(rand() % 100000); //랜덤 아이디 제공
+		this->user_id = (rand() % 100000); //랜덤 아이디 제공
 	}
-	Login(string account, string id) {
+	Login(string account, int id) {
 		this->user_account = account;
 		this->user_id = id;
 	}
@@ -74,14 +75,22 @@ public:
 	string getuserAcc() {
 		return user_account;
 	}
-	string getuserId() {
+	int getuserId() {
 		return user_id;
 	}
+	string getuserPw() {
+		return user_password;
+	}
+	void setUserPw(string userPw) {
+		this->user_password = userPw;
+	}
+	void checkUser(string acc, string pw) {
+		if (getuserAcc() == acc && getuserPw() == pw) cout << "로그인 성공" << endl;
+		else if (getuserAcc() == acc && getuserPw() != pw) cout << "비밀번호를 확인하세요" << endl;
+		else if (getuserAcc() != acc) cout << "존재하지 않는 계정" << endl;
+		else cout << "정신차리세요" << endl;
+	}
 };
-
-
-//화면 그리는 함수
-
 
 
 //메인 메뉴 그리기
@@ -535,6 +544,13 @@ bool upDownGame() {
 
 		cin >> user_sel;
 		cnt++;
+		if (com_sel == user_sel) {
+			gotoxy(11, 10);
+			cout << "개미가 고른 수는 " << com_sel << "입니다! 축하합니다~" << endl;
+			r += rand() % 7 + 2;
+			antHouse(r);
+			return true;
+		}
 		if (cnt == 5) {
 			system("cls");
 			gotoxy(10, 10);
@@ -545,13 +561,7 @@ bool upDownGame() {
 			return false;
 		}
 
-		if (com_sel == user_sel) {
-			gotoxy(11, 10);
-			cout << "개미가 고른 수는 " << com_sel << "입니다! 축하합니다~" << endl;
-			r += rand() % 7 + 2;
-			antHouse(r);
-			return true;
-		}
+
 		else if (com_sel > user_sel) {
 			gotoxy(11, 10);
 			cout << "개미는 더 큰 수를 골랐습니다!";
@@ -567,11 +577,9 @@ bool upDownGame() {
 		Sleep(1500);
 		system("cls"); //화면 지우기
 	}
-
-	return true;
 }
 
-//먹이 그리기
+
 
 
 
@@ -594,86 +602,79 @@ void startGame() {
 }
 
 
-//Login* user[3];
-//void CreateAccount() {//계정 생성
-//	user[0] = new Login(); //동적 계정 생성
-//	string acc;
-//	cout << "계정명 입력 : ";
-//	cin >> acc;
-//	user[0]->setUserAcc(acc); //계정명 저장
-//} 
-//void LoginAccount() {//생성한 계정 확인, 로그인하기
-//
-//} 
-//void DeleteAccount() {//계정 삭제
-//
-//} 
-//void QuestionAccount() { //계정 찾는 거 질문
-//
-//}
+Login user;
+void CreateAccount() {//계정 생성
+	system("cls");
 
-////로그인 뷰
-//int userLogin() {
-//
-//	DrawLogin();
-//	while (true) {
-//		switch (SelectLogin()) { //리턴을 받아 판단
-//		case FIND:
-//			LoginAccount();
-//			break;
-//		case CREATE:
-//			CreateAccount();
-//			break;
-//		case DELETE_ACCOUNT:
-//			DeleteAccount();
-//			break;
-//		case QUESTION:
-//			QuestionAccount();
-//			break;
-//		case QUITLOGIN :
-//			startGame();
-//			break;
-//		}
-//	}
-//}
-//void finish_with_error(MYSQL* conn)
-//{
-//	fprintf(stderr, "% s\n", mysql_error(conn));
-//	mysql_close(conn);
-//	exit(1);
-//}
+	string acc;
+	string pw;
+	cout << "생성할 계정의 계정명 입력 : ";
+	cin >> acc;
+	user.setUserAcc(acc); //계정명 저장
+	cout << endl;
+	cout << "생성할 계정의 비밀번호 입력 : ";
+	cin >> pw;
+	user.setUserPw(pw);
+} 
+void LoginAccount() {//생성한 계정 확인, 로그인하기
+	system("cls");
+	string acc;
+	string pw;
+	cout << "계정 입력 : ";
+	cin >> acc;
+	cout << endl;
+	cout << "비밀번호 입력 : ";
+	cin >> pw;
+	user.checkUser(acc, pw);
+} 
+void DeleteAccount() {//계정 삭제
+
+} 
+void QuestionAccount() { //계정 찾는 거 질문
+
+}
+
+//로그인 뷰
+int userLogin() {
+
+	DrawLogin();
+	while (true) {
+		switch (SelectLogin()) { //리턴을 받아 판단
+		case FIND:
+			LoginAccount();
+			break;
+		case CREATE:
+			CreateAccount();
+			userLogin();
+			break;
+		case DELETE_ACCOUNT:
+			DeleteAccount();
+			break;
+		case QUESTION:
+			QuestionAccount();
+			break;
+		case QUITLOGIN :
+			startGame();
+			break;
+		}
+	}
+}
+
 //메인 루프
 int main() {
 	srand((unsigned int)time(NULL));
-
-	//MYSQL *mysql=mysql_init(NULL);
-	//MYSQL_RES* mRsult, mResult2; //mysql에서 나온 결과값
-	//MYSQL_ROW row; //mysql의 결과값을 하나의 열단위로 표현한 데이터
-	//if (mysql_real_connect(mysql, "localhost", "root", "yeanwoo0619", NULL, 0, NULL, 0) == NULL)
-	//{
-	//	finish_with_error(mysql);
-	//}
-	//if (mysql_query(mysql, "CREATE DATABASE antLogin"))
-	//{
-	//	finish_with_error(mysql);
-	//}
-	//if (mysql_query(mysql, "CREATE TABLE users(id INT PRIMARY KEY AUTO_INCREMENT, password varchar(20), userAccount TEXT, level INT)"))
-	//{
-	//	finish_with_error(mysql);
-	//}
 
 	SetConsoleVIew(); //프로그램 시작할 때 콘솔 크기
 	while (true) {
 		switch (ReadyGame()) { //리턴을 받아 판단
 		case GAMESTART:
 			startGame();
-			//antHouse();
 			break;
 		case INFO:
 			InfoGame();
 			break;
 		case ACCOUNT:
-			//userLogin();
+			userLogin();
 			break;
 		case QUIT:
 			cout << user_name + "님이 지어주신 집은 " << r << "의 크기입니다! 감사합니다";
