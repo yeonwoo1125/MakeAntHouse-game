@@ -68,10 +68,9 @@ void printRect(int r);
 //로그인 관련
 void CreateAccount();
 bool LoginAccount();
-void DeleteAccount();
 void QuestionAccount();
 
-bool beforeStart();
+
 
 
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
@@ -146,10 +145,14 @@ public:
 				}
 				return false;
 			}
-		
+
 		//system("pause>null");
 	}
-
+	bool checkLogin() {
+		if (user_account.empty()) return false;
+		else return true;
+		
+	}
 	virtual ~Login() {}
 };
 
@@ -707,7 +710,9 @@ void startGame() {
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
 	user = new Login();
-
+	if (user->checkLogin()) {
+		drawGuestLogin();
+	}
 	if (user_name == "") DrawStartGame();
 	system("cls");
 	RockPaperScissors();
