@@ -49,7 +49,6 @@ void DrawInfoGame();
 void DrawStartGame();
 void DrawGameOver();
 void DrawLogin();
-void DrawUserCursor(int& y);
 GUEST selectGuest();
 LOGIN SelectLogin();
 MENU ReadyGame();
@@ -293,21 +292,7 @@ void drawGuestLogin() {
 }
 
 
-//커서 움직임 출력
-void DrawUserCursor(int& y)
-{
-	if (y <= 0)        //커서가 위로 그만 올라가게 
-	{
-		y = 0;
-	}
-	else if (y >= 2) //커서가 아래로 그만 내려가게
-	{
-		y = 2;
-	}
 
-	gotoxy(9, 8 + y); //위치조정
-	cout << ">";
-}
 
 GUEST selectGuest() {
 	int y = 0; //커서의 y 위치
