@@ -56,7 +56,7 @@ void SetConsoleVIew() {
 	system("title Make Ant House By Yeonwoo"); //타이틀
 }
 
-class Login {
+class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_account;
 	int user_id;
 	string user_password;
@@ -85,13 +85,26 @@ public:
 	void setUserPw(string userPw) {
 		this->user_password = userPw;
 	}
-	void checkUser(string acc, string pw) {
+	void checkUser(string acc, string pw) { //사용자가 입력한 계정이 있는 계정인지 체크
 		if (getuserAcc() == acc && getuserPw() == pw) cout << "로그인 성공" << endl;
 		else if (getuserAcc() == acc && getuserPw() != pw) cout << "비밀번호를 확인하세요" << endl;
 		else if (getuserAcc() != acc) cout << "존재하지 않는 계정" << endl;
 		else cout << "정신차리세요" << endl;
 	}
+	void checkGuest() { //게스트로 로그인 할건지 물음
+		gotoxy(10,10);
+		cout << "게스트로 로그인 하시겠습니까?";
+		gotoxy(10, 11);
+		cout << "게스트로 로그인 시 게임 종료 후 저장되지 않습니다.";
+		gotoxy(10, 12);
+		cout << "로 그 인";
+		gotoxy(10, 13);
+		cout << "게임시작";
+	}
+	virtual ~Login() {}
 };
+
+
 
 
 //메인 메뉴 그리기
@@ -114,9 +127,9 @@ void DrawReadyGame() {
 	gotoxy(22, 13);
 	cout << "게임 설명";
 	gotoxy(22, 14);
-	cout << "계정 고르기" << endl;
+	cout << "로 그 인" << endl;
 	gotoxy(23, 15);
-	cout << "나가기" << endl;
+	cout << "나 가 기" << endl;
 
 	gotoxy(17, 19);
 	cout << plz_space;
@@ -356,13 +369,12 @@ bool RockPaperScissors() {
 	int win_cnt = 0;
 	int lose_cnt = 0;
 
-
 	while (true) {
 		gotoxy(23, 3);
 		cout << "가위바위보";
 		gotoxy(14, 8);
 		cout << "가위 바위 보 중에 하나를 골라 입력해주세요.";
-		gotoxy(35, 5);
+		gotoxy(37, 5);
 		cout << win_cnt << "승 " << lose_cnt << "패 " ;
 		gotoxy(14, 10);
 		cout << user_name << " : ";
@@ -587,14 +599,21 @@ void InfoGame() {
 
 //게임 시작 뷰
 void startGame() {
-	DrawStartGame();
+	//게임 시작을 누르는데 만약 로그인이 안되어 있으면 게스트 로그인이냐고 묻기 -> 디비 연동 안됨
+	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
+	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
+
+	
+	/*DrawStartGame();
 	system("cls");
 
 	upDownGame();
 	system("cls");
 	RockPaperScissors();
 	system("cls");
-	QuizGame();
+	QuizGame();*/
+	Login user;
+	user.checkGuest();
 }
 
 
