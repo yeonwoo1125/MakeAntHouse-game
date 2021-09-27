@@ -64,6 +64,7 @@ bool upDownGame();
 void InfoGame();
 void startGame();
 int userLogin();
+void printRect(int r);
 
 //로그인 관련
 void CreateAccount();
@@ -317,8 +318,8 @@ GUEST selectGuest() {
 		if (y <= 0) { //커서가 위로 그만 올라가게
 			y = 0;
 		}
-		else if (y >= 2) { //커서가 아래로 그만 내려가게
-			y = 2;
+		else if (y >= 1) { //커서가 아래로 그만 내려가게
+			y = 1;
 		}
 		gotoxy(22, 12 + y); //위치조정
 		cout << ">";
@@ -448,7 +449,7 @@ MENU ReadyGame() {
 
 
 //개미집 그리기
-void antHouse(int r) {
+void printRect(int r) {
 	system("cls");
 	//기본 집 그리기
 	gotoxy(1, 3);
@@ -571,7 +572,7 @@ bool RockPaperScissors() {
 				int tmp = rand() % 4 + 1;
 				r -= tmp;
 			}
-			antHouse(r);
+			printRect(r);
 			return false;
 
 		}
@@ -581,7 +582,7 @@ bool RockPaperScissors() {
 			Sleep(2000);
 			system("cls");
 			r += rand() % 7 + 2;
-			antHouse(r);
+			printRect(r);
 			return true;
 		}
 
@@ -640,14 +641,14 @@ bool QuizGame() {
 				int tmp = rand() % 4 + 1;
 				r -= tmp;
 			}
-			antHouse(r);
+			printRect(r);
 			return false;
 		}
 		else if (win_cnt == 2) {
 			gotoxy(14, 15);
 			cout << "집을 지을 수 있어요!";
 			r += rand() % 7 + 2;
-			antHouse(r);
+			printRect(r);
 			return true;
 		}
 		Sleep(1500);
@@ -674,7 +675,7 @@ bool upDownGame() {
 			gotoxy(11, 10);
 			cout << "개미가 고른 수는 " << com_sel << "입니다! 축하합니다~" << endl;
 			r += rand() % 7 + 2;
-			antHouse(r);
+			printRect(r);
 			return true;
 		}
 		if (cnt == 5) {
