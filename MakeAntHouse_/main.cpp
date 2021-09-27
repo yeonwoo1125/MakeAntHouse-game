@@ -16,7 +16,7 @@ using namespace std;
 
 string user_name = ""; //사용자 이름
 string plz_space = "[스페이스나 엔터를 눌러주세요.]";
-int r; //개미집 크기
+int houseSize=0; //개미집 크기
 
 enum GUEST {
 	LOGIN_USER,
@@ -279,16 +279,16 @@ void DrawLogin() {
 //게스트 로그인 화면 그리기
 void drawGuestLogin() {
 	system("cls");
-	gotoxy(17, 10);
+	gotoxy(17, 8);
 	cout << "게스트로 로그인 하시겠습니까?";
-	gotoxy(13, 11);
+	gotoxy(13, 9);
 	cout << "게스트로 로그인 시 게임 종료 후 저장되지 않습니다.";
 	gotoxy(23, 12);
 	cout << "로 그 인";
 	gotoxy(23, 13);
 	cout << "게임시작";
 
-	gotoxy(18, 16);
+	gotoxy(18, 17);
 	cout << plz_space;
 }
 
@@ -450,25 +450,25 @@ MENU ReadyGame() {
 
 //개미집 그리기
 void printRect(int r) {
+
 	system("cls");
 	//기본 집 그리기
 	gotoxy(1, 3);
 	cout << "집의 크기 : " << r << endl;
 
-
 	//집이 일정 크기 이상이면 반으로 나누고 집을 여러개 연결되게 만듦
 
-	gotoxy(10, 6);
-	for (int i = 1; i <= r; i++) {
-		for (int j = 1; j <= r / 2 - 1; j++) {
-			/*if (!(i>2 && i<r-1)) {
-				gotoxy(i + 9, j + 6);
+	//gotoxy(10, 6);
+	int i, j;
+	for (i = 1; i <= r; i++)
+	{
+		for (j = 1; j <= r; j++)
+		{
+			if (i == 1 || i == r || j == 1 || j == r)
 				cout << "*";
-			}
-			else cout << " "; */
-			cout << "*";
+			else
+				cout << " ";
 		}
-
 		cout << endl;
 	}
 
@@ -563,16 +563,16 @@ bool RockPaperScissors() {
 			Sleep(2000);
 			system("cls");
 			DrawGameOver();
-			if (r < 2 || rand() % 10 % 3 == 0) {//졌을 경우 3의 배수의 경우에만 집이 커짐
+			if (houseSize < 2 || rand() % 10 % 3 == 0) {//졌을 경우 3의 배수의 경우에만 집이 커짐
 				int tmp = rand() % 5 + 1;
-				r += tmp;
+				houseSize += tmp;
 			}
 
 			else {//졌을 경우에는 집이  작아짐
 				int tmp = rand() % 4 + 1;
-				r -= tmp;
+				houseSize -= tmp;
 			}
-			printRect(r);
+			printRect(houseSize);
 			return false;
 
 		}
@@ -581,8 +581,8 @@ bool RockPaperScissors() {
 			cout << "집을 지을 수 있어요!";
 			Sleep(2000);
 			system("cls");
-			r += rand() % 7 + 2;
-			printRect(r);
+			houseSize += rand() % 7 + 2;
+			printRect(houseSize);
 			return true;
 		}
 
@@ -632,23 +632,23 @@ bool QuizGame() {
 		if (lose_cnt == 2) {
 			gotoxy(14, 15);
 			cout << "더 이상 집을 짓지 못해요 ㅠㅠ";
-			if (r < 2 || rand() % 10 % 3 == 0) {//졌을 경우 3의 배수의 경우에만 집이 커짐
+			if (houseSize < 2 || rand() % 10 % 3 == 0) {//졌을 경우 3의 배수의 경우에만 집이 커짐
 				int tmp = rand() % 5 + 1;
-				r += tmp;
+				houseSize += tmp;
 			}
 
 			else {//졌을 경우에는 집이  작아짐
 				int tmp = rand() % 4 + 1;
-				r -= tmp;
+				houseSize -= tmp;
 			}
-			printRect(r);
+			printRect(houseSize);
 			return false;
 		}
 		else if (win_cnt == 2) {
 			gotoxy(14, 15);
 			cout << "집을 지을 수 있어요!";
-			r += rand() % 7 + 2;
-			printRect(r);
+			houseSize += rand() % 7 + 2;
+			printRect(houseSize);
 			return true;
 		}
 		Sleep(1500);
@@ -674,8 +674,8 @@ bool upDownGame() {
 		if (com_sel == user_sel) {
 			gotoxy(11, 10);
 			cout << "개미가 고른 수는 " << com_sel << "입니다! 축하합니다~" << endl;
-			r += rand() % 7 + 2;
-			printRect(r);
+			houseSize += rand() % 7 + 2;
+			printRect(houseSize);
 			return true;
 		}
 		if (cnt == 5) {
@@ -808,7 +808,7 @@ int main() {
 			userLogin();
 			break;
 		case QUIT:
-			cout << user_name + "님이 지어주신 집은 " << r << "의 크기입니다! 감사합니다";
+			cout << user_name + "님이 지어주신 집은 " << houseSize << "의 크기입니다! 감사합니다";
 			return 0;
 		}
 	}
