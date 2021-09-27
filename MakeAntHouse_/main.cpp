@@ -41,6 +41,7 @@ enum KEYBOARD {
 	DOWN = 80
 };
 
+//화면 그리는 함수
 void DrawReadyGame();
 void DrawInfoGame();
 void DrawStartGame();
@@ -50,19 +51,24 @@ void DrawUserCursor(int& y);
 LOGIN selectGuest();
 LOGIN SelectLogin();
 MENU ReadyGame();
+void drawGuestLogin();
 
+//미니게임
+bool RockPaperScissors();
 bool QuizGame();
 bool upDownGame();
 
+//게임뷰
 void InfoGame();
 void startGame();
 
+//로그인 관련
 void CreateAccount();
 void LoginAccount();
 void DeleteAccount();
 void QuestionAccount();
 
-int userLogin()
+int userLogin();
 
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 	COORD Pos;
@@ -113,15 +119,7 @@ public:
 		else cout << "정신차리세요" << endl;
 	}
 	void checkGuest() { //게스트로 로그인 할건지 물음
-		system("cls");
-		gotoxy(17,10);
-		cout << "게스트로 로그인 하시겠습니까?";
-		gotoxy(13, 11);
-		cout << "게스트로 로그인 시 게임 종료 후 저장되지 않습니다.";
-		gotoxy(23, 12);
-		cout << "로 그 인";
-		gotoxy(23, 13);
-		cout << "게임시작";
+		drawGuestLogin();
 		while (true) {
 			switch (selectGuest()) { //리턴을 받아 판단
 			case FIND:
@@ -244,6 +242,21 @@ void DrawLogin() {
 	cout << plz_space;
 }
 
+//게스트 로그인 화면 그리기
+void drawGuestLogin() {
+	system("cls");
+	gotoxy(17, 10);
+	cout << "게스트로 로그인 하시겠습니까?";
+	gotoxy(13, 11);
+	cout << "게스트로 로그인 시 게임 종료 후 저장되지 않습니다.";
+	gotoxy(23, 12);
+	cout << "로 그 인";
+	gotoxy(23, 13);
+	cout << "게임시작";
+
+	gotoxy(18, 16);
+	cout << plz_space;
+}
 
 
 //커서 움직임 출력
@@ -273,7 +286,7 @@ LOGIN selectGuest() {
 		else if (y >= 2) { //커서가 아래로 그만 내려가게
 			y = 2;
 		}
-		gotoxy(22, 13 + y); //위치조정
+		gotoxy(22, 12 + y); //위치조정
 		cout << ">";
 
 		input = _getch();
