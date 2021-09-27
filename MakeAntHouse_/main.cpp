@@ -18,7 +18,10 @@ string user_name = ""; //사용자 이름
 string plz_space = "[스페이스나 엔터를 눌러주세요.]";
 int r; //개미집 크기
 
-
+enum GUEST {
+	LOGIN_USER,
+	START
+};
 enum LOGIN {
 	CREATE,
 	FIND,
@@ -48,7 +51,7 @@ void DrawStartGame();
 void DrawGameOver();
 void DrawLogin();
 void DrawUserCursor(int& y);
-LOGIN selectGuest();
+GUEST selectGuest();
 LOGIN SelectLogin();
 MENU ReadyGame();
 void drawGuestLogin();
@@ -58,9 +61,10 @@ bool RockPaperScissors();
 bool QuizGame();
 bool upDownGame();
 
-//게임뷰
+//뷰
 void InfoGame();
 void startGame();
+int userLogin();
 
 //로그인 관련
 void CreateAccount();
@@ -68,7 +72,8 @@ void LoginAccount();
 void DeleteAccount();
 void QuestionAccount();
 
-int userLogin();
+void beforeStart();
+
 
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 	COORD Pos;
@@ -118,15 +123,15 @@ public:
 		else if (getuserAcc() != acc) cout << "존재하지 않는 계정" << endl;
 		else cout << "정신차리세요" << endl;
 	}
-	void checkGuest() { //게스트로 로그인 할건지 물음
+	bool checkGuest() { //게스트로 로그인 할건지 물음
 		drawGuestLogin();
 		while (true) {
 			switch (selectGuest()) { //리턴을 받아 판단
-			case FIND:
+			case LOGIN_USER:
 				LoginAccount();
 				break;
-			case CREATE:
-				startGame();
+			case START:
+				return true;
 				break;
 			}
 		}
@@ -274,7 +279,7 @@ void DrawUserCursor(int& y)
 	gotoxy(9, 8 + y); //위치조정
 	cout << ">";
 }
-LOGIN selectGuest() {
+GUEST selectGuest() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
 	while (true) { //게임 루프
@@ -306,9 +311,9 @@ LOGIN selectGuest() {
 		else if (input == SPACE || input == ENTER) { //키보드가 스페이스일 경우
 			switch (y) { //y위치에 따라 판단
 			case 0:
-				return FIND;
+				return LOGIN_USER;
 			case 1:
-				return CREATE;
+				return START;
 			}
 		}
 	}
@@ -680,28 +685,25 @@ void InfoGame() {
 	system("pause>null");
 }
 
+Login *user;
 //게임 시작 뷰
 void startGame() {
 	//게임 시작을 누르는데 만약 로그인이 안되어 있으면 게스트 로그인이냐고 묻기 -> 디비 연동 안됨
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
-
-	
-	/*DrawStartGame();
-	system("cls");
-
-	upDownGame();
+	user->checkGuest();
+	if (user_name == "") DrawStartGame();
 	system("cls");
 	RockPaperScissors();
-	system("cls");
-	QuizGame();*/
-	Login user;
-	user.checkGuest();
 	system("pause>null");
 }
 
+void beforeStart() {
+	user = new Login();
+}
 
-Login user;
+
+
 void CreateAccount() {//계정 생성
 	system("cls");
 
@@ -710,11 +712,11 @@ void CreateAccount() {//계정 생성
 	gotoxy(10, 8);
 	cout << "생성할 계정의 계정명 입력 : ";
 	cin >> acc;
-	user.setUserAcc(acc); //계정명 저장
+	user->setUserAcc(acc); //계정명 저장
 	gotoxy(10, 10);
 	cout << "생성할 계정의 비밀번호 입력 : ";
 	cin >> pw;
-	user.setUserPw(pw);
+	user->setUserPw(pw);
 	gotoxy(14, 10);
 	cout << "계정이 생성되었습니다.";
 } 
@@ -727,7 +729,7 @@ void LoginAccount() {//생성한 계정 확인, 로그인하기
 	cout << endl;
 	cout << "비밀번호 입력 : ";
 	cin >> pw;
-	user.checkUser(acc, pw);
+	user->checkUser(acc, pw);
 } 
 void DeleteAccount() {//계정 삭제
 
