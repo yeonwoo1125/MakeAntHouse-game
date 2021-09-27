@@ -14,7 +14,7 @@ using namespace std;
 #define ENTER 13 //엔터 키 값
 #define ESC 27 //esc 키 값
 
-string user_name = ""; //사용자 이름
+string user_name; //사용자 이름
 string plz_space = "[스페이스나 엔터를 눌러주세요.]";
 int houseSize=0; //개미집 크기
 
@@ -147,25 +147,25 @@ public:
 				return false;
 			}
 		
-		system("pause>null");
+		//system("pause>null");
 	}
-	bool checkGuest() { //게스트로 로그인 할건지 물음
-		drawGuestLogin();
-		while (true) {
-			switch (selectGuest()) { //리턴을 받아 판단
-			case LOGIN_USER:
-				return LoginAccount();
-				
-			case START:
-				startGame();
-				break;
-			}
-		}
-	}
+
 	virtual ~Login() {}
 };
 
+bool checkGuest() { //게스트로 로그인 할건지 물음
+	drawGuestLogin();
+	while (true) {
+		switch (selectGuest()) { //리턴을 받아 판단
+		case LOGIN_USER:
+			return LoginAccount();
 
+		case START:
+			startGame();
+			break;
+		}
+	}
+}
 
 
 //메인 메뉴 그리기
@@ -549,13 +549,13 @@ bool RockPaperScissors() {
 			system("cls");
 			DrawGameOver();
 			if (houseSize < 2 || rand() % 10 % 3 == 0) {//졌을 경우 3의 배수의 경우에만 집이 커짐
-				int tmp = rand() % 5 + 1;
-				houseSize += tmp;
+		
+				houseSize += rand() % 5 + 1;
 			}
 
 			else {//졌을 경우에는 집이  작아짐
-				int tmp = rand() % 4 + 1;
-				houseSize -= tmp;
+				
+				houseSize -= rand() % 4 + 1;
 			}
 			printRect(houseSize);
 			return false;
@@ -670,6 +670,8 @@ bool upDownGame() {
 			Sleep(1500);
 			system("cls");
 			DrawGameOver();
+			houseSize += rand() % 4 + 1;
+			printRect(houseSize);
 			return false;
 		}
 
@@ -704,21 +706,13 @@ void startGame() {
 	//게임 시작을 누르는데 만약 로그인이 안되어 있으면 게스트 로그인이냐고 묻기 -> 디비 연동 안됨
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
-	
+	user = new Login();
+
 	if (user_name == "") DrawStartGame();
 	system("cls");
 	RockPaperScissors();
 	system("pause>null");
 }
-
-bool beforeStart() {
-	user = new Login();
-	if (user->checkGuest()) {
-		return true;
-	}
-	else return false;
-}
-
 
 
 void CreateAccount() {//계정 생성
@@ -747,16 +741,12 @@ bool LoginAccount() {//생성한 계정 확인, 로그인하기
 	cin >> pw;
 	return user->checkUser(acc, pw);
 } 
-void DeleteAccount() {//계정 삭제
-
-} 
 void QuestionAccount() { //계정 찾는 거 질문
 
 }
 
 //로그인 뷰
 int userLogin() {
-
 	DrawLogin();
 	while (true) {
 		switch (SelectLogin()) { //리턴을 받아 판단
@@ -784,7 +774,7 @@ int main() {
 	while (true) {
 		switch (ReadyGame()) { //리턴을 받아 판단
 		case GAMESTART:
-			beforeStart();
+			startGame();
 			break;
 		case INFO:
 			InfoGame();
@@ -794,6 +784,7 @@ int main() {
 			break;
 		case QUIT:
 			cout << user_name + "님이 지어주신 집은 " << houseSize << "의 크기입니다! 감사합니다";
+			delete user;
 			return 0;
 		}
 	}
