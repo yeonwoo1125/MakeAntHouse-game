@@ -25,7 +25,6 @@ enum GUEST {
 enum LOGIN {
 	CREATE,
 	FIND,
-	DELETE_ACCOUNT,
 	QUESTION,
 	QUITLOGIN
 };
@@ -308,6 +307,7 @@ void DrawUserCursor(int& y)
 	gotoxy(9, 8 + y); //위치조정
 	cout << ">";
 }
+
 GUEST selectGuest() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
@@ -384,11 +384,9 @@ LOGIN SelectLogin() {
 			case 1:
 				return CREATE;
 			case 2:
-				return DELETE_ACCOUNT;
-			case 3:
 				//system("cls");
 				return QUESTION;
-			case 4:
+			case 3:
 				return QUITLOGIN;
 			}
 		}
@@ -783,15 +781,11 @@ int userLogin() {
 			CreateAccount();
 			userLogin();
 			break;
-		case DELETE_ACCOUNT:
-			DeleteAccount();
-			break;
 		case QUESTION:
 			QuestionAccount();
 			break;
 		case QUITLOGIN :
-			ReadyGame();
-			break;
+			return 0;
 		}
 	}
 }
