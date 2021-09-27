@@ -355,7 +355,6 @@ bool RockPaperScissors() {
 	string com_select;
 	int win_cnt = 0;
 	int lose_cnt = 0;
-	int draw_cnt = 0;
 
 
 	while (true) {
@@ -364,7 +363,7 @@ bool RockPaperScissors() {
 		gotoxy(14, 8);
 		cout << "가위 바위 보 중에 하나를 골라 입력해주세요.";
 		gotoxy(35, 5);
-		cout << win_cnt << "승 " << lose_cnt << "패 " << draw_cnt << "무";
+		cout << win_cnt << "승 " << lose_cnt << "패 " ;
 		gotoxy(14, 10);
 		cout << user_name << " : ";
 		cin >> user_select;
@@ -405,7 +404,7 @@ bool RockPaperScissors() {
 			else if (com_select == "바위") {
 				gotoxy(14, 14);
 				cout << "비겼습니다.";
-				draw_cnt++;
+				
 			}
 		}
 		else if (user_select == "보") { //유저가 보를 골랐을 경우
@@ -422,7 +421,6 @@ bool RockPaperScissors() {
 			else if (com_select == "보") {
 				gotoxy(14, 14);
 				cout << "비겼습니다.";
-				draw_cnt++;
 			}
 		}
 		else {
