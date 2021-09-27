@@ -41,7 +41,28 @@ enum KEYBOARD {
 	DOWN = 80
 };
 
+void DrawReadyGame();
+void DrawInfoGame();
+void DrawStartGame();
+void DrawGameOver();
+void DrawLogin();
+void DrawUserCursor(int& y);
+LOGIN selectGuest();
+LOGIN SelectLogin();
+MENU ReadyGame();
 
+bool QuizGame();
+bool upDownGame();
+
+void InfoGame();
+void startGame();
+
+void CreateAccount();
+void LoginAccount();
+void DeleteAccount();
+void QuestionAccount();
+
+int userLogin()
 
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 	COORD Pos;
@@ -92,14 +113,25 @@ public:
 		else cout << "정신차리세요" << endl;
 	}
 	void checkGuest() { //게스트로 로그인 할건지 물음
-		gotoxy(10,10);
+		system("cls");
+		gotoxy(17,10);
 		cout << "게스트로 로그인 하시겠습니까?";
-		gotoxy(10, 11);
+		gotoxy(13, 11);
 		cout << "게스트로 로그인 시 게임 종료 후 저장되지 않습니다.";
-		gotoxy(10, 12);
+		gotoxy(23, 12);
 		cout << "로 그 인";
-		gotoxy(10, 13);
+		gotoxy(23, 13);
 		cout << "게임시작";
+		while (true) {
+			switch (selectGuest()) { //리턴을 받아 판단
+			case FIND:
+				LoginAccount();
+				break;
+			case CREATE:
+				startGame();
+				break;
+			}
+		}
 	}
 	virtual ~Login() {}
 };
@@ -128,7 +160,7 @@ void DrawReadyGame() {
 	cout << "게임 설명";
 	gotoxy(22, 14);
 	cout << "로 그 인" << endl;
-	gotoxy(23, 15);
+	gotoxy(22, 15);
 	cout << "나 가 기" << endl;
 
 	gotoxy(17, 19);
@@ -229,7 +261,45 @@ void DrawUserCursor(int& y)
 	gotoxy(9, 8 + y); //위치조정
 	cout << ">";
 }
+LOGIN selectGuest() {
+	int y = 0; //커서의 y 위치
+	int input = 0; //키보드 입력을 받을 변수
+	while (true) { //게임 루프
 
+		//DrawUserCursor 함수
+		if (y <= 0) { //커서가 위로 그만 올라가게
+			y = 0;
+		}
+		else if (y >= 2) { //커서가 아래로 그만 내려가게
+			y = 2;
+		}
+		gotoxy(22, 13 + y); //위치조정
+		cout << ">";
+
+		input = _getch();
+		//→←↑↓ 방향키를 누를 경우
+		if (input == MAGIC_KEY) { //224가 들어옴
+			switch (_getch()) //한번 더 받음
+			{
+			case UP: //위
+				--y;
+				break;
+			case DOWN: //아래
+				++y;
+				break;
+			}
+		}
+		//메인 메뉴 고름
+		else if (input == SPACE || input == ENTER) { //키보드가 스페이스일 경우
+			switch (y) { //y위치에 따라 판단
+			case 0:
+				return FIND;
+			case 1:
+				return CREATE;
+			}
+		}
+	}
+}
 LOGIN SelectLogin() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
@@ -614,6 +684,7 @@ void startGame() {
 	QuizGame();*/
 	Login user;
 	user.checkGuest();
+	system("pause>null");
 }
 
 
