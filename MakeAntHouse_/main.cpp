@@ -118,7 +118,7 @@ public:
 		int input=0;
 		if (getuserAcc() == acc && getuserPw() == pw) {
 			cout << "로그인 성공" << endl;
-			return true;
+			return true;c   
 		}
 			else if (getuserPw() != pw || getuserAcc() != acc) {
 				cout << "로그인 실패" << endl;
@@ -164,7 +164,7 @@ bool checkGuest() { //게스트로 로그인 할건지 물음
 			return LoginAccount();
 
 		case START:
-			startGame();
+			RockPaperScissors();
 			break;
 		}
 	}
@@ -703,20 +703,23 @@ void InfoGame() {
 	system("pause>null");
 }
 
-Login *user;
+Login* user = new Login();
 //게임 시작 뷰
 void startGame() {
 	//게임 시작을 누르는데 만약 로그인이 안되어 있으면 게스트 로그인이냐고 묻기 -> 디비 연동 안됨
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
-	user = new Login();
-	if (user->checkLogin()) {
-		drawGuestLogin();
+
+	if (!(user->checkLogin())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
+		checkGuest();
+		
 	}
-	if (user_name == "") DrawStartGame();
-	system("cls");
-	RockPaperScissors();
-	system("pause>null");
+	else { //로그인 되어 있으면 바로 게임 ㄱ 하는데 이름이 없으면 이름 입력부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
+		if (user_name == "") DrawStartGame();
+		system("cls");
+		RockPaperScissors();
+		system("pause>null");
+	}
 }
 
 
