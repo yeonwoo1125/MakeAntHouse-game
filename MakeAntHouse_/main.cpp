@@ -68,11 +68,11 @@ int userLogin();
 
 //로그인 관련
 void CreateAccount();
-void LoginAccount();
+bool LoginAccount();
 void DeleteAccount();
 void QuestionAccount();
 
-void beforeStart();
+bool beforeStart();
 
 
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
@@ -93,7 +93,6 @@ class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	int user_id;
 	string user_password;
 public:
-
 	Login() {
 		this->user_id = (rand() % 100000); //랜덤 아이디 제공
 	}
@@ -117,21 +116,49 @@ public:
 	void setUserPw(string userPw) {
 		this->user_password = userPw;
 	}
-	void checkUser(string acc, string pw) { //사용자가 입력한 계정이 있는 계정인지 체크
-		if (getuserAcc() == acc && getuserPw() == pw) cout << "로그인 성공" << endl;
-		else if (getuserAcc() == acc && getuserPw() != pw) cout << "비밀번호를 확인하세요" << endl;
-		else if (getuserAcc() != acc) cout << "존재하지 않는 계정" << endl;
-		else cout << "정신차리세요" << endl;
+	bool checkUser(string acc, string pw) { //사용자가 입력한 계정이 있는 계정인지 체크
+		int input=0;
+		if (getuserAcc() == acc && getuserPw() == pw) {
+			cout << "로그인 성공" << endl;
+			return true;
+		}
+			else if (getuserPw() != pw || getuserAcc() != acc) {
+				cout << "로그인 실패" << endl;
+				cout << "다시 시도하시려면 스페이스를 눌러주세요." << endl;
+				cout << "스페이스를 누르면 로그인을 재시도합니다." << endl;
+				cout << "나가시려면 ESC를 눌러주세요.";
+				while (true) {
+					input = _getch();
+					if (input == ESC) {
+						break;
+					}
+					if (input == SPACE) {
+						system("cls");
+						string acc;
+						string pw;
+						cout << "계정 입력 : ";
+						cin >> acc;
+						cout << endl;
+						cout << "비밀번호 입력 : ";
+						cin >> pw;
+						checkUser(acc, pw);
+					}
+					
+				}
+				return false;
+			}
+		
+		system("pause>null");
 	}
 	bool checkGuest() { //게스트로 로그인 할건지 물음
 		drawGuestLogin();
 		while (true) {
 			switch (selectGuest()) { //리턴을 받아 판단
 			case LOGIN_USER:
-				LoginAccount();
-				break;
+				return LoginAccount();
+				
 			case START:
-				return true;
+				startGame();
 				break;
 			}
 		}
@@ -197,6 +224,8 @@ void DrawInfoGame()
 	cout << "   만약 진다면 더 이상 집을 짓지 못해요.";
 	gotoxy(3, 19);
 	cout << "그럼 잘 부탁해요!!";
+	gotoxy(3, 22);
+	cout << plz_space;
 }
 
 
@@ -243,7 +272,7 @@ void DrawLogin() {
 	gotoxy(22, 15);
 	cout << "나 가 기" << endl;
 
-	gotoxy(18, 19);
+	gotoxy(17, 19);
 	cout << plz_space;
 }
 
@@ -691,22 +720,25 @@ void startGame() {
 	//게임 시작을 누르는데 만약 로그인이 안되어 있으면 게스트 로그인이냐고 묻기 -> 디비 연동 안됨
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
-	user->checkGuest();
+	
 	if (user_name == "") DrawStartGame();
 	system("cls");
 	RockPaperScissors();
 	system("pause>null");
 }
 
-void beforeStart() {
+bool beforeStart() {
 	user = new Login();
+	if (user->checkGuest()) {
+		return true;
+	}
+	else return false;
 }
 
 
 
 void CreateAccount() {//계정 생성
 	system("cls");
-
 	string acc;
 	string pw;
 	gotoxy(10, 8);
@@ -720,7 +752,7 @@ void CreateAccount() {//계정 생성
 	gotoxy(14, 10);
 	cout << "계정이 생성되었습니다.";
 } 
-void LoginAccount() {//생성한 계정 확인, 로그인하기
+bool LoginAccount() {//생성한 계정 확인, 로그인하기
 	system("cls");
 	string acc;
 	string pw;
@@ -729,7 +761,7 @@ void LoginAccount() {//생성한 계정 확인, 로그인하기
 	cout << endl;
 	cout << "비밀번호 입력 : ";
 	cin >> pw;
-	user->checkUser(acc, pw);
+	return user->checkUser(acc, pw);
 } 
 void DeleteAccount() {//계정 삭제
 
@@ -758,7 +790,7 @@ int userLogin() {
 			QuestionAccount();
 			break;
 		case QUITLOGIN :
-			startGame();
+			ReadyGame();
 			break;
 		}
 	}
@@ -772,7 +804,7 @@ int main() {
 	while (true) {
 		switch (ReadyGame()) { //리턴을 받아 판단
 		case GAMESTART:
-			startGame();
+			beforeStart();
 			break;
 		case INFO:
 			InfoGame();
