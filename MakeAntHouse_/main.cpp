@@ -92,15 +92,19 @@ private :
 	int ant_x, ant_y;
 	int input = 0;
 public:
-	ant() {}
+	ant() {
+		this->ant_x = 0;
+		this->ant_y = 0;
+	}
 	void eatFeed() { //먹이를 먹음
 		
 	}
 	void moveInHouse() { //개미집 안에서 움직임
 		while (true) {
+			input = _getch();
+			system("cls");
 			if (input == MAGIC_KEY) {
 				input = _getch();
-				system("cls");
 				switch (input)
 				{
 				case UP:
@@ -118,8 +122,8 @@ public:
 				}
 			}
 			gotoxy(ant_x, ant_y);
+			cout << "*";
 		}
-
 	}
 	~ant() {}
 };
@@ -744,12 +748,13 @@ void InfoGame() {
 }
 
 Login* user = new Login();
+ant a1;
 //게임 시작 뷰
 void startGame() {
 	//게임 시작을 누르는데 만약 로그인이 안되어 있으면 게스트 로그인이냐고 묻기 -> 디비 연동 안됨
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
-
+	
 	if (!(user->checkLogin())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
 		checkGuest();
 		
@@ -758,9 +763,9 @@ void startGame() {
 		if (user_name == "") DrawStartGame();
 		system("cls");
 		if (houseSize != 0) printRect(houseSize);
-		else {
+		//else {
 			
-		}
+		//}
 		system("pause>null");
 	}
 }
