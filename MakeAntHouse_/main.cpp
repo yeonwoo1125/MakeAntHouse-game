@@ -91,12 +91,17 @@ class ant { //개미집에서 움직일 개미 객체
 private :
 	int ant_x, ant_y;
 	int input = 0;
+	char feed = '*';
 public:
 	ant() : ant_x(0), ant_y(0){}
 
 	void eatFeed() { //먹이를 먹음 -> 미니 게임 실행
 		//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
 		//좌표가 겹칠 경우, 미니게임 실행
+		//(i == 1 || i == r || j == 1 || j == r)
+		if (ant_x == houseSize) { 
+			RockPaperScissors();
+		}
 		
 	}
 	void moveInHouse() { //개미집 안에서 움직임
@@ -153,6 +158,7 @@ public:
 	void setUserPw(string userPw) {
 		this->user_password = userPw;
 	}
+
 	bool checkUser(string acc, string pw) { //사용자가 입력한 계정이 있는 계정인지 체크
 		int input=0;
 		if (getuserAcc() == acc && getuserPw() == pw) {
