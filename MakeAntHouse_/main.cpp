@@ -92,11 +92,11 @@ private :
 	int ant_x, ant_y;
 	int input = 0;
 public:
-	ant() {
-		this->ant_x = 0;
-		this->ant_y = 0;
-	}
-	void eatFeed() { //먹이를 먹음
+	ant() : ant_x(0), ant_y(0){}
+
+	void eatFeed() { //먹이를 먹음 -> 미니 게임 실행
+		//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
+		//좌표가 겹칠 경우, 미니게임 실행
 		
 	}
 	void moveInHouse() { //개미집 안에서 움직임
@@ -125,6 +125,7 @@ public:
 			cout << "*";
 		}
 	}
+
 	~ant() {}
 };
 
@@ -160,10 +161,16 @@ public:
 	bool checkUser(string acc, string pw) { //사용자가 입력한 계정이 있는 계정인지 체크
 		int input=0;
 		if (getuserAcc() == acc && getuserPw() == pw) {
-			cout << "로그인 성공" << endl;
+			system("cls");
+			gotoxy(21, 12);
+			cout << "로그인 성공" ;
+			gotoxy(17, 15);
+			cout << plz_space;
+			system("pause>null");
 			return true;   
 		}
 			else if (getuserPw() != pw || getuserAcc() != acc) {
+				gotoxy(15, 18);
 				cout << "로그인 실패" << endl;
 				cout << "다시 시도하시려면 스페이스를 눌러주세요." << endl;
 				cout << "스페이스를 누르면 로그인을 재시도합니다." << endl;
@@ -783,16 +790,22 @@ void CreateAccount() {//계정 생성
 	cout << "생성할 계정의 비밀번호 입력 : ";
 	cin >> pw;
 	user->setUserPw(pw);
-	gotoxy(14, 10);
+	system("cls");
+	gotoxy(19, 12);
 	cout << "계정이 생성되었습니다.";
+	gotoxy(16, 14);
+	cout << plz_space;
+	system("pause>null");
 } 
+
 bool LoginAccount() {//생성한 계정 확인, 로그인하기
 	system("cls");
 	string acc;
 	string pw;
+	gotoxy(15, 8);
 	cout << "계정 입력 : ";
 	cin >> acc;
-	cout << endl;
+	gotoxy(15, 10);
 	cout << "비밀번호 입력 : ";
 	cin >> pw;
 	return user->checkUser(acc, pw);
@@ -807,7 +820,9 @@ int userLogin() {
 	while (true) {
 		switch (SelectLogin()) { //리턴을 받아 판단
 		case FIND:
-			LoginAccount();
+			if (LoginAccount()) {
+				ReadyGame();
+			}
 			break;
 		case CREATE:
 			CreateAccount();
