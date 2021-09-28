@@ -138,11 +138,6 @@ public:
 	Login() {
 		this->user_id = (rand() % 100000); //랜덤 아이디 제공
 	}
-	Login(string account, string password) {
-		this->user_account = account;
-		this->user_password = password;
-		this->user_id = (rand() % 100000);
-	}
 	void setUserAcc(string userAcc) {
 		this->user_account = userAcc;
 	}
