@@ -86,6 +86,45 @@ void SetConsoleVIew() {
 	system("title Make Ant House By Yeonwoo"); //타이틀
 }
 
+class ant { //개미집에서 움직일 개미 객체
+	//개미는 먹고 움직이기만 함 죽는건 어려울듯 
+private :
+	int ant_x, ant_y;
+	int input = 0;
+public:
+	ant() {}
+	void eatFeed() { //먹이를 먹음
+		
+	}
+	void moveInHouse() { //개미집 안에서 움직임
+		while (true) {
+			if (input == MAGIC_KEY) {
+				input = _getch();
+				system("cls");
+				switch (input)
+				{
+				case UP:
+					ant_y--;
+					break;
+				case DOWN:
+					ant_y++;
+					break;
+				case RIGHT:
+					ant_x++;
+					break;
+				case LEFT:
+					ant_x--;
+					break;
+				}
+			}
+			gotoxy(ant_x, ant_y);
+		}
+
+	}
+	~ant() {}
+};
+
+
 class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_account;
 	int user_id;
@@ -153,7 +192,7 @@ public:
 		else return true;
 		
 	}
-	virtual ~Login() {}
+	~Login() {}
 };
 
 bool checkGuest() { //게스트로 로그인 할건지 물음
@@ -312,11 +351,13 @@ GUEST selectGuest() {
 		}
 		gotoxy(22, 12 + y); //위치조정
 		cout << ">";
-
+		
 		input = _getch();
 		//→←↑↓ 방향키를 누를 경우
 		if (input == MAGIC_KEY) { //224가 들어옴
+			//system("cls");
 			switch (_getch()) //한번 더 받음
+
 			{
 			case UP: //위
 				--y;
@@ -578,7 +619,6 @@ bool RockPaperScissors() {
 
 		Sleep(1500);
 		system("cls"); //화면 지우기
-
 	}
 }
 
@@ -680,7 +720,6 @@ bool upDownGame() {
 			return false;
 		}
 
-
 		else if (com_sel > user_sel) {
 			gotoxy(11, 10);
 			cout << "개미는 더 큰 수를 골랐습니다!";
@@ -697,7 +736,6 @@ bool upDownGame() {
 		system("cls"); //화면 지우기
 	}
 }
-
 
 //게임 정보 뷰
 void InfoGame() {
@@ -719,7 +757,10 @@ void startGame() {
 	else { //로그인 되어 있으면 바로 게임 ㄱ 하는데 이름이 없으면 이름 입력부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
 		if (user_name == "") DrawStartGame();
 		system("cls");
-		RockPaperScissors();
+		if (houseSize != 0) printRect(houseSize);
+		else {
+			
+		}
 		system("pause>null");
 	}
 }
