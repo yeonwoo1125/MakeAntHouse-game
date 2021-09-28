@@ -118,7 +118,7 @@ public:
 		int input=0;
 		if (getuserAcc() == acc && getuserPw() == pw) {
 			cout << "로그인 성공" << endl;
-			return true;c   
+			return true;   
 		}
 			else if (getuserPw() != pw || getuserAcc() != acc) {
 				cout << "로그인 실패" << endl;
@@ -128,7 +128,7 @@ public:
 				while (true) {
 					input = _getch();
 					if (input == ESC) {
-						break;
+						return false;
 					}
 					if (input == SPACE) {
 						system("cls");
@@ -164,7 +164,8 @@ bool checkGuest() { //게스트로 로그인 할건지 물음
 			return LoginAccount();
 
 		case START:
-			RockPaperScissors();
+			system("cls");
+			startGame();
 			break;
 		}
 	}
@@ -571,6 +572,7 @@ bool RockPaperScissors() {
 			system("cls");
 			houseSize += rand() % 7 + 2;
 			printRect(houseSize);
+			system("pause>null");
 			return true;
 		}
 
