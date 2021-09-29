@@ -227,12 +227,12 @@ public:
 				return false;
 			}
 
-		//system("pause>null");
 	}
 	bool checkLogin() {
-		if (user_account.empty()) return false;
-		else return true;
-		
+		if (checkUser(getuserAcc(),getuserPw())) { //checkUser가 true면 로그인 성공임, 바로 부르면 매개변수가 없어서 안됨
+			return true;
+		}
+		return false;
 	}
 	~Login() {}
 };
@@ -793,21 +793,23 @@ void startGame() {
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
 	
-	if (!(user->checkLogin())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
+
+
+}
+void readyStart() {
+	if (user->checkLogin()) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
 		checkGuest();
-		
 	}
-	else { //로그인 되어 있으면 바로 게임 ㄱ 하는데 이름이 없으면 이름 입력부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
+	else { //로그인 되어 있으면 바로 게임 ㄱ 하는데 이름이 없으면 이름 입력 부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
 		if (user_name == "") DrawStartGame();
 		system("cls");
 		if (houseSize != 0) printRect(houseSize);
-		//else {
-			
-		//}
+		else {
+			cout << "미니게임 시작";
+		}
 		system("pause>null");
 	}
 }
-
 
 void CreateAccount() {//계정 생성
 	system("cls");
