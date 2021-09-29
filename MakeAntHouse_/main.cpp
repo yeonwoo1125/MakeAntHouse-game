@@ -64,7 +64,6 @@ bool upDownGame();
 void InfoGame();
 void startGame();
 int userLogin();
-void printRect(int r);
 void readyStart();
 
 //로그인 관련
@@ -104,38 +103,14 @@ public:
 		feed_y = rand() % ant_y;
 		gotoxy(feed_x, feed_y);
 		cout << feed;
-		
 	}
-	void eatFeed() { //먹이를 먹음 -> 미니 게임 실행
+	void moveInHouse() { //개미집 안에서 움직임
 		//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
 		//좌표가 겹칠 경우, 미니게임 실행
-		//(i == 1 || i == r || j == 1 || j == r)
 
 		//case 0 -> RockPaperScissors
 		//case 1 -> QuizGame
 		//case 2 -> upDownGame
-		if (ant_x == feed_x && ant_y==feed_y) { 
-			int miniGame;
-			miniGame = rand() % 3;
-			switch (miniGame)
-			{
-			case 0:
-				system("cls");
-				RockPaperScissors();
-				break;
-			case 1:
-				system("cls");
-				QuizGame();
-				break;
-			case 2:
-				system("cls");
-				upDownGame();
-				break;
-			}
-		}
-		
-	}
-	void moveInHouse() { //개미집 안에서 움직임
 		while (true) {
 			input = _getch();
 			system("cls");
@@ -158,13 +133,57 @@ public:
 				}
 			}
 			gotoxy(ant_x, ant_y);
-			cout << "*";
+			cout << "***";
+			if (ant_x == feed_x && ant_y == feed_y) {
+				int miniGame;
+				miniGame = rand() % 3;
+				switch (miniGame)
+				{
+				case 0:
+					system("cls");
+					RockPaperScissors();
+					break;
+				case 1:
+					system("cls");
+					QuizGame();
+					break;
+				case 2:
+					system("cls");
+					upDownGame();
+					break;
+				}
+			}
+
 		}
 	}
+	void drawAntHouse(int r) {
+		//system("cls");
+		//기본 집 그리기
+		gotoxy(1, 3);
+		cout << "집의 크기 : " << r << endl;
 
+		//집이 일정 크기 이상이면 반으로 나누고 집을 여러개 연결되게 만듦
+
+		//gotoxy(10, 6);
+		int i, j;
+		for (i = 1; i <= r + 10; i++)
+		{
+			for (j = 1; j <= r + 10; j++)
+			{
+				if (i == 1 || i == r + 10 || j == 1 || j == r + 10)
+					cout << "*";
+				else
+					cout << " ";
+			}
+			cout << endl;
+		}
+	
+		
+	}
+		//system("pause>null");
 	~ant() {}
 };
-
+ant a1;
 
 class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_account;
@@ -245,7 +264,7 @@ bool checkGuest() { //게스트로 로그인 할건지 물음
 	while (true) {
 		switch (selectGuest()) { //리턴을 받아 판단
 		case LOGIN_USER:
-			return LoginAccount();
+			LoginAccount();
 
 		case START:
 			system("cls");
@@ -556,32 +575,7 @@ MENU ReadyGame() {
 
 
 
-//개미집 그리기
-void printRect(int r) {
 
-	system("cls");
-	//기본 집 그리기
-	gotoxy(1, 3);
-	cout << "집의 크기 : " << r << endl;
-
-	//집이 일정 크기 이상이면 반으로 나누고 집을 여러개 연결되게 만듦
-
-	//gotoxy(10, 6);
-	int i, j;
-	for (i = 1; i <= r; i++)
-	{
-		for (j = 1; j <= r; j++)
-		{
-			if (i == 1 || i == r || j == 1 || j == r)
-				cout << "*";
-			else
-				cout << " ";
-		}
-		cout << endl;
-	}
-
-	system("pause>null");
-}
 //미니 게임
 
 // 가위바위보
@@ -680,7 +674,7 @@ bool RockPaperScissors() {
 				
 				houseSize -= rand() % 4 + 1;
 			}
-			printRect(houseSize);
+			a1.drawAntHouse(houseSize);
 			return false;
 
 		}
@@ -690,7 +684,7 @@ bool RockPaperScissors() {
 			Sleep(2000);
 			system("cls");
 			houseSize += rand() % 7 + 2;
-			printRect(houseSize);
+			a1.drawAntHouse(houseSize);
 			system("pause>null");
 			return true;
 		}
@@ -749,14 +743,14 @@ bool QuizGame() {
 				int tmp = rand() % 4 + 1;
 				houseSize -= tmp;
 			}
-			printRect(houseSize);
+			a1.drawAntHouse(houseSize);
 			return false;
 		}
 		else if (win_cnt == 2) {
 			gotoxy(14, 15);
 			cout << "집을 지을 수 있어요!";
 			houseSize += rand() % 7 + 2;
-			printRect(houseSize);
+			a1.drawAntHouse(houseSize);
 			return true;
 		}
 		Sleep(1500);
@@ -783,7 +777,7 @@ bool upDownGame() {
 			gotoxy(11, 10);
 			cout << "개미가 고른 수는 " << com_sel << "입니다! 축하합니다~" << endl;
 			houseSize += rand() % 7 + 2;
-			printRect(houseSize);
+			a1.drawAntHouse(houseSize);
 			return true;
 		}
 		if (cnt == 5) {
@@ -794,7 +788,7 @@ bool upDownGame() {
 			system("cls");
 			DrawGameOver();
 			houseSize += rand() % 4 + 1;
-			printRect(houseSize);
+			a1.drawAntHouse(houseSize);
 			return false;
 		}
 
@@ -823,22 +817,24 @@ void InfoGame() {
 }
 
 Login* user = new Login();
-ant a1;
+
 //게임 시작 뷰
 void startGame() {
 	//게임 시작을 누르는데 만약 로그인이 안되어 있으면 게스트 로그인이냐고 묻기 -> 디비 연동 안됨
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
-	readyStart();
-	if (houseSize != 0) printRect(houseSize);
+	//readyStart();
+	if (houseSize != 0) a1.drawAntHouse(houseSize); //아마 디비연동 후 사용될듯
 	else {
-		cout << "미니게임 시작";
+		system("cls");
+		readyStart();
+		a1.moveInHouse();
 	}
 	system("pause>null");
 
 }
 void readyStart() {
-	if (!(user->checkLogin())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
+	if (user->getuserAcc().empty()) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
 		checkGuest();
 	}
 	else { //로그인 되어 있으면 바로 게임 ㄱ 하는데 이름이 없으면 이름 입력 부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
@@ -896,10 +892,11 @@ int userLogin() {
 			break;
 		case CREATE:
 			CreateAccount();
-			userLogin();
+			ReadyGame();
 			break;
 		case QUESTION:
 			QuestionAccount();
+			ReadyGame();
 			break;
 		case QUITLOGIN :
 			ReadyGame();
