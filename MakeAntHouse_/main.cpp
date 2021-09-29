@@ -45,7 +45,7 @@ enum KEYBOARD {
 
 //화면 그리는 함수
 void DrawReadyGame();
-void DrawInfoGame();
+void DrawInfoFirstGame();
 void DrawStartGame();
 void DrawGameOver();
 void DrawLogin();
@@ -87,7 +87,8 @@ void SetConsoleVIew() {
 }
 
 class ant { //개미집에서 움직일 개미 객체
-	//개미는 먹고 움직이기만 함 죽는건 어려울듯 
+	//개미는 먹고 움직이기만 함 죽는건 어려울듯
+	//일정 시간 먹이를 먹지 않으면 굶길까
 private :
 	int ant_x, ant_y;
 	int input = 0;
@@ -97,7 +98,7 @@ private :
 public:
 	ant() : ant_x(0), ant_y(0),feed_x(0),feed_y(0){}
 	void ranFeed() {
-		feed_x = rand() % ant_x;
+		feed_x = rand() % ant_x; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
 		feed_y = rand() % ant_y;
 		gotoxy(feed_x, feed_y);
 		cout << feed;
@@ -117,12 +118,15 @@ public:
 			switch (miniGame)
 			{
 			case 0:
+				system("cls");
 				RockPaperScissors();
 				break;
 			case 1:
+				system("cls");
 				QuizGame();
 				break;
 			case 2:
+				system("cls");
 				upDownGame();
 				break;
 			}
@@ -278,7 +282,7 @@ void DrawReadyGame() {
 }
 
 //게임 설명 그리기
-void DrawInfoGame()
+void DrawInfoFirstGame()
 {
 	system("cls");
 	gotoxy(3, 3);
@@ -777,7 +781,7 @@ bool upDownGame() {
 
 //게임 정보 뷰
 void InfoGame() {
-	DrawInfoGame();
+	DrawInfoFirstGame();
 	system("pause>null");
 }
 
@@ -849,6 +853,7 @@ int userLogin() {
 		case FIND:
 			if (LoginAccount()) {
 				ReadyGame();
+				break;
 			}
 			break;
 		case CREATE:
@@ -859,7 +864,8 @@ int userLogin() {
 			QuestionAccount();
 			break;
 		case QUITLOGIN :
-			return 0;
+			ReadyGame();
+			break;
 		}
 	}
 }
