@@ -1,0 +1,86 @@
+   **
+ ** **
+**   **
+   **
+   **
+   **
+
+메인 게임 구조
+게임시작 -> 로그인-> 성공 시 현재 개미 집 보여줌
+		-> 실패시 회원가입 
+
+
+void DrawReadyGame()
+void DrawInfoGame()
+void DrawStartGame()
+void DrawGameOver()
+void DrawLogin()
+DrawUserCursor(int& y)
+LOGIN selectGuest()
+LOGIN SelectLogin()
+MENU ReadyGame()
+
+bool QuizGame()
+bool upDownGame()
+
+void InfoGame()
+void startGame()
+
+void CreateAccount()
+void LoginAccount()
+void DeleteAccount()
+void QuestionAccount()
+
+int userLogin()
+
+void printRect()
+
+메인 게임 어떻게 하냐
+노드부터 공부하고 와야지~
+
+
+
+
+*****************************************
+*                                                 *
+*                                                 *
+*                                                 *
+*                                                 *
+*                                                 *
+*                                                 *
+*                                                 *
+*                                                 *
+*                                                 *
+*****************************************
+
+
+
+원래
+미니게임 할 때마다 개미집 만들면서 밑으로 내려가기
+
+개미가 집에서 놀다가 집 밖을 벗어나려 하면 미니게임 실행
+-> 성공시 집 커짐
+-> 실패시 집 작아짐
+최종적으로 집이 0보다 작아지면 개미 뒤짐
+
+중간에 비 이벤트? 사고 이벤트 넣으면 좋을듯 ㅋ..
+
+
+메인순서
+로그인 후 
+메인 테마 보여줌(개미 집, 개미 움직임..)
+-> 개미가 벽에 닿으면 미니게임(랜덤으로 아무거나)ㄲ 부딪힌 방향으로 집을 만들면 좋을듯
+-> 일정 시간 벽에 안닿으면 특정이벤트 생성 후 미니게임 실행
+
+
+
+
+InfoGame 다음 페이지 만들어서 로그인 순서? 게임 실행 순서 알려주는 것도 좋을듯
+먹이 먹으면 미니 게임 실행 확인
+집이 일정크기 이상 되면 집 업그레이드? 집 나눠서 여러개?
+->트리구조처럼 만들자 아자아자
+미니게임 클래스로 만들어서 상속 사용해야함
+
+로그인 후 바로 게임들어가야하는데 로그인 들어감-> 함수이름 확인 
+checkLogin을 하면 로그인 성공 멘트가 뜸 -> checkUser를 호출해서 그런듯.. 멘트 주는 함수를 만들거나 하자
+게스트 로그인 후 게임 시작하면 startGame반복됨 -> readyStart랑 잘 섞어서 해보기
