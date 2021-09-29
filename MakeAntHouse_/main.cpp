@@ -92,15 +92,40 @@ private :
 	int ant_x, ant_y;
 	int input = 0;
 	char feed = '*';
+	int feed_x;
+	int feed_y;
 public:
-	ant() : ant_x(0), ant_y(0){}
-
+	ant() : ant_x(0), ant_y(0),feed_x(0),feed_y(0){}
+	void ranFeed() {
+		feed_x = rand() % ant_x;
+		feed_y = rand() % ant_y;
+		gotoxy(feed_x, feed_y);
+		cout << feed;
+		
+	}
 	void eatFeed() { //먹이를 먹음 -> 미니 게임 실행
 		//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
 		//좌표가 겹칠 경우, 미니게임 실행
 		//(i == 1 || i == r || j == 1 || j == r)
-		if (ant_x == houseSize) { 
-			RockPaperScissors();
+
+		//case 0 -> RockPaperScissors
+		//case 1 -> QuizGame
+		//case 2 -> upDownGame
+		if (ant_x == feed_x && ant_y==feed_y) { 
+			int miniGame;
+			miniGame = rand() % 3;
+			switch (miniGame)
+			{
+			case 0:
+				RockPaperScissors();
+				break;
+			case 1:
+				QuizGame();
+				break;
+			case 2:
+				upDownGame();
+				break;
+			}
 		}
 		
 	}
@@ -185,9 +210,10 @@ public:
 						system("cls");
 						string acc;
 						string pw;
+						gotoxy(15, 8);
 						cout << "계정 입력 : ";
 						cin >> acc;
-						cout << endl;
+						gotoxy(15, 10);
 						cout << "비밀번호 입력 : ";
 						cin >> pw;
 						checkUser(acc, pw);
