@@ -45,7 +45,8 @@ enum KEYBOARD {
 
 //화면 그리는 함수
 void DrawReadyGame();
-void DrawInfoFirstGame();
+void DrawFirstInfoGame();
+void DrawSecondeInfoGame();
 void DrawStartGame();
 void DrawGameOver();
 void DrawLogin();
@@ -64,6 +65,7 @@ void InfoGame();
 void startGame();
 int userLogin();
 void printRect(int r);
+void readyStart();
 
 //로그인 관련
 void CreateAccount();
@@ -230,6 +232,7 @@ public:
 	}
 	bool checkLogin() {
 		if (checkUser(getuserAcc(),getuserPw())) { //checkUser가 true면 로그인 성공임, 바로 부르면 매개변수가 없어서 안됨
+			system("cls");
 			return true;
 		}
 		return false;
@@ -282,7 +285,7 @@ void DrawReadyGame() {
 }
 
 //게임 설명 그리기
-void DrawInfoFirstGame()
+void DrawFirstInfoGame()
 {
 	system("cls");
 	gotoxy(3, 3);
@@ -308,7 +311,40 @@ void DrawInfoFirstGame()
 	cout << "   만약 진다면 더 이상 집을 짓지 못해요.";
 	gotoxy(3, 19);
 	cout << "그럼 잘 부탁해요!!";
-	gotoxy(3, 22);
+	gotoxy(38, 22);
+	cout << "다음 페이지";
+	gotoxy(37, 22);
+	cout << ">";
+	system("pause>null");
+}
+
+void DrawSecondeInfoGame()
+{
+	system("cls");
+	gotoxy(3, 3);
+	cout << "****************";
+	gotoxy(3, 4);
+	cout << "*   순서설명   *";
+	gotoxy(3, 5);
+	cout << "****************";
+
+	gotoxy(3, 8);
+	cout << "게임을 처음 시작하시는 분은 회원가입을 해주세요.(로그인->회원가입)";
+	gotoxy(3, 9);
+	cout << "이미 계정이 존재한다면 로그인을 한 후 게임을 진행하면 됩니다.";
+	gotoxy(3, 10);
+	cout << "계정을 잃어버렸을 경우, 계정 찾기를 통해 계정을 찾아주세요.(로그인->계정 찾기)";
+	gotoxy(3, 11);
+	cout << "로그인 없이 게임을 하고 싶다면 게스트 로그인을 통해 게임을 즐겨주세요.";
+	gotoxy(3, 13);
+	cout << "제일 처음 게임을 시작하면, 미니게임을 통해 기본 크기의 개미집을 얻게 됩니다.";
+	gotoxy(3, 14);
+	cout << "개미집에 생성되는 개미의 먹이를 먹으면 미니게임을 할 수 있습니다. ";
+	gotoxy(3, 15);
+	cout << "하지만 오랜 시간 먹이를 먹지 않으면 개미가 죽을 수도 있으니 조심하세요.";
+	gotoxy(3, 19);
+	cout << "그럼 즐거운 시간 되세요!";
+	gotoxy(16, 22);
 	cout << plz_space;
 }
 
@@ -781,7 +817,8 @@ bool upDownGame() {
 
 //게임 정보 뷰
 void InfoGame() {
-	DrawInfoFirstGame();
+	DrawFirstInfoGame();
+	DrawSecondeInfoGame();
 	system("pause>null");
 }
 
@@ -792,22 +829,21 @@ void startGame() {
 	//게임 시작을 누르는데 만약 로그인이 안되어 있으면 게스트 로그인이냐고 묻기 -> 디비 연동 안됨
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
-	
-
+	readyStart();
+	if (houseSize != 0) printRect(houseSize);
+	else {
+		cout << "미니게임 시작";
+	}
+	system("pause>null");
 
 }
 void readyStart() {
-	if (user->checkLogin()) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
+	if (!(user->checkLogin())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
 		checkGuest();
 	}
 	else { //로그인 되어 있으면 바로 게임 ㄱ 하는데 이름이 없으면 이름 입력 부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
 		if (user_name == "") DrawStartGame();
 		system("cls");
-		if (houseSize != 0) printRect(houseSize);
-		else {
-			cout << "미니게임 시작";
-		}
-		system("pause>null");
 	}
 }
 
