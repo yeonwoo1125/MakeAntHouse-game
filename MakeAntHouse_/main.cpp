@@ -100,7 +100,7 @@ private :
 	int feed_y;
 	int feedCnt = 0;
 public:
-	ant() : ant_x(0), ant_y(0),feed_x(0),feed_y(0){}
+	ant() : ant_x(0), ant_y(0),feed_x(0),feed_y(0){} //개미의 생성 위치를 집 안으로 정해야함
 	void ranFeed() {
 		feed_x = rand() % ant_x; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
 		feed_y = rand() % ant_y;
@@ -108,6 +108,7 @@ public:
 		cout << feed;
 		feedCnt++;
 	}
+
 	void moveInHouse() { //개미집 안에서 움직임
 		//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
 		//좌표가 겹칠 경우, 미니게임 실행
@@ -875,6 +876,10 @@ void startGame() {
 	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
 	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
 
+	if (houseSize == 0) {
+		cout << "현재 개미집이 없으므로 미니게임을 실행합니다.";
+	}
+
 	system("cls");
 	if (user_name.empty()) DrawStartGame();
 
@@ -893,7 +898,7 @@ void startGame() {
 	system("pause>null");
 }
 
-void readyStart() {
+void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
 	system("cls");
 	if (user->getuserAcc().empty()) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
 		checkGuest();
