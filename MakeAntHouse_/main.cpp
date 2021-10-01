@@ -52,7 +52,8 @@ void DrawStartGame();
 void DrawGameOver();
 void DrawGamePass();
 void DrawLogin();
-void drawGuestLogin();
+void DrawGuestLogin();
+void DrawStartMiniGame();
 
 //메뉴 고르기
 GUEST selectGuest();
@@ -329,7 +330,7 @@ public:
 };
 
 bool checkGuest() { //게스트로 로그인 할건지 물음
-	drawGuestLogin();
+	DrawGuestLogin();
 	while (true) {
 		switch (selectGuest()) { //리턴을 받아 판단
 		case LOGIN_USER:
@@ -454,6 +455,21 @@ void DrawStartGame() {
 	}
 }
 
+//미니게임 시작 화면 그리기
+void DrawStartMiniGame() {
+	gotoxy(8, 8);
+	cout << "--------------------------";
+	gotoxy(8, 9);
+	cout << "|   현재 집이 없으므로   |";
+	gotoxy(8, 10);
+	cout << "|  미니게임을 실행합니다 |";
+	gotoxy(8, 11);
+	cout << "--------------------------";
+	gotoxy(7, 14);
+	cout << plz_space;
+	system("pause>null");
+}
+
 //게임 오버 그리기
 void DrawGameOver() {
 	gotoxy(8, 8);
@@ -497,7 +513,7 @@ void DrawLogin() {
 }
 
 //게스트 로그인 화면 그리기
-void drawGuestLogin() {
+void DrawGuestLogin() {
 	system("cls");
 	gotoxy(17, 8);
 	cout << "게스트로 로그인 하시겠습니까?";
@@ -767,8 +783,8 @@ bool RockPaperScissors() {
 //퀴즈 게임
 bool QuizGame() {
 	string quiz[] = { "대한민국의 수도는?(두글자) : ", "3 * 3 = ", " 3 * 5 + 9 = ","좋아하는 노래를 적어주세요! : ","2 + 3 * 5 = ",
-		"부엉이가 수영할 때 내는 소리는?(세글자) : ","세상에서 가장 가난한 왕은?(네글자) : ","4 / 2 + 6 = ","7 * 8 / 4 = ","깃허브 아이콘의 동물 이름은? (세글자) : " };
-	string answer[] = { "서울","9","24","","17","첨부엉", "최저임금", "8", "14","고양이" };
+		"부엉이가 수영할 때 내는 소리는?(세글자) : ","세상에서 가장 가난한 왕은?(네글자) : ","4 / 2 + 6 = ","7 * 8 / 4 = ","깃허브 아이콘의 동물 이름은? (세글자) : ", "좋아하는 전공은 ? : " };
+	string answer[] = { "서울","9","24","","17","첨부엉", "최저임금", "8", "14","고양이","" };
 	string q, user_answer;
 	int i;
 	int win_cnt = 0;
@@ -791,7 +807,7 @@ bool QuizGame() {
 			win_cnt++;
 		}
 		else {
-			if (i == 3 && user_answer != "") {
+			if (user_answer== "") { //답이 ""일 경우 무조건 정답처리 
 				gotoxy(22, 12);
 				cout << "정답입니다!";
 				win_cnt++;
