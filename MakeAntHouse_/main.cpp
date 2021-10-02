@@ -286,16 +286,20 @@ public:
 			system("cls");
 			gotoxy(21, 12);
 			cout << "로그인 성공" ;
-			gotoxy(17, 15);
+			gotoxy(16, 15);
 			cout << plz_space;
 			system("pause>null");
 			return true;   
 		}
 			else if (getuserPw() != pw || getuserAcc() != acc) {
-				gotoxy(15, 18);
+				system("cls");
+				gotoxy(21, 9);
 				cout << "로그인 실패" << endl;
+				gotoxy(14, 11);
 				cout << "다시 시도하시려면 스페이스를 눌러주세요." << endl;
+				gotoxy(14, 12);
 				cout << "스페이스를 누르면 로그인을 재시도합니다." << endl;
+				gotoxy(17, 13);
 				cout << "나가시려면 ESC를 눌러주세요.";
 				while (true) {
 					input = _getch();
@@ -306,10 +310,10 @@ public:
 						system("cls");
 						string acc;
 						string pw;
-						gotoxy(15, 8);
+						gotoxy(16, 8);
 						cout << "계정 입력 : ";
 						cin >> acc;
-						gotoxy(15, 10);
+						gotoxy(16, 10);
 						cout << "비밀번호 입력 : ";
 						cin >> pw;
 						checkUser(acc, pw);
@@ -457,7 +461,11 @@ void DrawStartGame() {
 }
 //개미 죽는 모습 - 게임 오버 그리기
 void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
-	if()
+	if (a1.getFeedCnt() > 9) {
+		cout << user_name << "님의 개미가 굶어죽었습니다";
+	}
+
+
 }
 
 //미니게임 시작 화면 그리기
