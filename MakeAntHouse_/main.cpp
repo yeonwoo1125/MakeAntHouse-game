@@ -17,7 +17,7 @@ using namespace std;
 
 string user_name; //사용자 이름
 string plz_space = "[스페이스나 엔터를 눌러주세요.]";
-int houseSize=0; //개미집 크기
+int houseSize = 10; //개미집 크기
 
 enum GUEST {
 	LOGIN_USER,
@@ -54,6 +54,7 @@ void DrawGamePass();
 void DrawLogin();
 void DrawGuestLogin();
 void DrawStartMiniGame();
+void DrawDieAnt();
 
 //메뉴 고르기
 GUEST selectGuest();
@@ -71,7 +72,7 @@ void InfoGame();
 void startGame();
 int userLogin();
 void readyStart();
-void dieAnt();
+
 
 //로그인 관련
 void CreateAccount();
@@ -106,6 +107,9 @@ private :
 	int feedCnt = 0;
 public:
 	ant() : ant_x(0), ant_y(0),feed_x(0),feed_y(0){} //개미의 생성 위치를 집 안으로 정해야함
+	int getFeedCnt() { //현재 개미집에 생성된 먹이의 수
+		return feedCnt;
+	}
 	void ranFeed() {
 		feed_x = rand() % ant_x; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
 		feed_y = rand() % ant_y;
@@ -115,9 +119,6 @@ public:
 	}
 
 	void moveInHouse() { //개미집 안에서 움직임
-
-
-
 		while (true) {
 			input = _getch();
 			
@@ -453,6 +454,10 @@ void DrawStartGame() {
 		cout << " 당신의 이름이 무엇인가요? : ";
 		cin >> user_name;
 	}
+}
+//개미 죽는 모습 - 게임 오버 그리기
+void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
+	if()
 }
 
 //미니게임 시작 화면 그리기
@@ -1009,30 +1014,27 @@ Login* user = new Login();
 
 //게임 시작 뷰
 void startGame() {
-	//게임 시작을 누르는데 만약 로그인이 안되어 있으면 게스트 로그인이냐고 묻기 -> 디비 연동 안됨
-	//게스트 아니라 그러면 로그인 화면 띄우기 -> 계정 없으면 회원가입 ㄲ -> 게임 설명 하고 바로 이름 입력 후 미니 게임부터..
-	//로그인 성공하면 지금까지 만든 집 보여즈기 -> 0이면 게임 ㄱ
+
 
 	if (houseSize == 0) {
-		cout << "현재 개미집이 없으므로 미니게임을 실행합니다.";
+		DrawStartMiniGame();
+		system("pause>null");
+		system("cls");
+		if (user_name.empty()) DrawStartGame();
+
+		system("cls");
+		if (RockPaperScissors()) {
+			system("cls");
+			a1.drawAntHouse(houseSize);
+			a1.moveInHouse();
+		}
+		else {
+			system("cls");
+			a1.drawAntHouse(houseSize);
+			a1.moveInHouse();
+		}
 	}
-
-	system("cls");
-	if (user_name.empty()) DrawStartGame();
-
-	system("cls");
-	//if (timingGame()) {
-	//	system("cls");
-	//	a1.drawAntHouse(houseSize);
-	//	a1.moveInHouse();
-	//}
-	//else {
-	//	system("cls");
-	//	a1.drawAntHouse(houseSize);
-	//	a1.moveInHouse();
-	//}
-	timingGame();
-	system("pause>null");
+	
 }
 
 void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
@@ -1126,8 +1128,8 @@ int main() {
 			userLogin();
 			break;
 		case QUIT:
-			cout << user_name + "님이 지어주신 집은 " << houseSize << "의 크기입니다! 감사합니다";
 			delete user;
+			//delete a1;
 			return 0;
 		}
 	}
