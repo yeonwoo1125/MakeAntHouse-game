@@ -10,30 +10,6 @@
 		-> 실패시 회원가입 
 
 
-void DrawReadyGame()
-void DrawInfoGame()
-void DrawStartGame()
-void DrawGameOver()
-void DrawLogin()
-DrawUserCursor(int& y)
-LOGIN selectGuest()
-LOGIN SelectLogin()
-MENU ReadyGame()
-
-bool QuizGame()
-bool upDownGame()
-
-void InfoGame()
-void startGame()
-
-void CreateAccount()
-void LoginAccount()
-void DeleteAccount()
-void QuestionAccount()
-
-int userLogin()
-
-void printRect()
 
 메인 게임 어떻게 하냐
 노드부터 공부하고 와야지~

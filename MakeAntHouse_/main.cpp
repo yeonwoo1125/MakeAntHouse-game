@@ -97,15 +97,13 @@ void SetConsoleVIew() {
 }
 
 class ant { //개미집에서 움직일 개미 객체
-	//개미는 먹고 움직이기만 함 죽는건 어려울듯
-	//일정 시간 먹이를 먹지 않으면 굶길까
 private :
 	int ant_x, ant_y;
 	int input = 0;
 	char feed = '*';
 	int feed_x;
 	int feed_y;
-	int feedCnt = 0;
+	int feedCnt = 3; //기본적으로 집에 3개 생성
 public:
 	ant() : ant_x(0), ant_y(0),feed_x(0),feed_y(0){} //개미의 생성 위치를 집 안으로 정해야함
 	int getFeedCnt() { //현재 개미집에 생성된 먹이의 수
@@ -118,8 +116,9 @@ public:
 		for (int i = 0; i < feedCnt; i++) {
 			gotoxy(feed_x, feed_y);
 			cout << feed;
+			Sleep(5000); //5초마다 먹이 생성
+			feedCnt++;
 		}
-		feedCnt++;
 	}
 
 	void moveInHouse() { //개미집 안에서 움직임
@@ -237,7 +236,6 @@ public:
 		//system("cls");
 		//기본 집 그리기
 		gotoxy(1, 3);
-
 		cout << "집의 크기 : " << r << endl;
 
 		//집이 일정 크기 이상이면 반으로 나누고 집을 여러개 연결되게 만듦
@@ -255,7 +253,9 @@ public:
 			}
 			cout << endl;
 		}
+		ranFeed();
 		moveInHouse();
+		eatFeed();
 	}
 		//system("pause>null");
 	~ant() {}
