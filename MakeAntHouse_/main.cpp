@@ -21,7 +21,8 @@ int houseSize = 10; //개미집 크기
 
 enum GUEST {
 	LOGIN_USER,
-	START
+	START,
+	QUITGUEST
 };
 enum LOGIN {
 	CREATE,
@@ -71,7 +72,7 @@ void timingGame();
 void InfoGame();
 void startGame();
 int userLogin();
-void readyStart();
+int readyStart();
 
 
 //로그인 관련
@@ -265,6 +266,8 @@ class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_account;
 	int user_id;
 	string user_password;
+	bool loginCheck = false; //로그인 성공 여부 파악
+
 public:
 	Login() {
 		this->user_id = (rand() % 100000); //랜덤 아이디 제공
@@ -284,10 +287,14 @@ public:
 	void setUserPw(string userPw) {
 		this->user_password = userPw;
 	}
+	bool getLoginCheck() {
+		return loginCheck;
+	}
 
 	bool checkUser(string acc, string pw) { //사용자가 입력한 계정이 있는 계정인지 체크
 		int input=0;
 		if (getuserAcc() == acc && getuserPw() == pw) {
+			loginCheck = true;
 			system("cls");
 			gotoxy(21, 12);
 			cout << "로그인 성공" ;
@@ -350,6 +357,8 @@ bool checkGuest() { //게스트로 로그인 할건지 물음
 			system("cls");
 			startGame();
 			break;
+		case QUITGUEST:
+			return 0;
 		}
 	}
 }
@@ -371,9 +380,9 @@ void DrawReadyGame() {
 	gotoxy(15, 9);
 	cout << "**************************************";
 	gotoxy(22, 12);
-	cout << "게임 시작";
+	cout << "게임시작";
 	gotoxy(22, 13);
-	cout << "게임 설명";
+	cout << "게임설명";
 	gotoxy(22, 14);
 	cout << "로 그 인" << endl;
 	gotoxy(22, 15);
@@ -541,6 +550,8 @@ void DrawGuestLogin() {
 	cout << "로 그 인";
 	gotoxy(23, 13);
 	cout << "게임시작";
+	gotoxy(23, 14);
+	cout << "나 가 기";
 
 	gotoxy(18, 17);
 	cout << plz_space;
@@ -558,8 +569,8 @@ GUEST selectGuest() {
 		if (y <= 0) { //커서가 위로 그만 올라가게
 			y = 0;
 		}
-		else if (y >= 1) { //커서가 아래로 그만 내려가게
-			y = 1;
+		else if (y >= 2) { //커서가 아래로 그만 내려가게
+			y = 2;
 		}
 		gotoxy(22, 12 + y); //위치조정
 		cout << ">";
@@ -586,6 +597,8 @@ GUEST selectGuest() {
 				return LOGIN_USER;
 			case 1:
 				return START;
+			case 2:
+				return QUITGUEST;
 			}
 		}
 	}
@@ -1000,19 +1013,14 @@ void timingGame() {
 			break;
 		}
 
-
 		for (int i = 0; i < 9; i++) { // 현재 스테이지와 유저의 점수를 출력
 			cout << g_timing[i] << " Sec : " << userPoint[i] << endl;
 		}
 
-
-
 		if (tIndex == 9) // 스테이지가 8이 지났을 경우 종료
 			break;
-
 		system("cls"); // 콘솔 지우기
 	}
-
 	timeEndPeriod(1); // timer interrupt 초기화
 }
 
@@ -1027,7 +1035,7 @@ Login* user = new Login();
 
 //게임 시작 뷰
 void startGame() {
-
+	readyStart();
 
 	if (houseSize == 0) {
 		DrawStartMiniGame();
@@ -1047,12 +1055,11 @@ void startGame() {
 			a1.moveInHouse();
 		}
 	}
-	
 }
 
-void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
+int readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
 	system("cls");
-	if (user->getuserAcc().empty()) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
+	if (!(user->getLoginCheck())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
 		checkGuest();
 	}
 	else { //로그인 되어 있으면 바로 게임 ㄱ 하는데 이름이 없으면 이름 입력 부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
@@ -1060,6 +1067,7 @@ void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여�
 		//else 
 		system("cls");
 	}
+	return 0;
 }
 
 void CreateAccount() {//계정 생성
