@@ -113,8 +113,11 @@ public:
 	void ranFeed() {
 		feed_x = rand() % ant_x; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
 		feed_y = rand() % ant_y;
-		gotoxy(feed_x, feed_y);
-		cout << feed;
+
+		for (int i = 0; i < feedCnt; i++) {
+			gotoxy(feed_x, feed_y);
+			cout << feed;
+		}
 		feedCnt++;
 	}
 
