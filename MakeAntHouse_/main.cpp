@@ -564,7 +564,7 @@ GUEST selectGuest() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
 	while (true) { //게임 루프
-
+		
 		//DrawUserCursor 함수
 		if (y <= 0) { //커서가 위로 그만 올라가게
 			y = 0;
@@ -574,7 +574,7 @@ GUEST selectGuest() {
 		}
 		gotoxy(22, 12 + y); //위치조정
 		cout << ">";
-		
+
 		input = _getch();
 		//→←↑↓ 방향키를 누를 경우
 		if (input == MAGIC_KEY) { //224가 들어옴
@@ -664,6 +664,7 @@ MENU ReadyGame() {
 		else if (y >= 3) { //커서가 아래로 그만 내려가게
 			y = 3;
 		}
+
 		gotoxy(21, 12 + y); //위치조정
 		cout << ">";
 
@@ -790,9 +791,9 @@ bool RockPaperScissors() {
 			Sleep(2000);
 			system("cls");
 			DrawGameOver();
-			//졌을 경우 3의 배수의 경우에만 집이 커짐
-				houseSize += rand() % 5 + 10;	
-				return false;
+			
+			houseSize -= rand() % 5 + 1;	
+			return false;
 
 		}
 		else if (win_cnt == 2) {
@@ -801,7 +802,7 @@ bool RockPaperScissors() {
 			Sleep(2000);
 			system("cls");
 			DrawGamePass();
-			houseSize += rand() % 7 + 12;
+			houseSize += rand() % 7 + 2;
 			system("pause>null");
 			return true;
 		}
@@ -851,9 +852,7 @@ bool QuizGame() {
 		if (lose_cnt == 2) {
 			gotoxy(14, 15);
 			cout << "더 이상 집을 짓지 못해요 ㅠㅠ";
-
-			int tmp = rand() % 5 + 1;
-			houseSize += tmp;
+			houseSize -= rand() % 5 + 1;
 			system("cls");
 			DrawGameOver();
 			return false;
@@ -900,7 +899,7 @@ bool upDownGame() {
 			Sleep(1500);
 			system("cls");
 			DrawGameOver();
-			houseSize += rand() % 4 + 1;
+			houseSize -= rand() % 5 + 1;
 			return false;
 		}
 
