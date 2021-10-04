@@ -575,8 +575,14 @@ void DrawGuestLogin() {
 //계정찾기 화면 그리기
 void DrawFIndAcc() {
 	system("cls");
+	gotoxy(20, 3);
+	cout << "****************";
+	gotoxy(20, 4);
+	cout << "*   순서설명   *";
+	gotoxy(20, 5);
+	cout << "****************";
 	gotoxy(15, 13);
-	cout << "계정 찾기";
+	cout << "계정명 찾기";
 	gotoxy(27, 13);
 	cout << "비밀번호 찾기";
 	gotoxy(15, 15);
@@ -1114,7 +1120,7 @@ void CreateAccount() {//계정 생성
 	cin >> pwHint;
 	user->setPwHint(pwHint);
 	system("cls");
-	gotoxy(19, 12);
+	gotoxy(18, 12);
 	cout << "계정이 생성되었습니다.";
 	gotoxy(16, 14);
 	cout << plz_space;
