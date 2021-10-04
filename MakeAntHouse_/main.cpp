@@ -57,10 +57,15 @@ void DrawGuestLogin();
 void DrawStartMiniGame();
 void DrawDieAnt();
 
+void DrawFIndAcc();
+void DrawFindId();
+void DrawFindPw();
+
 //메뉴 고르기
 GUEST selectGuest();
 LOGIN SelectLogin();
 MENU ReadyGame();
+
 
 //미니게임
 bool RockPaperScissors();
@@ -78,10 +83,7 @@ int readyStart();
 //로그인 관련
 void CreateAccount();
 bool LoginAccount();
-void QuestionAccount();
-
-
-
+int QuestionAccount();
 
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 	COORD Pos;
@@ -267,10 +269,23 @@ class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	int user_id;
 	string user_password;
 	bool loginCheck = false; //로그인 성공 여부 파악
-
+	string idHint;
+	string pwHint;
 public:
 	Login() {
 		this->user_id = (rand() % 100000); //랜덤 아이디 제공
+	}
+	void setIdHint(string idHint) {
+		this->idHint = idHint;
+	}
+	string getIdHint() {
+		return idHint;
+	}
+	void setPwHint(string pwHint) {
+		this->pwHint = pwHint;
+	}
+	string getPwHint() {
+		return pwHint;
 	}
 	void setUserAcc(string userAcc) {
 		this->user_account = userAcc;
@@ -334,14 +349,6 @@ public:
 				}
 				return false;
 			}
-
-	}
-	bool checkLogin() {
-		if (checkUser(getuserAcc(),getuserPw())) { //checkUser가 true면 로그인 성공임, 바로 부르면 매개변수가 없어서 안됨
-			system("cls");
-			return true;
-		}
-		return false;
 	}
 	~Login() {}
 };
@@ -352,7 +359,7 @@ bool checkGuest() { //게스트로 로그인 할건지 물음
 		switch (selectGuest()) { //리턴을 받아 판단
 		case LOGIN_USER:
 			LoginAccount();
-
+			break;
 		case START:
 			system("cls");
 			startGame();
@@ -476,23 +483,33 @@ void DrawStartGame() {
 //개미 죽는 모습 - 게임 오버 그리기
 void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
 	if (a1.getFeedCnt() > 9) {
-		cout << user_name << "님의 개미가 굶어죽었습니다";
+		gotoxy(18, 10);
+		cout << user_name << "님의 개미가 굶어죽었습니다.";
+		gotoxy(18, 11);
+		cout << user_name << "님의 집의 크기는 "<<houseSize<<"입니다.";
+		gotoxy(18, 14);
+		DrawGameOver();
 	}
-
-
+	else if (houseSize <= 0) {
+		gotoxy(18, 10);
+		cout << user_name << "님의 집이 부숴져 개미가 이사를 갔습니다.";
+		gotoxy(18, 12);
+		DrawGameOver();
+	}
 }
 
 //미니게임 시작 화면 그리기
 void DrawStartMiniGame() {
-	gotoxy(8, 8);
+	system("cls");
+	gotoxy(15, 8);
 	cout << "--------------------------";
-	gotoxy(8, 9);
+	gotoxy(15, 9);
 	cout << "|   현재 집이 없으므로   |";
-	gotoxy(8, 10);
+	gotoxy(15, 10);
 	cout << "|  미니게임을 실행합니다 |";
-	gotoxy(8, 11);
+	gotoxy(15, 11);
 	cout << "--------------------------";
-	gotoxy(7, 14);
+	gotoxy(14, 14);
 	cout << plz_space;
 	system("pause>null");
 }
@@ -529,11 +546,11 @@ void DrawLogin() {
 	gotoxy(22, 12);
 	cout << "로 그 인";
 	gotoxy(22, 13);
-	cout << "회원 가입";
+	cout << "회원가입";
 	gotoxy(22, 14);
-	cout << "계정 찾기" << endl;
+	cout << "계정찾기";
 	gotoxy(22, 15);
-	cout << "나 가 기" << endl;
+	cout << "나 가 기";
 
 	gotoxy(17, 19);
 	cout << plz_space;
@@ -556,9 +573,23 @@ void DrawGuestLogin() {
 	gotoxy(18, 17);
 	cout << plz_space;
 }
+//계정찾기 화면 그리기
+void DrawFIndAcc() {
+	system("cls");
+	gotoxy(10,10);
+	cout << "계정 찾기";
+	gotoxy(18, 10);
+	cout << "비밀번호 찾기";
+	gotoxy(10, 11);
+	cout << "로그인 하기";
+	gotoxy(18, 11);
+	cout << "회원가입 하기";
+}
+//아이디 찾기 화면 그리기
+void DrawFindId() {}
 
-
-
+//비밀번호 찾기 화면 그리기
+void DrawFindPw() {}
 
 GUEST selectGuest() {
 	int y = 0; //커서의 y 위치
@@ -649,8 +680,6 @@ LOGIN SelectLogin() {
 	}
 }
 
-
-
 MENU ReadyGame() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
@@ -697,14 +726,8 @@ MENU ReadyGame() {
 		}
 	}
 }
-//메인 게임
-//user는 개미, 이벤트가 발생할 때마다 집을 지키거나 늘리거나 부숴질 수 있음
-//이벤트 : 미니게임 이벤트(랜덤으로 발생)
-
-
 
 //미니 게임
-
 // 가위바위보
 bool RockPaperScissors() {
 
@@ -806,7 +829,6 @@ bool RockPaperScissors() {
 			system("pause>null");
 			return true;
 		}
-
 		Sleep(1000);
 		system("cls"); //화면 지우기
 	}
@@ -821,7 +843,6 @@ bool QuizGame() {
 	int i;
 	int win_cnt = 0;
 	int lose_cnt = 0;
-
 
 	while (true) {
 		gotoxy(23, 3);
@@ -1036,7 +1057,7 @@ Login* user = new Login();
 void startGame() {
 	readyStart();
 
-	if (houseSize == 0) {
+	if (houseSize == 10) {
 		DrawStartMiniGame();
 		system("pause>null");
 		system("cls");
@@ -1061,9 +1082,8 @@ int readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부
 	if (!(user->getLoginCheck())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
 		checkGuest();
 	}
-	else { //로그인 되어 있으면 바로 게임 ㄱ 하는데 이름이 없으면 이름 입력 부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
+	else { //로그인 되어 있으면 바로 게임 하는데 이름이 없으면 이름 입력 부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
 		if (user_name.empty()) DrawStartGame();
-		//else 
 		system("cls");
 	}
 	return 0;
@@ -1073,6 +1093,7 @@ void CreateAccount() {//계정 생성
 	system("cls");
 	string acc;
 	string pw;
+	string idHint, pwHint;
 	gotoxy(10, 8);
 	cout << "생성할 계정의 계정명 입력 : ";
 	cin >> acc;
@@ -1081,6 +1102,18 @@ void CreateAccount() {//계정 생성
 	cout << "생성할 계정의 비밀번호 입력 : ";
 	cin >> pw;
 	user->setUserPw(pw);
+	gotoxy(10,12);
+	cout << "계정을 잃어버렸을 경우를 대비해, 몇가지 질문에 대답해주세요. ";
+	gotoxy(10,13);
+	cout << "본인만 알 수 있는 힌트를 적어주시면 됩니다.";
+	gotoxy(10, 14);
+	cout << "계정명에 대한 힌트를 적어주세요. : ";
+	cin >> idHint;
+	user->setIdHint(idHint);
+	gotoxy(10, 15);
+	cout << "비밀번호에 대한 힌트를 적어주세요. : ";
+	cin >> pwHint;
+	user->setPwHint(pwHint);
 	system("cls");
 	gotoxy(19, 12);
 	cout << "계정이 생성되었습니다.";
@@ -1101,8 +1134,67 @@ bool LoginAccount() {//생성한 계정 확인, 로그인하기
 	cin >> pw;
 	return user->checkUser(acc, pw);
 } 
-void QuestionAccount() { //계정 찾는 거 질문
 
+int QuestionAccount() { //계정 찾는 거 질문
+	//아이디 찾기, 비밀번호 찾기, 로그인하기, 회원가입하기
+	int y = 0; //커서의 y 위치
+	int x = 0;
+	int input = 0; //키보드 입력을 받을 변수
+	while (true) { //게임 루프
+		DrawFIndAcc(); //준비화면 그리기
+			
+		if (y <= 0) { //커서가 위로 그만 올라가게
+			y = 0;
+		}
+		else if (y >= 1) { //커서가 아래로 그만 내려가게
+			y = 1;
+		}
+		if (x <= 0) { //커서가 위로 그만 올라가게
+			x = 0;
+		}
+		else if (x >= 8) { //커서가 아래로 그만 내려가게
+			x = 8;
+		}
+		gotoxy(9+x, 10 + y); //위치조정
+		cout << ">";
+
+		input = _getch();
+		//→←↑↓ 방향키를 누를 경우
+		if (input == MAGIC_KEY) { //224가 들어옴
+			switch (_getch()) //한번 더 받음
+			{
+			case UP: //위
+				--y;
+				break;
+			case DOWN: //아래
+				++y;
+				break;
+			case LEFT:
+				x-=8;
+				break;
+			case RIGHT:
+				x+=8;
+				break;
+			}
+		}
+		//메인 메뉴 고름
+		else if (input == SPACE || input == ENTER) { //키보드가 스페이스일 경우
+			switch (y+x) { //y위치에 따라 판단
+			case 0:
+				DrawFindId();
+				break;
+			case 1:
+				LoginAccount();
+				break;
+			case 8:
+				//system("cls");
+				DrawFindPw();
+				break;
+			case 9:
+				return 0;
+			}
+		}
+	}
 }
 
 //로그인 뷰
