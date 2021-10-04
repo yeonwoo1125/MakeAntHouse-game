@@ -345,7 +345,6 @@ public:
 						cin >> pw;
 						checkUser(acc, pw);
 					}
-					
 				}
 				return false;
 			}
@@ -576,14 +575,14 @@ void DrawGuestLogin() {
 //계정찾기 화면 그리기
 void DrawFIndAcc() {
 	system("cls");
-	gotoxy(10,10);
+	gotoxy(15, 13);
 	cout << "계정 찾기";
-	gotoxy(18, 10);
+	gotoxy(27, 13);
 	cout << "비밀번호 찾기";
-	gotoxy(10, 11);
+	gotoxy(15, 15);
 	cout << "로그인 하기";
-	gotoxy(18, 11);
-	cout << "회원가입 하기";
+	gotoxy(27, 15);
+	cout << "메인으로 가기";
 }
 //아이디 찾기 화면 그리기
 void DrawFindId() {}
@@ -1146,16 +1145,16 @@ int QuestionAccount() { //계정 찾는 거 질문
 		if (y <= 0) { //커서가 위로 그만 올라가게
 			y = 0;
 		}
-		else if (y >= 1) { //커서가 아래로 그만 내려가게
-			y = 1;
+		else if (y >= 2) { //커서가 아래로 그만 내려가게
+			y = 2;
 		}
-		if (x <= 0) { //커서가 위로 그만 올라가게
+		if (x <= 0) { //커서가 왼쪽으로 그만가게
 			x = 0;
 		}
-		else if (x >= 8) { //커서가 아래로 그만 내려가게
-			x = 8;
+		else if (x >= 12) { //커서가 오른쪽으로 그만가게
+			x = 12;
 		}
-		gotoxy(9+x, 10 + y); //위치조정
+		gotoxy(14+x, 13 + y); //위치조정
 		cout << ">";
 
 		input = _getch();
@@ -1164,16 +1163,16 @@ int QuestionAccount() { //계정 찾는 거 질문
 			switch (_getch()) //한번 더 받음
 			{
 			case UP: //위
-				--y;
+				y-=2;
 				break;
 			case DOWN: //아래
-				++y;
+				y+=2;
 				break;
 			case LEFT:
-				x-=8;
+				x-=12;
 				break;
 			case RIGHT:
-				x+=8;
+				x+=12;
 				break;
 			}
 		}
@@ -1183,14 +1182,14 @@ int QuestionAccount() { //계정 찾는 거 질문
 			case 0:
 				DrawFindId();
 				break;
-			case 1:
+			case 2:
 				LoginAccount();
 				break;
-			case 8:
+			case 12:
 				//system("cls");
 				DrawFindPw();
 				break;
-			case 9:
+			case 14:
 				return 0;
 			}
 		}
