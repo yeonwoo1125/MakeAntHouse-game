@@ -263,29 +263,28 @@ public:
 	~ant() {}
 };
 
-ant a1;
+
 class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_account;
 	int user_id;
 	string user_password;
 	bool loginCheck = false; //로그인 성공 여부 파악
-	string idHint;
-	string pwHint;
+	string idAnswer, pwAnswer;
 public:
 	Login() {
 		this->user_id = (rand() % 100000); //랜덤 아이디 제공
 	}
-	void setIdHint(string idHint) {
-		this->idHint = idHint;
+	void setIdAnswer(string idAns) {
+		this->idAnswer = idAns;
 	}
-	string getIdHint() {
-		return idHint;
+	string getIdAnswer() {
+		return idAnswer;
 	}
-	void setPwHint(string pwHint) {
-		this->pwHint = pwHint;
+	void setPwAnswer(string pwAns) {
+		this->pwAnswer = pwAns;
 	}
-	string getPwHint() {
-		return pwHint;
+	string getPwAnswer() {
+		return pwAnswer;
 	}
 	void setUserAcc(string userAcc) {
 		this->user_account = userAcc;
@@ -351,6 +350,9 @@ public:
 	}
 	~Login() {}
 };
+
+Login* user = new Login();
+ant a1;
 
 bool checkGuest() { //게스트로 로그인 할건지 물음
 	DrawGuestLogin();
@@ -578,7 +580,7 @@ void DrawFIndAcc() {
 	gotoxy(20, 3);
 	cout << "****************";
 	gotoxy(20, 4);
-	cout << "*   순서설명   *";
+	cout << "*   계정찾기   *";
 	gotoxy(20, 5);
 	cout << "****************";
 	gotoxy(15, 13);
@@ -591,7 +593,27 @@ void DrawFIndAcc() {
 	cout << "메인으로 가기";
 }
 //아이디 찾기 화면 그리기
-void DrawFindId() {}
+void DrawFindId() {
+	string answer;
+	system("cls");
+	gotoxy(20, 3);
+	cout << "******************";
+	gotoxy(20, 4);
+	cout << "*   아이디찾기   *";
+	gotoxy(20, 5);
+	cout << "******************";
+	gotoxy(15,8);
+	cout << "질문에 대한 답을 하시면 힌트가 제공됩니다.";
+	gotoxy(15, 10);
+	cout << "가장 좋아하는 전공은? : ";
+	cin >> answer;
+	if (user->getIdAnswer() == answer) {
+		gotoxy(15,12);
+		cout << user_name<<"님의 아이디는 "<<user->getuserAcc();
+	}
+	system("pause>null");
+
+}
 
 //비밀번호 찾기 화면 그리기
 void DrawFindPw() {}
@@ -1056,8 +1078,6 @@ void InfoGame() {
 	system("pause>null");
 }
 
-Login* user = new Login();
-
 //게임 시작 뷰
 void startGame() {
 	readyStart();
@@ -1098,7 +1118,7 @@ void CreateAccount() {//계정 생성
 	system("cls");
 	string acc;
 	string pw;
-	string idHint, pwHint;
+	string idAnswer, pwAnswer;
 	gotoxy(10, 8);
 	cout << "생성할 계정의 계정명 입력 : ";
 	cin >> acc;
@@ -1108,17 +1128,17 @@ void CreateAccount() {//계정 생성
 	cin >> pw;
 	user->setUserPw(pw);
 	gotoxy(10,12);
-	cout << "계정을 잃어버렸을 경우를 대비해, 몇가지 질문에 대답해주세요. ";
-	gotoxy(10,13);
-	cout << "본인만 알 수 있는 힌트를 적어주시면 됩니다.";
-	gotoxy(10, 14);
-	cout << "계정명에 대한 힌트를 적어주세요. : ";
-	cin >> idHint;
-	user->setIdHint(idHint);
-	gotoxy(10, 15);
-	cout << "비밀번호에 대한 힌트를 적어주세요. : ";
-	cin >> pwHint;
-	user->setPwHint(pwHint);
+	cout << "계정을 잃어버렸을 경우를 대비해, 질문에 대답해주세요. ";
+	gotoxy(10, 13);
+	cout << "가장 좋아하는 전공은? : ";
+	cin >> idAnswer;
+	user->setIdAnswer(idAnswer);
+
+	gotoxy(10, 18);
+	cout << "태어날 달은? (두글자) : ";
+	cin >> pwAnswer;
+	user->setPwAnswer(pwAnswer);
+
 	system("cls");
 	gotoxy(18, 12);
 	cout << "계정이 생성되었습니다.";
@@ -1230,6 +1250,8 @@ int userLogin() {
 
 //메인 루프
 int main() {
+
+
 	srand((unsigned int)time(NULL));
 
 	SetConsoleVIew(); //프로그램 시작할 때 콘솔 크기
@@ -1246,7 +1268,6 @@ int main() {
 			break;
 		case QUIT:
 			delete user;
-			//delete a1;
 			return 0;
 		}
 	}
