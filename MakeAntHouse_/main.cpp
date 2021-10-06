@@ -15,9 +15,9 @@ using namespace std;
 #define ENTER 13 //엔터 키 값
 #define ESC 27 //esc 키 값
 
-string user_name; //사용자 이름
+string user_Nickname; //사용자 이름
 string plz_space = "[스페이스나 엔터를 눌러주세요.]";
-int houseSize = 10; //개미집 크기
+int houseSize = 20; //개미집 크기
 
 enum GUEST {
 	LOGIN_USER,
@@ -77,8 +77,11 @@ void timingGame();
 void InfoGame();
 void startGame();
 int userLogin();
-int readyStart();
 
+//게임 시작 준비
+int checkReady();
+int checkGuest();
+void readyStart();
 
 //로그인 관련
 void CreateAccount();
@@ -241,8 +244,6 @@ public:
 		cout << "집의 크기 : " << r << endl;
 
 		//집이 일정 크기 이상이면 반으로 나누고 집을 여러개 연결되게 만듦
-
-		//gotoxy(10, 6);
 		int i, j;
 		for (i = 1; i <= r; i++)
 		{
@@ -255,11 +256,9 @@ public:
 			}
 			cout << endl;
 		}
-		ranFeed();
-		moveInHouse();
-		eatFeed();
+		//ranFeed();
+		//eatFeed();
 	}
-		//system("pause>null");
 	~ant() {}
 };
 
@@ -270,9 +269,16 @@ class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_password;
 	bool loginCheck = false; //로그인 성공 여부 파악
 	string idAnswer, pwAnswer;
+	string user_name;
 public:
 	Login() {
 		this->user_id = (rand() % 100000); //랜덤 아이디 제공
+	}
+	void setUserName(string userName) {
+		this->user_name = userName;
+	}
+	string getUserName() {
+		return user_name;
 	}
 	void setIdAnswer(string idAns) {
 		this->idAnswer = idAns;
@@ -354,16 +360,16 @@ public:
 Login* user = new Login();
 ant a1;
 
-bool checkGuest() { //게스트로 로그인 할건지 물음
+int checkGuest() { //게스트로 로그인 할건지 물음
 	DrawGuestLogin();
+
 	while (true) {
 		switch (selectGuest()) { //리턴을 받아 판단
 		case LOGIN_USER:
-			LoginAccount();
+			return 2;
 			break;
 		case START:
-			system("cls");
-			startGame();
+			return 1;
 			break;
 		case QUITGUEST:
 			return 0;
@@ -468,7 +474,7 @@ void DrawSecondeInfoGame()
 //시작 화면 그리기
 //디비 연동 후 계정이 없는 처음에만 실행
 void DrawStartGame() {
-	if (user_name == "") {
+	if (user_Nickname == "") {
 		system("cls");
 		gotoxy(14, 9);
 		cout << "개미들이 다리를 다쳐 집을 짓지 못하고 있어요!";
@@ -478,22 +484,22 @@ void DrawStartGame() {
 		cout << "개미들에게 당신의 이름을 알려주면 보답을 할거예요.";
 		gotoxy(15, 12);
 		cout << " 당신의 이름이 무엇인가요? : ";
-		cin >> user_name;
+		cin >> user_Nickname;
 	}
 }
 //개미 죽는 모습 - 게임 오버 그리기
 void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
 	if (a1.getFeedCnt() > 9) {
 		gotoxy(18, 10);
-		cout << user_name << "님의 개미가 굶어죽었습니다.";
+		cout << user_Nickname << "님의 개미가 굶어죽었습니다.";
 		gotoxy(18, 11);
-		cout << user_name << "님의 집의 크기는 "<<houseSize<<"입니다.";
+		cout << user_Nickname << "님의 집의 크기는 "<<houseSize<<"입니다.";
 		gotoxy(18, 14);
 		DrawGameOver();
 	}
 	else if (houseSize <= 0) {
 		gotoxy(18, 10);
-		cout << user_name << "님의 집이 부숴져 개미가 이사를 갔습니다.";
+		cout << user_Nickname << "님의 집이 부숴져 개미가 이사를 갔습니다.";
 		gotoxy(18, 12);
 		DrawGameOver();
 	}
@@ -595,6 +601,7 @@ void DrawFIndAcc() {
 //아이디 찾기 화면 그리기
 void DrawFindId() {
 	string answer;
+	int input = 0;
 	system("cls");
 	gotoxy(20, 3);
 	cout << "******************";
@@ -602,21 +609,94 @@ void DrawFindId() {
 	cout << "*   아이디찾기   *";
 	gotoxy(20, 5);
 	cout << "******************";
-	gotoxy(15,8);
-	cout << "질문에 대한 답을 하시면 힌트가 제공됩니다.";
-	gotoxy(15, 10);
-	cout << "가장 좋아하는 전공은? : ";
-	cin >> answer;
-	if (user->getIdAnswer() == answer) {
-		gotoxy(15,12);
-		cout << user_name<<"님의 아이디는 "<<user->getuserAcc();
-	}
-	system("pause>null");
+	while (true) {
+		system("cls");
+		if (user->getIdAnswer().empty()) {
+			gotoxy(18, 11);
+			cout << "먼저 계정을 생성해주세요.";
+			gotoxy(16, 14);
+			cout << plz_space;
+			system("pause>null");
+			break;
+		}
 
+		gotoxy(15, 8);
+		cout << "질문에 대한 답을 하시면 힌트가 제공됩니다.";
+		gotoxy(15, 10);
+		cout << "가장 좋아하는 전공은? : ";
+		cin >> answer;
+		
+		if (user->getIdAnswer() == answer) {
+			gotoxy(15, 12);
+			cout << user->getUserName() << "님의 아이디는 " << user->getuserAcc();
+			system("pause>null");
+			break;
+		}
+		
+		else {
+			gotoxy(20, 14);
+			cout << "다시 입력해주세요.";
+			gotoxy(18, 15);
+			cout << "ESC를 누르면 종료합니다.";
+			
+			input = _getch();
+			if (input == ESC) break;
+			else continue;
+		}
+	}
 }
 
 //비밀번호 찾기 화면 그리기
-void DrawFindPw() {}
+void DrawFindPw() {
+	string answer;
+	string userId;
+	int input = 0;
+	system("cls");
+	gotoxy(20, 3);
+	cout << "********************";
+	gotoxy(20, 4);
+	cout << "*   비밀번호찾기   *";
+	gotoxy(20, 5);
+	cout << "********************";
+	while (true) {
+		system("cls");
+		if (user->getPwAnswer().empty()) {
+			gotoxy(18, 11);
+			cout << "먼저 계정을 생성해주세요.";
+			gotoxy(16, 14);
+			cout << plz_space;
+			system("pause>null");
+			break;
+		}
+
+		gotoxy(15, 10);
+		cout << "아이디를 입력해주세요. : ";
+		cin >> userId;
+		gotoxy(15, 12);
+		cout << "질문에 대한 답을 하시면 힌트가 제공됩니다.";
+		gotoxy(15, 13);
+		cout << "태어난 달은? (두글자) :  ";
+		cin >> answer;
+
+		if (user->getuserAcc() == userId && user->getPwAnswer()==answer) {
+			gotoxy(15, 15);
+			cout << user->getUserName() << "님의 비밀번호는 " << user->getuserPw();
+			system("pause>null");
+			break;
+		}
+
+		else {
+			gotoxy(20, 15);
+			cout << "다시 입력해주세요.";
+			gotoxy(18, 16);
+			cout << "ESC를 누르면 종료합니다.";
+
+			input = _getch();
+			if (input == ESC) break;
+			else continue;
+		}
+	}
+}
 
 GUEST selectGuest() {
 	int y = 0; //커서의 y 위치
@@ -772,7 +852,7 @@ bool RockPaperScissors() {
 		gotoxy(37, 5);
 		cout << win_cnt << "승 " << lose_cnt << "패 " ;
 		gotoxy(14, 10);
-		cout << user_name << " : ";
+		cout << user_Nickname << " : ";
 		cin >> user_select;
 
 
@@ -1080,13 +1160,11 @@ void InfoGame() {
 
 //게임 시작 뷰
 void startGame() {
-	readyStart();
-
-	if (houseSize == 10) {
+	if (houseSize == 20) {
 		DrawStartMiniGame();
 		system("pause>null");
 		system("cls");
-		if (user_name.empty()) DrawStartGame();
+		if (user_Nickname.empty()) DrawStartGame();
 
 		system("cls");
 		if (RockPaperScissors()) {
@@ -1102,16 +1180,23 @@ void startGame() {
 	}
 }
 
-int readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
+void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
 	system("cls");
 	if (!(user->getLoginCheck())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
-		checkGuest();
+		checkReady();
 	}
 	else { //로그인 되어 있으면 바로 게임 하는데 이름이 없으면 이름 입력 부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
-		if (user_name.empty()) DrawStartGame();
+		if (user_Nickname.empty()) DrawStartGame();
 		system("cls");
 	}
-	return 0;
+}
+
+int checkReady() {
+	switch (checkGuest()) {
+	case 0: return 0;
+	case 1: startGame();
+	case 2: LoginAccount();
+	}
 }
 
 void CreateAccount() {//계정 생성
@@ -1119,22 +1204,28 @@ void CreateAccount() {//계정 생성
 	string acc;
 	string pw;
 	string idAnswer, pwAnswer;
-	gotoxy(10, 8);
+	string name;
+	gotoxy(12, 8);
 	cout << "생성할 계정의 계정명 입력 : ";
 	cin >> acc;
 	user->setUserAcc(acc); //계정명 저장
-	gotoxy(10, 10);
+	gotoxy(12, 10);
 	cout << "생성할 계정의 비밀번호 입력 : ";
 	cin >> pw;
 	user->setUserPw(pw);
-	gotoxy(10,12);
+	gotoxy(12, 12);
+	cout << "이름 입력 : ";
+	cin >> name;
+	user->setUserName(name);
+
+	gotoxy(12,14);
 	cout << "계정을 잃어버렸을 경우를 대비해, 질문에 대답해주세요. ";
-	gotoxy(10, 13);
+	gotoxy(12, 15);
 	cout << "가장 좋아하는 전공은? : ";
 	cin >> idAnswer;
 	user->setIdAnswer(idAnswer);
 
-	gotoxy(10, 18);
+	gotoxy(12, 17);
 	cout << "태어날 달은? (두글자) : ";
 	cin >> pwAnswer;
 	user->setPwAnswer(pwAnswer);
@@ -1250,15 +1341,13 @@ int userLogin() {
 
 //메인 루프
 int main() {
-
-
 	srand((unsigned int)time(NULL));
 
 	SetConsoleVIew(); //프로그램 시작할 때 콘솔 크기
 	while (true) {
 		switch (ReadyGame()) { //리턴을 받아 판단
 		case GAMESTART:
-			startGame();
+			readyStart();
 			break;
 		case INFO:
 			InfoGame();
