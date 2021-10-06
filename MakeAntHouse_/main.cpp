@@ -17,7 +17,7 @@ using namespace std;
 
 string user_Nickname; //사용자 이름
 string plz_space = "[스페이스나 엔터를 눌러주세요.]";
-int houseSize = 20; //개미집 크기
+//int houseSize = 20; //개미집 크기
 
 enum GUEST {
 	LOGIN_USER,
@@ -270,9 +270,16 @@ class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	bool loginCheck = false; //로그인 성공 여부 파악
 	string idAnswer, pwAnswer;
 	string user_name;
+	int houseSize = 20;
 public:
 	Login() {
 		this->user_id = (rand() % 100000); //랜덤 아이디 제공
+	}
+	void setHouseSize(int h) {
+		this->houseSize += h;
+	}
+	int getHouseSize() {
+		return houseSize;
 	}
 	void setUserName(string userName) {
 		this->user_name = userName;
@@ -493,11 +500,11 @@ void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
 		gotoxy(18, 10);
 		cout << user_Nickname << "님의 개미가 굶어죽었습니다.";
 		gotoxy(18, 11);
-		cout << user_Nickname << "님의 집의 크기는 "<<houseSize<<"입니다.";
+		cout << user_Nickname << "님의 집의 크기는 " << user->getHouseSize() << "입니다.";
 		gotoxy(18, 14);
 		DrawGameOver();
 	}
-	else if (houseSize <= 0) {
+	else if (user->getHouseSize() <= 0) {
 		gotoxy(18, 10);
 		cout << user_Nickname << "님의 집이 부숴져 개미가 이사를 갔습니다.";
 		gotoxy(18, 12);
@@ -922,7 +929,7 @@ bool RockPaperScissors() {
 			system("cls");
 			DrawGameOver();
 			
-			houseSize -= rand() % 5 + 1;	
+			user->setHouseSize(rand() % 5 + 1);
 			return false;
 
 		}
@@ -932,7 +939,7 @@ bool RockPaperScissors() {
 			Sleep(2000);
 			system("cls");
 			DrawGamePass();
-			houseSize += rand() % 7 + 2;
+			user->setHouseSize(rand() % 7 + 2);
 			system("pause>null");
 			return true;
 		}
@@ -980,7 +987,7 @@ bool QuizGame() {
 		if (lose_cnt == 2) {
 			gotoxy(14, 15);
 			cout << "더 이상 집을 짓지 못해요 ㅠㅠ";
-			houseSize -= rand() % 5 + 1;
+			user->setHouseSize(rand() % 5 + 1);
 			system("cls");
 			DrawGameOver();
 			return false;
@@ -988,7 +995,7 @@ bool QuizGame() {
 		else if (win_cnt == 2) {
 			gotoxy(14, 15);
 			cout << "집을 지을 수 있어요!";
-			houseSize += rand() % 7 + 2;
+			user->setHouseSize(rand() % 7 + 2);
 			system("cls");
 			DrawGamePass();
 			return true;
@@ -1016,7 +1023,7 @@ bool upDownGame() {
 		if (com_sel == user_sel) {
 			gotoxy(11, 10);
 			cout << "개미가 고른 수는 " << com_sel << "입니다! 축하합니다~" << endl;
-			houseSize += rand() % 7 + 2;
+			user->setHouseSize(rand() % 7 + 2);
 			DrawGamePass();
 			return true;
 		}
@@ -1027,7 +1034,7 @@ bool upDownGame() {
 			Sleep(1500);
 			system("cls");
 			DrawGameOver();
-			houseSize -= rand() % 5 + 1;
+			user->setHouseSize(rand() % 5 + 1);
 			return false;
 		}
 
@@ -1160,7 +1167,7 @@ void InfoGame() {
 
 //게임 시작 뷰
 void startGame() {
-	if (houseSize == 20) {
+	if (user->getHouseSize() == 20) {
 		DrawStartMiniGame();
 		system("pause>null");
 		system("cls");
@@ -1169,12 +1176,12 @@ void startGame() {
 		system("cls");
 		if (RockPaperScissors()) {
 			system("cls");
-			a1.drawAntHouse(houseSize);
+			a1.drawAntHouse(user->getHouseSize());
 			a1.moveInHouse();
 		}
 		else {
 			system("cls");
-			a1.drawAntHouse(houseSize);
+			a1.drawAntHouse(user->getHouseSize());
 			a1.moveInHouse();
 		}
 	}
