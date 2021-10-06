@@ -311,45 +311,19 @@ public:
 	Login() {
 		this->houseSize = 20;
 	}
-	void setHouseSize(int h) {
-		this->houseSize += h;
-	}
-	int getHouseSize() {
-		return houseSize;
-	}
-	void setUserName(string userName) {
-		this->user_name = userName;
-	}
-	string getUserName() {
-		return user_name;
-	}
-	void setIdAnswer(string idAns) {
-		this->idAnswer = idAns;
-	}
-	string getIdAnswer() {
-		return idAnswer;
-	}
-	void setPwAnswer(string pwAns) {
-		this->pwAnswer = pwAns;
-	}
-	string getPwAnswer() {
-		return pwAnswer;
-	}
-	void setUserAcc(string userAcc) {
-		this->user_account = userAcc;
-	}
-	string getuserAcc() {
-		return user_account;
-	}
-	string getuserPw() {
-		return user_password;
-	}
-	void setUserPw(string userPw) {
-		this->user_password = userPw;
-	}
-	bool getLoginCheck() {
-		return loginCheck;
-	}
+	void setHouseSize(int h) { this->houseSize += h; }
+	int getHouseSize() { return houseSize; }
+	void setUserName(string userName) { this->user_name = userName; }
+	string getUserName() { return user_name; }
+	void setIdAnswer(string idAns) { this->idAnswer = idAns; }
+	string getIdAnswer() { return idAnswer; }
+	void setPwAnswer(string pwAns) { this->pwAnswer = pwAns; }
+	string getPwAnswer() { return pwAnswer; }
+	void setUserAcc(string userAcc) { this->user_account = userAcc; }
+	string getuserAcc() { return user_account; }
+	string getuserPw() { return user_password; }
+	void setUserPw(string userPw) { this->user_password = userPw; }
+	bool getLoginCheck() { return loginCheck; }
 
 	bool checkUser(string acc, string pw) { //사용자가 입력한 계정이 있는 계정인지 체크
 		int input=0;
@@ -363,36 +337,34 @@ public:
 			system("pause>null");
 			return true;   
 		}
-			else if (getuserPw() != pw || getuserAcc() != acc) {
-				system("cls");
-				gotoxy(21, 9);
-				cout << "로그인 실패" << endl;
-				gotoxy(14, 11);
-				cout << "다시 시도하시려면 스페이스를 눌러주세요." << endl;
-				gotoxy(14, 12);
-				cout << "스페이스를 누르면 로그인을 재시도합니다." << endl;
-				gotoxy(17, 13);
-				cout << "나가시려면 ESC를 눌러주세요.";
-				while (true) {
-					input = _getch();
-					if (input == ESC) {
-						return false;
-					}
-					if (input == SPACE) {
-						system("cls");
-						string acc;
-						string pw;
-						gotoxy(16, 8);
-						cout << "계정 입력 : ";
-						cin >> acc;
-						gotoxy(16, 10);
-						cout << "비밀번호 입력 : ";
-						cin >> pw;
-						checkUser(acc, pw);
-					}
+		else if (getuserPw() != pw || getuserAcc() != acc) {
+			system("cls");
+			gotoxy(21, 9);
+			cout << "로그인 실패" << endl;
+			gotoxy(14, 11);
+			cout << "다시 시도하시려면 스페이스를 눌러주세요." << endl;
+			gotoxy(14, 12);
+			cout << "스페이스를 누르면 로그인을 재시도합니다." << endl;
+			gotoxy(17, 13);
+			cout << "나가시려면 ESC를 눌러주세요.";
+			while (true) {
+				input = _getch();
+				if (input == ESC) { return false; }
+				if (input == SPACE) {
+					system("cls");
+					string acc;
+					string pw;
+					gotoxy(16, 8);
+					cout << "계정 입력 : ";
+					cin >> acc;
+					gotoxy(16, 10);
+					cout << "비밀번호 입력 : ";
+					cin >> pw;
+					checkUser(acc, pw);
 				}
-				return false;
 			}
+			return false;
+		}
 	}
 	~Login() {}
 };
