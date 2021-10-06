@@ -6,10 +6,18 @@
 #include<stdbool.h> //boolean 타입 사용
 #include<time.h> //랜덤 함수 사용
 #include<string>
-//#include<mysql.h> //mysql 관련 함수 사용
+#include<mysql.h> //mysql 관련 함수 사용
 #pragma comment(lib, "winmm.lib") // timeGetTime() 함수 사용을 위한 라이브러리
+#pragma comment(lib, "libmySQL.lib")
 
 using namespace std;
+
+#define DB_HOST "localhost"   //호스트 이름 또는 IP 주소(기본 : localhost)
+#define DB_USER "root" //MySQL login id(mysql -u 여기쓰는것 -p)
+#define DB_PASS "yeanwoo0619"   //패스워드
+#define DB_NAME "makeAntHouse_db"   //데이터베이스 이름
+#define CHOP(x) x[strlen(x)-1] = ' '
+
 #define MAGIC_KEY 224 //상하좌우 화살표가 들어올 때 선행되어 들어오는 숫자
 #define SPACE 32 //스페이스 키 값
 #define ENTER 13 //엔터 키 값
@@ -17,7 +25,21 @@ using namespace std;
 
 string user_Nickname; //사용자 이름
 string plz_space = "[스페이스나 엔터를 눌러주세요.]";
-//int houseSize = 20; //개미집 크기
+
+MYSQL* connection = NULL, conn;
+MYSQL_RES* sql_result;
+MYSQL_ROW sql_row;
+int query_stat;
+char acc[40];
+char pw[40];
+char acc_ans[40];
+char pw_anw[40];
+char nickName[40];
+char houseSize[5];
+char query[255];
+
+
+
 
 enum GUEST {
 	LOGIN_USER,
@@ -88,6 +110,19 @@ void CreateAccount();
 bool LoginAccount();
 int QuestionAccount();
 
+//데이터베이스 관련
+int readyDb();
+
+int readyDb() {
+	mysql_init(&conn);
+	connection = mysql_real_connect(&conn, DB_HOST, DB_USER, DB_PASS, DB_NAME, 3306, (char*)NULL, 0);
+	if (connection == NULL) {
+		//fprintf -> stderr는 모니터에 에러 메세지를 보여주는 코드(원래는 파일에 작성하는 코드)
+		//mysql_error로 인해 mysql에서 보내는 error를 바로 볼 수 있다.
+		fprintf(stderr, "Mysql connection error : %s", mysql_error(&conn));
+		return 1;
+	}
+}
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 	COORD Pos;
 	Pos.X = 2 * x; //1칸보다는 2칸씩 움직여야 자연스러움
@@ -265,15 +300,16 @@ public:
 
 class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_account;
-	int user_id;
 	string user_password;
 	bool loginCheck = false; //로그인 성공 여부 파악
 	string idAnswer, pwAnswer;
 	string user_name;
-	int houseSize = 20;
+	int houseSize;
+
+
 public:
 	Login() {
-		this->user_id = (rand() % 100000); //랜덤 아이디 제공
+		this->houseSize = 20;
 	}
 	void setHouseSize(int h) {
 		this->houseSize += h;
@@ -304,9 +340,6 @@ public:
 	}
 	string getuserAcc() {
 		return user_account;
-	}
-	int getuserId() {
-		return user_id;
 	}
 	string getuserPw() {
 		return user_password;
@@ -1348,6 +1381,7 @@ int userLogin() {
 
 //메인 루프
 int main() {
+
 	srand((unsigned int)time(NULL));
 
 	SetConsoleVIew(); //프로그램 시작할 때 콘솔 크기
