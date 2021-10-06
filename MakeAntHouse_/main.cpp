@@ -6,17 +6,11 @@
 #include<stdbool.h> //boolean 타입 사용
 #include<time.h> //랜덤 함수 사용
 #include<string>
-#include<mysql.h> //mysql 관련 함수 사용
+
 #pragma comment(lib, "winmm.lib") // timeGetTime() 함수 사용을 위한 라이브러리
-#pragma comment(lib, "libmySQL.lib")
+
 
 using namespace std;
-
-#define DB_HOST "localhost"   //호스트 이름 또는 IP 주소(기본 : localhost)
-#define DB_USER "root" //MySQL login id(mysql -u 여기쓰는것 -p)
-#define DB_PASS "yeanwoo0619"   //패스워드
-#define DB_NAME "makeAntHouse_db"   //데이터베이스 이름
-#define CHOP(x) x[strlen(x)-1] = ' '
 
 #define MAGIC_KEY 224 //상하좌우 화살표가 들어올 때 선행되어 들어오는 숫자
 #define SPACE 32 //스페이스 키 값
@@ -25,21 +19,6 @@ using namespace std;
 
 string user_Nickname; //사용자 이름
 string plz_space = "[스페이스나 엔터를 눌러주세요.]";
-
-MYSQL* connection = NULL, conn;
-MYSQL_RES* sql_result;
-MYSQL_ROW sql_row;
-int query_stat;
-char acc[40];
-char pw[40];
-char acc_ans[40];
-char pw_anw[40];
-char nickName[40];
-char houseSize[5];
-char query[255];
-
-
-
 
 enum GUEST {
 	LOGIN_USER,
@@ -109,20 +88,6 @@ void readyStart();
 void CreateAccount();
 bool LoginAccount();
 int QuestionAccount();
-
-//데이터베이스 관련
-int readyDb();
-
-int readyDb() {
-	mysql_init(&conn);
-	connection = mysql_real_connect(&conn, DB_HOST, DB_USER, DB_PASS, DB_NAME, 3306, (char*)NULL, 0);
-	if (connection == NULL) {
-		//fprintf -> stderr는 모니터에 에러 메세지를 보여주는 코드(원래는 파일에 작성하는 코드)
-		//mysql_error로 인해 mysql에서 보내는 error를 바로 볼 수 있다.
-		fprintf(stderr, "Mysql connection error : %s", mysql_error(&conn));
-		return 1;
-	}
-}
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 	COORD Pos;
 	Pos.X = 2 * x; //1칸보다는 2칸씩 움직여야 자연스러움
@@ -137,15 +102,16 @@ void SetConsoleVIew() {
 }
 
 class ant { //개미집에서 움직일 개미 객체
-private :
+private:
 	int ant_x, ant_y;
 	int input = 0;
 	char feed = '*';
 	int feed_x;
 	int feed_y;
 	int feedCnt = 3; //기본적으로 집에 3개 생성
+	string antShape = "@@@";
 public:
-	ant() : ant_x(0), ant_y(0),feed_x(0),feed_y(0){} //개미의 생성 위치를 집 안으로 정해야함
+	ant() : ant_x(0), ant_y(0), feed_x(0), feed_y(0) {} //개미의 생성 위치를 집 안으로 정해야함
 	int getFeedCnt() { //현재 개미집에 생성된 먹이의 수
 		return feedCnt;
 	}
@@ -164,7 +130,7 @@ public:
 	void moveInHouse() { //개미집 안에서 움직임
 		while (true) {
 			input = _getch();
-			
+
 			if (input == MAGIC_KEY) {
 				input = _getch();
 				switch (input)
@@ -172,62 +138,31 @@ public:
 				case UP:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					gotoxy(ant_x, ant_y);
-					cout << " ";
-					gotoxy(ant_x, ant_y+1);
-					cout << " ";
-					gotoxy(ant_x, ant_y+2);
-					cout << " ";
 					ant_y--;
-					gotoxy(ant_x, ant_y);
-					cout << "*";
-					gotoxy(ant_x, ant_y+1);
-					cout << "*";
-					gotoxy(ant_x, ant_y+2);
-					cout << "*";
+					cout << antShape;
 					break;
 				case DOWN:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					gotoxy(ant_x, ant_y);
-					cout << " ";
-					gotoxy(ant_x, ant_y + 1);
-					cout << " ";
-					gotoxy(ant_x, ant_y + 2);
-					cout << " ";
 					ant_y++;
 					gotoxy(ant_x, ant_y);
-					cout << "*";
-					gotoxy(ant_x, ant_y + 1);
-					cout << "*";
-					gotoxy(ant_x, ant_y + 2);
-					cout << "*";
+					cout << antShape;
 					break;
 				case RIGHT:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					gotoxy(ant_x, ant_y);
-					cout << " ";
-					gotoxy(ant_x, ant_y + 1);
-					cout << " ";
-					gotoxy(ant_x, ant_y + 2);
-					cout << " ";
+
 					ant_x++;
 					gotoxy(ant_x, ant_y);
-					cout << "***";
+					cout << antShape;
 					break;
 				case LEFT:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					gotoxy(ant_x, ant_y);
-					cout << " ";
-					gotoxy(ant_x, ant_y + 1);
-					cout << " ";
-					gotoxy(ant_x, ant_y + 2);
-					cout << " ";
+
 					ant_x--;
 					gotoxy(ant_x, ant_y);
-					cout << "***";
+					cout << antShape;
 					break;
 				}
 			}
@@ -236,7 +171,7 @@ public:
 	void collisonCheck() { //개미가 개미집 벽에 닿은 경우
 		//만약 집이 두개 이상이면 벽에 닿을 경우 해당 방향에 있는 집으로 이동
 		//집이 없다면 그냥 더이상 앞으로 못나가게
-		
+
 	}
 	void eatFeed() { //개미가 먹이를 먹은 경우 - 먹이를 지우고 미니게임 실행 
 		//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
@@ -284,15 +219,13 @@ public:
 		{
 			for (j = 1; j <= r; j++)
 			{
-				if (i == 1 || i == r|| j == 1 || j == r)
-					cout << "*";
+				if (i == 1 || i == r || j == 1 || j == r)
+					cout << "□";
 				else
 					cout << " ";
 			}
 			cout << endl;
 		}
-		//ranFeed();
-		//eatFeed();
 	}
 	~ant() {}
 };
@@ -326,16 +259,16 @@ public:
 	bool getLoginCheck() { return loginCheck; }
 
 	bool checkUser(string acc, string pw) { //사용자가 입력한 계정이 있는 계정인지 체크
-		int input=0;
+		int input = 0;
 		if (getuserAcc() == acc && getuserPw() == pw) {
 			loginCheck = true;
 			system("cls");
 			gotoxy(21, 12);
-			cout << "로그인 성공" ;
+			cout << "로그인 성공";
 			gotoxy(16, 15);
 			cout << plz_space;
 			system("pause>null");
-			return true;   
+			return true;
 		}
 		else if (getuserPw() != pw || getuserAcc() != acc) {
 			system("cls");
@@ -637,20 +570,20 @@ void DrawFindId() {
 		gotoxy(15, 10);
 		cout << "가장 좋아하는 전공은? : ";
 		cin >> answer;
-		
+
 		if (user->getIdAnswer() == answer) {
 			gotoxy(15, 12);
 			cout << user->getUserName() << "님의 아이디는 " << user->getuserAcc();
 			system("pause>null");
 			break;
 		}
-		
+
 		else {
 			gotoxy(20, 14);
 			cout << "다시 입력해주세요.";
 			gotoxy(18, 15);
 			cout << "ESC를 누르면 종료합니다.";
-			
+
 			input = _getch();
 			if (input == ESC) break;
 			else continue;
@@ -690,7 +623,7 @@ void DrawFindPw() {
 		cout << "태어난 달은? (두글자) :  ";
 		cin >> answer;
 
-		if (user->getuserAcc() == userId && user->getPwAnswer()==answer) {
+		if (user->getuserAcc() == userId && user->getPwAnswer() == answer) {
 			gotoxy(15, 15);
 			cout << user->getUserName() << "님의 비밀번호는 " << user->getuserPw();
 			system("pause>null");
@@ -714,7 +647,7 @@ GUEST selectGuest() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
 	while (true) { //게임 루프
-		
+
 		//DrawUserCursor 함수
 		if (y <= 0) { //커서가 위로 그만 올라가게
 			y = 0;
@@ -862,7 +795,7 @@ bool RockPaperScissors() {
 		gotoxy(14, 8);
 		cout << "가위 바위 보 중에 하나를 골라 입력해주세요.";
 		gotoxy(37, 5);
-		cout << win_cnt << "승 " << lose_cnt << "패 " ;
+		cout << win_cnt << "승 " << lose_cnt << "패 ";
 		gotoxy(14, 10);
 		cout << user_Nickname << " : ";
 		cin >> user_select;
@@ -903,7 +836,7 @@ bool RockPaperScissors() {
 			else if (com_select == "바위") {
 				gotoxy(14, 14);
 				cout << "비겼습니다.";
-				
+
 			}
 		}
 		else if (user_select == "보") { //유저가 보를 골랐을 경우
@@ -933,7 +866,7 @@ bool RockPaperScissors() {
 			Sleep(2000);
 			system("cls");
 			DrawGameOver();
-			
+
 			user->setHouseSize(rand() % 5 + 1);
 			return false;
 
@@ -979,7 +912,7 @@ bool QuizGame() {
 			win_cnt++;
 		}
 		else {
-			if (user_answer== "") { //답이 ""일 경우 무조건 정답처리 
+			if (user_answer == "") { //답이 ""일 경우 무조건 정답처리 
 				gotoxy(22, 12);
 				cout << "정답입니다!";
 				win_cnt++;
@@ -1230,7 +1163,7 @@ void CreateAccount() {//계정 생성
 	cin >> name;
 	user->setUserName(name);
 
-	gotoxy(12,14);
+	gotoxy(12, 14);
 	cout << "계정을 잃어버렸을 경우를 대비해, 질문에 대답해주세요. ";
 	gotoxy(12, 15);
 	cout << "가장 좋아하는 전공은? : ";
@@ -1248,7 +1181,7 @@ void CreateAccount() {//계정 생성
 	gotoxy(16, 14);
 	cout << plz_space;
 	system("pause>null");
-} 
+}
 
 bool LoginAccount() {//생성한 계정 확인, 로그인하기
 	system("cls");
@@ -1261,7 +1194,7 @@ bool LoginAccount() {//생성한 계정 확인, 로그인하기
 	cout << "비밀번호 입력 : ";
 	cin >> pw;
 	return user->checkUser(acc, pw);
-} 
+}
 
 int QuestionAccount() { //계정 찾는 거 질문
 	//아이디 찾기, 비밀번호 찾기, 로그인하기, 회원가입하기
@@ -1270,7 +1203,7 @@ int QuestionAccount() { //계정 찾는 거 질문
 	int input = 0; //키보드 입력을 받을 변수
 	while (true) { //게임 루프
 		DrawFIndAcc(); //준비화면 그리기
-			
+
 		if (y <= 0) { //커서가 위로 그만 올라가게
 			y = 0;
 		}
@@ -1283,7 +1216,7 @@ int QuestionAccount() { //계정 찾는 거 질문
 		else if (x >= 12) { //커서가 오른쪽으로 그만가게
 			x = 12;
 		}
-		gotoxy(14+x, 13 + y); //위치조정
+		gotoxy(14 + x, 13 + y); //위치조정
 		cout << ">";
 
 		input = _getch();
@@ -1292,22 +1225,22 @@ int QuestionAccount() { //계정 찾는 거 질문
 			switch (_getch()) //한번 더 받음
 			{
 			case UP: //위
-				y-=2;
+				y -= 2;
 				break;
 			case DOWN: //아래
-				y+=2;
+				y += 2;
 				break;
 			case LEFT:
-				x-=12;
+				x -= 12;
 				break;
 			case RIGHT:
-				x+=12;
+				x += 12;
 				break;
 			}
 		}
 		//메인 메뉴 고름
 		else if (input == SPACE || input == ENTER) { //키보드가 스페이스일 경우
-			switch (y+x) { //y위치에 따라 판단
+			switch (y + x) { //y위치에 따라 판단
 			case 0:
 				DrawFindId();
 				break;
@@ -1344,7 +1277,7 @@ int userLogin() {
 			QuestionAccount();
 			ReadyGame();
 			break;
-		case QUITLOGIN :
+		case QUITLOGIN:
 			return 0;
 
 		}
