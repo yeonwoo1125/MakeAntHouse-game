@@ -44,3 +44,19 @@
 로그인 하고 나서 게임 시작 누르면 로그인 메뉴 뜸
 
 메인메뉴 실행 안됨
+
+개미 모양 고르는 것도 만들면 좋을 듯 -> 메뉴처럼 고르기
+
+
+mysql> desc login_user;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| user_acc        | varchar(20) | NO   | PRI | NULL    |       |
+| user_pw         | varchar(20) | NO   |     | NULL    |       |
+| user_acc_ans    | varchar(20) | NO   |     | NULL    |       |
+| user_pw_ans     | varchar(20) | NO   |     | NULL    |       |
+| user_name       | varchar(20) | NO   |     | NULL    |       |
+| user_house_size | int         | YES  |     | NULL    |       |
+| user_nickname   | varchar(20) | YES  |     | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+

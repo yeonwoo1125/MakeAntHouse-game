@@ -192,10 +192,9 @@ public:
 	}
 
 	void ranFeed() {
-		feed_x = rand() % ant_x; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
-		feed_y = rand() % ant_y;
-
 		for (int i = 0; i < feedCnt; i++) {
+			feed_x = rand() % ant_x; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
+			feed_y = rand() % ant_y;
 			gotoxy(feed_x, feed_y);
 			cout << feed;
 			Sleep(5000); //5초마다 먹이 생성
@@ -207,7 +206,6 @@ public:
 		
 		while (true) {
 			input = _getch();
-			
 			if (input == MAGIC_KEY) {
 				input = _getch();
 				switch (input)
@@ -380,21 +378,20 @@ void DrawFirstInfoGame()
 	cout << "****************";
 
 	gotoxy(3, 8);
-	cout << "개미들이 다리를 다쳐서 집을 짓지 못하고 있어요!";
+	cout << "개미들이 새로운 집으로 이사를 왔어요.";
 	gotoxy(3, 9);
-	cout << "당신이 개미들이 집 만드는 걸 도와줬으면 좋겠어요..";
+	cout << "넓은 집에서 살고 싶은 개미를 도와주세요!";
 	gotoxy(3, 10);
-	cout << "집을 만드는 방법은 간단해요!";
+	cout << "개미에게 먹이를 먹이고, 집을 넓히기 위한 게임을 해주세요.";
 	gotoxy(3, 12);
-	cout << "1) 원하는 집의 방향을 골라주세요.";
+	cout << "비가 오거나 침입자가 있을 수도 있으니 집을 지켜주세요.";
 	gotoxy(3, 13);
-	cout << "2) 집을 만들기 위해 간단한 게임을 해주세요.";
+	cout << "개미의 집에 먹이가 생기면 먹어주세요. 밥을 먹지 않으면 죽을 수도 있습니다.";
 	gotoxy(3, 14);
-	cout << "3) 게임에서 이기면 계속해서 집을 만들 수 있지만,";
+	cout << "밥을 먹으면 집을 넓히기 위한 게임을 할 수 있습니다.";
 	gotoxy(3, 15);
-	cout << "   만약 진다면 더 이상 집을 짓지 못해요.";
-	gotoxy(3, 19);
-	cout << "그럼 잘 부탁해요!!";
+	cout << "당신의 개미의 집이 가장 큰 집이 되도록 키워주세요.";
+
 	gotoxy(38, 22);
 	cout << "다음 페이지";
 	gotoxy(37, 22);
