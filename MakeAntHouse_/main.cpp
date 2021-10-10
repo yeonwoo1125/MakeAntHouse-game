@@ -388,7 +388,7 @@ void DrawFirstInfoGame()
 	gotoxy(3, 13);
 	cout << "개미의 집에 먹이가 생기면 먹어주세요. 밥을 먹지 않으면 죽을 수도 있습니다.";
 	gotoxy(3, 14);
-	cout << "밥을 먹으면 집을 넓히기 위한 게임을 할 수 있습니다.";
+	cout << "밥을 먹고 힘을 내 집을 넓혀주세요!";
 	gotoxy(3, 15);
 	cout << "당신의 개미의 집이 가장 큰 집이 되도록 키워주세요.";
 
@@ -432,6 +432,7 @@ void DrawSecondeInfoGame()
 
 //시작 화면 그리기
 //디비 연동 후 계정이 없는 처음에만 실행
+//집 모양 및 개미 모양 선택하는것도 넣자
 void DrawStartGame() {
 	if (user_Nickname == "") {
 		system("cls");
