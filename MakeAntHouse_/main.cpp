@@ -1149,13 +1149,15 @@ void startGame() {
 
 void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
 	system("cls");
-	if (!(user->getLoginCheck())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
+	if ((user->getLoginCheck())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
 		checkReady();
 	}
 	else { //로그인 되어 있으면 바로 게임 하는데 이름이 없으면 이름 입력 부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
 		if (user_Nickname.empty()) DrawStartGame();
 		system("cls");
 	}
+	a1.drawAntHouse(user->getHouseSize());
+	a1.moveInHouse();
 }
 
 int checkReady() {
