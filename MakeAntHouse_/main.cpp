@@ -141,6 +141,7 @@ public:
 			return true;
 		}
 		else if (getUserPw() != pw || getUserAcc() != acc) {
+			setLoginCheck(false);
 			system("cls");
 			gotoxy(21, 9);
 			cout << "로그인 실패" << endl;
@@ -171,7 +172,7 @@ public:
 	}
 	~Login() {}
 };
-Login* user = new Login();
+Login* user = new Login;
 
 class ant { //개미집에서 움직일 개미 객체
 private:
@@ -292,7 +293,7 @@ public:
 		gotoxy(5, 2);
 		cout << "집의 크기 : " << r << endl;
 
-		gotoxy(5, 3);
+		gotoxy(7, 3);
 		for (int i = 0; i < r; i++) { //맨 윗줄
 			
 			cout << "□";
