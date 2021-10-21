@@ -211,6 +211,7 @@ public:
 				input = _getch();
 				switch (input)
 				{
+					return 0;
 				case UP:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
@@ -684,7 +685,6 @@ GUEST selectGuest() {
 		input = _getch();
 		//→←↑↓ 방향키를 누를 경우
 		if (input == MAGIC_KEY) { //224가 들어옴
-			//system("cls");
 			switch (_getch()) //한번 더 받음
 
 			{
@@ -761,7 +761,6 @@ MENU ReadyGame() {
 	while (true) { //게임 루프
 		DrawReadyGame(); //준비화면 그리기
 
-		//DrawUserCursor 함수
 		if (y <= 0) { //커서가 위로 그만 올라가게
 			y = 0;
 		}
