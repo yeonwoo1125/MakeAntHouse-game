@@ -246,11 +246,9 @@ public:
 		}
 	}
 	void collisonCheck() { //개미가 개미집 벽에 닿은 경우
-		//만약 집이 두개 이상이면 벽에 닿을 경우 해당 방향에 있는 집으로 이동
-		//집이 없다면 그냥 더이상 앞으로 못나가게
-		if (ant_x && ant_y) {
-			
-		}
+		
+
+
 	}
 	void eatFeed() { //개미가 먹이를 먹은 경우 - 먹이를 지우고 미니게임 실행 
 		//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
@@ -512,12 +510,10 @@ void DrawLogin() {
 	system("cls");    //화면을 클리어 해주는 함수
 
 	gotoxy(22, 12);
-	cout << "로 그 인";
-	gotoxy(22, 13);
 	cout << "회원가입";
 	gotoxy(22, 14);
 	cout << "계정찾기";
-	gotoxy(22, 15);
+	gotoxy(22, 16);
 	cout << "나 가 기";
 
 	gotoxy(17, 19);
@@ -710,8 +706,8 @@ LOGIN SelectLogin() {
 		if (y <= 0) { //커서가 위로 그만 올라가게
 			y = 0;
 		}
-		else if (y >= 3) { //커서가 아래로 그만 내려가게
-			y = 3;
+		else if (y >= 4) { //커서가 아래로 그만 내려가게
+			y = 4;
 		}
 		gotoxy(21, 12 + y); //위치조정
 		cout << ">";
@@ -722,10 +718,10 @@ LOGIN SelectLogin() {
 			switch (_getch()) //한번 더 받음
 			{
 			case UP: //위
-				--y;
+				y-=2;
 				break;
 			case DOWN: //아래
-				++y;
+				y+=2;
 				break;
 			}
 		}
@@ -733,13 +729,10 @@ LOGIN SelectLogin() {
 		else if (input == SPACE || input == ENTER) { //키보드가 스페이스일 경우
 			switch (y) { //y위치에 따라 판단
 			case 0:
-				return FIND;
-			case 1:
 				return CREATE;
 			case 2:
-				//system("cls");
 				return QUESTION;
-			case 3:
+			case 4:
 				return QUITLOGIN;
 			}
 		}
@@ -1280,12 +1273,7 @@ int userLogin() {
 	DrawLogin();
 	while (true) {
 		switch (SelectLogin()) { //리턴을 받아 판단
-		case FIND:
-			if (LoginAccount()) {
-				ReadyGame();
-				break;
-			}
-			break;
+
 		case CREATE:
 			CreateAccount();
 			ReadyGame();
