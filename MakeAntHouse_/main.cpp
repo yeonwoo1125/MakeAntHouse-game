@@ -332,28 +332,28 @@ int checkGuest() { //게스트로 로그인 할건지 물음
 //메인 메뉴 그리기
 void DrawReadyGame() {
 	system("cls");    //화면을 클리어 해주는 함수 입니다.
+	gotoxy(15, 3);
+	cout << "**************************************";
 	gotoxy(15, 4);
-	cout << "**************************************";
+	cout << "*                                    *";
 	gotoxy(15, 5);
-	cout << "*                                    *";
-	gotoxy(15, 6);
 	cout << "*              영차영차              *";
-	gotoxy(15, 7);
+	gotoxy(15, 6);
 	cout << "*        개미집을 만들어주자         *";
-	gotoxy(15, 8);
+	gotoxy(15, 7);
 	cout << "*                                    *";
-	gotoxy(15, 9);
+	gotoxy(15, 8);
 	cout << "**************************************";
-	gotoxy(22, 12);
+	gotoxy(22, 11);
 	cout << "게임시작";
 	gotoxy(22, 13);
 	cout << "게임설명";
-	gotoxy(22, 14);
-	cout << "로 그 인" << endl;
-	gotoxy(22, 15);
+	gotoxy(19, 15);
+	cout << "회원가입 및 계정찾기" << endl;
+	gotoxy(22, 17);
 	cout << "나 가 기" << endl;
 
-	gotoxy(17, 19);
+	gotoxy(17, 22);
 	cout << plz_space;
 }
 
@@ -748,23 +748,29 @@ MENU ReadyGame() {
 		if (y <= 0) { //커서가 위로 그만 올라가게
 			y = 0;
 		}
-		else if (y >= 3) { //커서가 아래로 그만 내려가게
-			y = 3;
+		else if (y >= 6) { //커서가 아래로 그만 내려가게
+			y = 6;
 		}
 
-		gotoxy(21, 12 + y); //위치조정
-		cout << ">";
 
+		if (y == 4) {
+			gotoxy(18, 11 + y); //위치조정
+			cout << ">";
+		}
+		else {
+			gotoxy(21, 11 + y); //위치조정
+			cout << ">";
+		}
 		input = _getch();
 		//→←↑↓ 방향키를 누를 경우
 		if (input == MAGIC_KEY) { //224가 들어옴
 			switch (_getch()) //한번 더 받음
 			{
 			case UP: //위
-				--y;
+				y-=2;
 				break;
 			case DOWN: //아래
-				++y;
+				y+=2;
 				break;
 			}
 		}
@@ -773,11 +779,11 @@ MENU ReadyGame() {
 			switch (y) { //y위치에 따라 판단
 			case 0:
 				return GAMESTART;
-			case 1:
-				return INFO;
 			case 2:
+				return INFO;
+			case 4:
 				return ACCOUNT;
-			case 3:
+			case 6:
 				system("cls");
 				return QUIT;
 			}
