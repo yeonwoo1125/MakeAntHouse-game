@@ -187,7 +187,7 @@ private:
 	int ant_width;
 	int ant_height;
 public:
-	ant() : ant_x(6), ant_y(user->getHouseSize()), feed_x(0), feed_y(0), ant_width(3), ant_height(1) {} 
+	ant() : ant_x(8), ant_y(user->getHouseSize()), feed_x(0), feed_y(0), ant_width(3), ant_height(1) {} 
 
 	int getFeedCnt() { //현재 개미집에 생성된 먹이의 수
 		return feedCnt;
@@ -204,15 +204,13 @@ public:
 		}
 	}
 
-	int moveInHouse() { //개미집 안에서 움직임
-		
+	void moveInHouse() { //개미집 안에서 움직임
 		while (true) {
 			input = _getch();
 			if (input == MAGIC_KEY) {
 				input = _getch();
 				switch (input)
 				{
-					return 0;
 				case UP:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
@@ -243,8 +241,6 @@ public:
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
 					break;
-				case ESC:
-					return 0;
 				}
 			}
 		}
@@ -252,7 +248,7 @@ public:
 	void collisonCheck() { //개미가 개미집 벽에 닿은 경우
 		//만약 집이 두개 이상이면 벽에 닿을 경우 해당 방향에 있는 집으로 이동
 		//집이 없다면 그냥 더이상 앞으로 못나가게
-		if (ant_x==5 && ant_y) {
+		if (ant_x && ant_y) {
 			
 		}
 	}
@@ -292,22 +288,22 @@ public:
 	}
 	void drawAntHouse(int r) {
 		//기본 집 그리기
-		gotoxy(5, 2);
-		cout << "집의 크기 : " << r << endl;
+		/*gotoxy(5, 2);
+		cout << "집의 크기 : " << r << endl;*/
 
 		gotoxy(7, 3);
 		for (int i = 0; i < r; i++) { //맨 윗줄
 			cout << "□";
 		}
-		for (int i = 0; i < r; i++) { //세로 1
+		for (int i = 0; i < r-1; i++) { //세로 1
 			gotoxy(7, 4 + i);
 			cout << "□";
 		}
-		for (int i = 0; i < r; i++) { //세로 2
-			gotoxy(7+r, 4 + i);
+		for (int i = 0; i < r-1; i++) { //세로 2
+			gotoxy(6+r, 4 + i);
 			cout << "□";
 		}
-		gotoxy(7, 4 + r);
+		gotoxy(7, 3 + r);
 		for (int i = 0; i < r; i++) { //맨 아랫줄
 
 			cout << "□";
