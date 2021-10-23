@@ -195,8 +195,8 @@ public:
 
 	void ranFeed() {
 		for (int i = 0; i < feedCnt; i++) {
-			feed_x = rand() % ant_x; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
-			feed_y = rand() % ant_y;
+			feed_x = rand() % user->getHouseSize(); //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
+			feed_y = rand() % user->getHouseSize();
 			gotoxy(feed_x, feed_y);
 			cout << feed;
 			Sleep(5000); //5초마다 먹이 생성
