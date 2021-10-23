@@ -89,6 +89,7 @@ void readyStart();
 void CreateAccount();
 bool LoginAccount();
 int QuestionAccount();
+
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 	COORD Pos;
 	Pos.X = 2 * x; //1칸보다는 2칸씩 움직여야 자연스러움
@@ -104,7 +105,7 @@ void SetConsoleVIew() {
 class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_account;
 	string user_password;
-	bool loginCheck; //로그인 성공 여부 파악
+	bool loginCheck=false; //로그인 성공 여부 파악
 	string idAnswer, pwAnswer;
 	string user_name;
 	int houseSize;
@@ -296,18 +297,17 @@ public:
 
 		gotoxy(7, 3);
 		for (int i = 0; i < r; i++) { //맨 윗줄
-			
 			cout << "□";
 		}
-		for (int i = 0; i < r; i++) { //세로
-			gotoxy(5, 4 + i);
+		for (int i = 0; i < r; i++) { //세로 1
+			gotoxy(7, 4 + i);
 			cout << "□";
 		}
-		for (int i = 0; i < r; i++) { //세로
-			gotoxy(4+r, 4 + i);
+		for (int i = 0; i < r; i++) { //세로 2
+			gotoxy(7+r, 4 + i);
 			cout << "□";
 		}
-		gotoxy(5, 4 + r);
+		gotoxy(7, 4 + r);
 		for (int i = 0; i < r; i++) { //맨 아랫줄
 
 			cout << "□";
@@ -315,11 +315,6 @@ public:
 	}
 	~ant() {}
 };
-
-
-
-
-
 ant a1;
 
 int checkGuest() { //게스트로 로그인 할건지 물음
@@ -1126,14 +1121,13 @@ void InfoGame() {
 }
 
 //게임 시작 뷰
-void startGame() {
-	if (user->getHouseSize() == 14) {
-		DrawStartMiniGame();
-		system("pause>null");
+void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		system("cls");
-		if (user_Nickname.empty()) DrawStartGame();
-
-		system("cls");
+		if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
+			DrawStartGame(); //닉네임 생성 및 미니게임 시작
+			DrawStartMiniGame();
+			startGame();
+		}
 		if (RockPaperScissors()) {
 			system("cls");
 			a1.drawAntHouse(user->getHouseSize());
@@ -1144,20 +1138,23 @@ void startGame() {
 			a1.drawAntHouse(user->getHouseSize());
 			a1.moveInHouse();
 		}
-	}
 }
 
 void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
 	system("cls");
-	if ((user->getLoginCheck())) { //로그인이 안되어 있으면 게스트 로그인 여부 물음
-		checkReady();
+	if ((user->getLoginCheck())) { //로그인 성공
+		if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
+			DrawStartGame(); //닉네임 생성 및 미니게임 시작
+			DrawStartMiniGame();
+			startGame();
+		} // 로그인이 되어 있으면 바로 집 그리고 개미 생성하기
+		a1.drawAntHouse(user->getHouseSize());
+		a1.moveInHouse();
 	}
-	else { //로그인 되어 있으면 바로 게임 하는데 이름이 없으면 이름 입력 부분부터 / 디비 연동하면 처음말곤 실행될 일 없음
-		if (user_Nickname.empty()) DrawStartGame();
-		system("cls");
+	else { //로그인이 안됐을 경우
+		checkReady(); //게스트 로그인 여부 묻기
 	}
-	a1.drawAntHouse(user->getHouseSize());
-	a1.moveInHouse();
+	system("cls");
 }
 
 int checkReady() {
@@ -1264,7 +1261,7 @@ int QuestionAccount() { //계정 찾는 거 질문
 		}
 		//메인 메뉴 고름
 		else if (input == SPACE || input == ENTER) { //키보드가 스페이스일 경우
-			switch (y + x) { //y위치에 따라 판단
+			switch (y + x) { //y값과 x값을 더한 값에 따라 판단
 			case 0:
 				DrawFindId();
 				break;
