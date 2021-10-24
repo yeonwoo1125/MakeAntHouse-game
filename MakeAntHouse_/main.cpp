@@ -18,7 +18,8 @@ using namespace std;
 #define ESC 27 //esc 키 값
 
 string user_Nickname; //사용자 이름
-string plz_space = "[스페이스나 엔터를 눌러주세요.]";
+string plz_space = "[ 스페이스나 엔터를 눌러주세요. ]";
+string plz_key = "[ 아무 키나 눌러주세요. ]";
 
 enum GUEST {
 	LOGIN_USER,
@@ -141,7 +142,7 @@ public:
 			gotoxy(21, 12);
 			cout << "로그인 성공";
 			gotoxy(16, 15);
-			cout << plz_space;
+			cout << plz_key;
 			system("pause>null");
 			return true;
 		}
@@ -420,8 +421,8 @@ void DrawSecondeInfoGame()
 	cout << "하지만 오랜 시간 먹이를 먹지 않으면 개미가 죽을 수도 있으니 조심하세요.";
 	gotoxy(3, 19);
 	cout << "그럼 즐거운 시간 되세요!";
-	gotoxy(16, 22);
-	cout << plz_space;
+	gotoxy(18, 22);
+	cout << plz_key;
 }
 
 
@@ -472,7 +473,7 @@ int DrawStartMiniGame() {
 	gotoxy(18, 11);
 	cout << "--------------------------";
 	gotoxy(17, 14);
-	cout << plz_space;
+	cout << plz_key;
 	return 0;
 }
 
@@ -489,7 +490,7 @@ void DrawGameOver() {
 	gotoxy(20, 12);
 	cout << "-------------------";
 	gotoxy(17, 15);
-	cout << plz_space;
+	cout << plz_key;
 	system("pause>null");
 }
 //게임 통과 그리기
@@ -505,13 +506,22 @@ void DrawGamePass() {
 	gotoxy(20, 12);
 	cout << "-------------------";
 	gotoxy(17, 14);
-	cout << plz_space;
+	cout << plz_key;
 	system("pause>null");
 }
 //로그인 화면 그리기
 void DrawLogin() {
 
 	system("cls");    //화면을 클리어 해주는 함수
+
+	gotoxy(3, 3);
+	cout << "*******************";
+	gotoxy(3, 4);
+	cout << "*   회원가입 및   *";
+	gotoxy(3, 5);
+	cout << "*    계정 찾기    *";
+	gotoxy(3, 6);
+	cout << "*******************";
 
 	gotoxy(22, 12);
 	cout << "회원가입";
@@ -526,6 +536,7 @@ void DrawLogin() {
 
 //게스트 로그인 화면 그리기
 void DrawGuestLogin() {
+
 	system("cls");
 	gotoxy(17, 8);
 	cout << "게스트로 로그인 하시겠습니까?";
@@ -538,16 +549,16 @@ void DrawGuestLogin() {
 	gotoxy(23, 14);
 	cout << "나 가 기";
 
-	gotoxy(18, 17);
+	gotoxy(16, 17);
 	cout << plz_space;
 }
 
 //아이디 다시 입력
 void DrawRetryId() {
 	gotoxy(16, 10);
-	cout << "계정명은 영어로 입력해주세요.";
+	cout << "계정명은 10자 이내로 입력해주세요.";
 	gotoxy(16, 17);
-	cout << plz_space;
+	cout << plz_key;
 	system("pause>null");
 }
 
@@ -556,7 +567,7 @@ void DrawRetryPwAnswer() {
 	gotoxy(16, 10);
 	cout << "태어난 달은 숫자로 입력해주세요.";
 	gotoxy(16, 17);
-	cout << plz_space;
+	cout << plz_key;
 	system("pause>null");
 }
 
@@ -577,6 +588,9 @@ void DrawFIndAcc() {
 	cout << "로그인 하기";
 	gotoxy(27, 15);
 	cout << "메인으로 가기";
+
+	cout << plz_space;
+	system("pause>null");
 }
 //아이디 찾기 화면 그리기
 void DrawFindId() {
@@ -595,7 +609,7 @@ void DrawFindId() {
 			gotoxy(18, 11);
 			cout << "먼저 계정을 생성해주세요.";
 			gotoxy(16, 14);
-			cout << plz_space;
+			cout << plz_key;
 			system("pause>null");
 			break;
 		}
@@ -609,6 +623,8 @@ void DrawFindId() {
 		if (user->getIdAnswer() == answer) {
 			gotoxy(15, 12);
 			cout << user->getUserName() << "님의 아이디는 " << user->getUserAcc();
+			gotoxy(16, 14);
+			cout << plz_key;
 			system("pause>null");
 			break;
 		}
@@ -645,7 +661,7 @@ void DrawFindPw() {
 			gotoxy(18, 11);
 			cout << "먼저 계정을 생성해주세요.";
 			gotoxy(16, 14);
-			cout << plz_space;
+			cout << plz_key;
 			system("pause>null");
 			break;
 		}
@@ -662,6 +678,8 @@ void DrawFindPw() {
 		if (user->getUserAcc() == userId && user->getPwAnswer() == answer) {
 			gotoxy(15, 15);
 			cout << user->getUserName() << "님의 비밀번호는 " << user->getUserPw();
+			gotoxy(16, 14);
+			cout << plz_key;
 			system("pause>null");
 			break;
 		}
@@ -1191,10 +1209,22 @@ int CreateAccount() {//계정 생성
 	string idAnswer;
 	int pwAnswer;
 	string name;
-	gotoxy(12, 8);
-	cout << "생성할 계정의 계정명 입력(영어) : ";
-	cin >> acc;
-	user->setUserAcc(acc); //계정명 저장
+
+	while (true) {
+		gotoxy(12, 8);
+		cout << "생성할 계정의 계정명 입력(10자 이내) : ";
+		cin >> acc;
+		if (acc.length() > 10) {
+			system("cls");
+			DrawRetryId();
+		}
+		else {
+			user->setUserAcc(acc); //계정명 저장
+			break;
+		}
+		system("cls");
+	}
+
 	gotoxy(12, 10);
 	cout << "생성할 계정의 비밀번호 입력 : ";
 	cin >> pw;
@@ -1213,8 +1243,7 @@ int CreateAccount() {//계정 생성
 
 	while (true) {
 		gotoxy(12, 8);
-		cout << "생성할 계정의 계정명 입력(영어) : "<<acc;
-		user->setUserAcc(acc); //계정명 저장
+		cout << "생성할 계정의 계정명 입력(10자 이내) : "<<acc;
 		gotoxy(12, 10);
 		cout << "생성할 계정의 비밀번호 입력 : "<<pw;
 		gotoxy(12, 12);
@@ -1244,7 +1273,7 @@ int CreateAccount() {//계정 생성
 	gotoxy(18, 12);
 	cout << "계정이 생성되었습니다.";
 	gotoxy(16, 14);
-	cout << plz_space;
+	cout << plz_key;
 	system("pause>null");
 	return 0;
 }
