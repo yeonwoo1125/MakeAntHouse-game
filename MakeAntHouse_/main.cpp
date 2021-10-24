@@ -63,6 +63,9 @@ void DrawFIndAcc();
 void DrawFindId();
 void DrawFindPw();
 
+void DrawRetryId();
+void DrawRetryPwAnswer();
+
 //메뉴 고르기
 GUEST selectGuest();
 LOGIN SelectLogin();
@@ -86,7 +89,7 @@ int checkGuest();
 void readyStart();
 
 //로그인 관련
-void CreateAccount();
+int CreateAccount();
 bool LoginAccount();
 int QuestionAccount();
 
@@ -106,7 +109,8 @@ class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_account;
 	string user_password;
 	bool loginCheck=false; //로그인 성공 여부 파악
-	string idAnswer, pwAnswer;
+	string idAnswer;
+	int pwAnswer;
 	string user_name;
 	int houseSize;
 
@@ -120,8 +124,8 @@ public:
 	string getUserName() { return user_name; }
 	void setIdAnswer(string idAns) { this->idAnswer = idAns; }
 	string getIdAnswer() { return idAnswer; }
-	void setPwAnswer(string pwAns) { this->pwAnswer = pwAns; }
-	string getPwAnswer() { return pwAnswer; }
+	void setPwAnswer(int pwAns) { this->pwAnswer = pwAns; }
+	int getPwAnswer() { return pwAnswer; }
 	void setUserAcc(string userAcc) { this->user_account = userAcc; }
 	string getUserAcc() { return user_account; }
 	string getUserPw() { return user_password; }
@@ -537,6 +541,25 @@ void DrawGuestLogin() {
 	gotoxy(18, 17);
 	cout << plz_space;
 }
+
+//아이디 다시 입력
+void DrawRetryId() {
+	gotoxy(16, 10);
+	cout << "계정명은 영어로 입력해주세요.";
+	gotoxy(16, 17);
+	cout << plz_space;
+	system("pause>null");
+}
+
+//비밀번호 다시 입력
+void DrawRetryPwAnswer() {
+	gotoxy(16, 10);
+	cout << "태어난 달은 숫자로 입력해주세요.";
+	gotoxy(16, 17);
+	cout << plz_space;
+	system("pause>null");
+}
+
 //계정찾기 화면 그리기
 void DrawFIndAcc() {
 	system("cls");
@@ -605,7 +628,8 @@ void DrawFindId() {
 
 //비밀번호 찾기 화면 그리기
 void DrawFindPw() {
-	string answer;
+
+	int answer;
 	string userId;
 	int input = 0;
 	system("cls");
@@ -617,7 +641,7 @@ void DrawFindPw() {
 	cout << "********************";
 	while (true) {
 		system("cls");
-		if (user->getPwAnswer().empty()) {
+		if (user->getPwAnswer()==NULL) {
 			gotoxy(18, 11);
 			cout << "먼저 계정을 생성해주세요.";
 			gotoxy(16, 14);
@@ -1160,14 +1184,15 @@ int checkReady() {
 	}
 }
 
-void CreateAccount() {//계정 생성
+int CreateAccount() {//계정 생성
 	system("cls");
 	string acc;
 	string pw;
-	string idAnswer, pwAnswer;
+	string idAnswer;
+	int pwAnswer;
 	string name;
 	gotoxy(12, 8);
-	cout << "생성할 계정의 계정명 입력 : ";
+	cout << "생성할 계정의 계정명 입력(영어) : ";
 	cin >> acc;
 	user->setUserAcc(acc); //계정명 저장
 	gotoxy(12, 10);
@@ -1186,10 +1211,34 @@ void CreateAccount() {//계정 생성
 	cin >> idAnswer;
 	user->setIdAnswer(idAnswer);
 
-	gotoxy(12, 17);
-	cout << "태어날 달은? (두글자) : ";
-	cin >> pwAnswer;
-	user->setPwAnswer(pwAnswer);
+	while (true) {
+		gotoxy(12, 8);
+		cout << "생성할 계정의 계정명 입력(영어) : "<<acc;
+		user->setUserAcc(acc); //계정명 저장
+		gotoxy(12, 10);
+		cout << "생성할 계정의 비밀번호 입력 : "<<pw;
+		gotoxy(12, 12);
+		cout << "이름 입력 : "<<name;
+		gotoxy(12, 14);
+		cout << "계정을 잃어버렸을 경우를 대비해, 질문에 대답해주세요. ";
+		gotoxy(12, 15);
+		cout << "가장 좋아하는 전공은? : "<<idAnswer;
+
+		gotoxy(12, 17);
+		cout << "태어날 달은? (숫자) : ";
+		cin >> pwAnswer;
+		if (pwAnswer > 0 && pwAnswer <= 12) {
+			user->setPwAnswer(pwAnswer);
+			break;
+		}
+		else {
+			system("cls");
+			DrawRetryPwAnswer();
+		}
+		system("cls");
+	}
+
+	
 
 	system("cls");
 	gotoxy(18, 12);
@@ -1197,6 +1246,7 @@ void CreateAccount() {//계정 생성
 	gotoxy(16, 14);
 	cout << plz_space;
 	system("pause>null");
+	return 0;
 }
 
 bool LoginAccount() {//생성한 계정 확인, 로그인하기
@@ -1279,18 +1329,14 @@ int userLogin() {
 	DrawLogin();
 	while (true) {
 		switch (SelectLogin()) { //리턴을 받아 판단
-
 		case CREATE:
 			CreateAccount();
-			ReadyGame();
 			break;
 		case QUESTION:
 			QuestionAccount();
-			ReadyGame();
 			break;
 		case QUITLOGIN:
 			return 0;
-
 		}
 	}
 }
