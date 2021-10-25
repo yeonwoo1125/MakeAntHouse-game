@@ -540,9 +540,7 @@ void DrawGamePass() {
 }
 //로그인 화면 그리기
 void DrawLogin() {
-
 	system("cls");    //화면을 클리어 해주는 함수
-
 	gotoxy(17, 3);
 	cout << "******************************" ;
 	gotoxy(17, 4);
@@ -1203,8 +1201,8 @@ void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		system("cls");
 		if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
 			DrawStartGame(); //닉네임 생성 및 미니게임 시작
-			Sleep(2000);
 			DrawStartMiniGame();
+			Sleep(2000);
 			startGame();
 		}
 		if (RockPaperScissors()) {
