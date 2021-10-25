@@ -237,12 +237,11 @@ public:
 			feedCnt++;
 		}
 	}
-	void collisonCheck() { //개미가 개미집 벽에 닿은 경우
-	//벽에 닿은 경우 : 개미의 좌표와 벽의 좌표가 같은 경우, 나아가지 못하게함
-	//개미가 움직일  때마다 체크해야함 즉, 키가 입력될 때마다 실행
 
-	}
 	void moveInHouse() { //개미집 안에서 움직임
+		int left_margin = 4, top_margin = 2;
+		int MaxX = user->getHouseSize() - left_margin, MaxY = user->getHouseSize() - top_margin;
+
 		while (true) {
 			input = _getch();
 			if (input == MAGIC_KEY) {
@@ -250,32 +249,34 @@ public:
 				switch (input)
 				{
 				case UP:
-					gotoxy(ant_x, ant_y);
+					gotoxy(ant_x, ant_y); //개미가 지나간 자리 지우기
 					cout << "   ";
-					ant_y--;
+					if(ant_y<5) ant_y = 4;
+					else ant_y--;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
 					break;
 				case DOWN:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					ant_y++;
+					if (ant_y > user->getHouseSize() +1) ant_y = user->getHouseSize()+2;
+					else ant_y++;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
 					break;
 				case RIGHT:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-
-					ant_x++;
+					if (ant_x > 7 + user->getHouseSize() - 4) ant_x = 7 + user->getHouseSize()-3 ;
+					else ant_x++;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
 					break;
 				case LEFT:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-
-					ant_x--;
+					if (ant_x < 9) ant_x=8;
+					else ant_x--;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
 					break;
@@ -523,6 +524,7 @@ void DrawGameOver() {
 	cout << plz_key;
 	system("pause>null");
 }
+
 //게임 통과 그리기
 void DrawGamePass() {
 	gotoxy(18, 8);
@@ -1202,22 +1204,23 @@ void InfoGame() {
 //게임 시작 뷰
 void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		system("cls");
-		if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
-			DrawStartGame(); //닉네임 생성 및 미니게임 시작
-			//Sleep(100);
-			DrawStartMiniGame();
-			startGame();
-		}
-		if (RockPaperScissors()) {
-			system("cls");
-			a1.drawAntHouse(user->getHouseSize());
+		//if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
+		//	DrawStartGame(); //닉네임 생성 및 미니게임 시작
+		//	//Sleep(100);
+		//	DrawStartMiniGame();
+		//	startGame();
+		//}
+		//if (RockPaperScissors()) {
+		//	system("cls");
+		//	a1.drawAntHouse(user->getHouseSize());
+		//	a1.moveInHouse();
+		//}
+		//else {
+		//	system("cls");
+
+		//}
+					a1.drawAntHouse(user->getHouseSize());
 			a1.moveInHouse();
-		}
-		else {
-			system("cls");
-			a1.drawAntHouse(user->getHouseSize());
-			a1.moveInHouse();
-		}
 }
 
 void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
