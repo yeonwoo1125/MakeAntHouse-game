@@ -70,6 +70,8 @@ void DrawFindPw();
 void DrawRetryId();
 void DrawRetryPwAnswer();
 
+void DrawMaxAcc();
+
 //메뉴 고르기
 GUEST selectGuest();
 void DrawGuestLogin();
@@ -596,6 +598,15 @@ void DrawRetryId() {
 void DrawRetryPwAnswer() {
 	gotoxy(16, 10);
 	cout << "태어난 달은 숫자로 입력해주세요.";
+	gotoxy(16, 17);
+	cout << plz_key;
+	system("pause>null");
+}
+
+//계정 3개까지만 만드세요
+void DrawMaxAcc() {
+	gotoxy(16, 10);
+	cout << "만들 수 있는 최대 계정은 3개입니다.";
 	gotoxy(16, 17);
 	cout << plz_key;
 	system("pause>null");
