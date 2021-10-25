@@ -229,8 +229,8 @@ public:
 
 	void ranFeed() {
 		for (int i = 0; i < feedCnt; i++) {
-			feed_x = rand() % user->getHouseSize(); //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
-			feed_y = rand() % user->getHouseSize();
+			feed_x = rand() % user->getHouseSize() + 3; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
+			feed_y = 4 + rand() % user->getHouseSize() + 2;
 			gotoxy(feed_x, feed_y);
 			cout << feed;
 			Sleep(5000); //5초마다 먹이 생성
@@ -239,9 +239,6 @@ public:
 	}
 
 	void moveInHouse() { //개미집 안에서 움직임
-		int left_margin = 4, top_margin = 2;
-		int MaxX = user->getHouseSize() - left_margin, MaxY = user->getHouseSize() - top_margin;
-
 		while (true) {
 			input = _getch();
 			if (input == MAGIC_KEY) {
@@ -251,7 +248,7 @@ public:
 				case UP:
 					gotoxy(ant_x, ant_y); //개미가 지나간 자리 지우기
 					cout << "   ";
-					if(ant_y<5) ant_y = 4;
+					if(ant_y < 5) ant_y = 4;
 					else ant_y--;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
@@ -259,7 +256,7 @@ public:
 				case DOWN:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					if (ant_y > user->getHouseSize() +1) ant_y = user->getHouseSize()+2;
+					if (ant_y > user->getHouseSize() +1) ant_y = user->getHouseSize() + 2;
 					else ant_y++;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
@@ -267,7 +264,7 @@ public:
 				case RIGHT:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					if (ant_x > 7 + user->getHouseSize() - 4) ant_x = 7 + user->getHouseSize()-3 ;
+					if (ant_x > user->getHouseSize() + 3) ant_x = user->getHouseSize() + 4 ;
 					else ant_x++;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
@@ -275,7 +272,7 @@ public:
 				case LEFT:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					if (ant_x < 9) ant_x=8;
+					if (ant_x < 9) ant_x = 8;
 					else ant_x--;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
@@ -1204,23 +1201,23 @@ void InfoGame() {
 //게임 시작 뷰
 void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		system("cls");
-		//if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
-		//	DrawStartGame(); //닉네임 생성 및 미니게임 시작
-		//	//Sleep(100);
-		//	DrawStartMiniGame();
-		//	startGame();
-		//}
-		//if (RockPaperScissors()) {
-		//	system("cls");
-		//	a1.drawAntHouse(user->getHouseSize());
-		//	a1.moveInHouse();
-		//}
-		//else {
-		//	system("cls");
-
-		//}
-					a1.drawAntHouse(user->getHouseSize());
+		if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
+			DrawStartGame(); //닉네임 생성 및 미니게임 시작
+			Sleep(2000);
+			DrawStartMiniGame();
+			startGame();
+		}
+		if (RockPaperScissors()) {
+			system("cls");
+			a1.drawAntHouse(user->getHouseSize());
 			a1.moveInHouse();
+		}
+		else {
+			system("cls");
+			a1.drawAntHouse(user->getHouseSize());
+			a1.moveInHouse();
+		}
+
 }
 
 void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
@@ -1266,7 +1263,6 @@ int CreateAccount() {//계정 생성
 			DrawRetryId();
 		}
 		else {
-			
 			break;
 		}
 		system("cls");
