@@ -209,35 +209,16 @@ public:
 };
 Login* user = new Login;
 
-class ant { //개미집에서 움직일 개미 객체
+class Ant { //개미집에서 움직일 개미 객체
 private:
 	int ant_x, ant_y;
 	int input = 0;
-	char feed = '*';
-	int feed_x;
-	int feed_y;
-	int feedCnt = 3; //기본적으로 집에 3개 생성
 	string antShape = "@@@";
-	int ant_width;
-	int ant_height;
 public:
-	ant() : ant_x(8), ant_y(user->getHouseSize()), feed_x(0), feed_y(0), ant_width(3), ant_height(1) {} 
-
-	int getFeedCnt() { //현재 개미집에 생성된 먹이의 수
-		return feedCnt;
-	}
-
-	void ranFeed() {
-		for (int i = 0; i < feedCnt; i++) {
-			feed_x = rand() % user->getHouseSize() + 3; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
-			feed_y = 4 + rand() % user->getHouseSize() + 2;
-			gotoxy(feed_x, feed_y);
-			cout << feed;
-			Sleep(5000); //5초마다 먹이 생성
-			feedCnt++;
-		}
-	}
-
+	Ant() : ant_x(8), ant_y(user->getHouseSize()) {}
+	int getAntX() { return ant_x; }
+	int getAntY() { return ant_y; }
+	
 	void moveInHouse() { //개미집 안에서 움직임
 		while (true) {
 			input = _getch();
@@ -248,7 +229,7 @@ public:
 				case UP:
 					gotoxy(ant_x, ant_y); //개미가 지나간 자리 지우기
 					cout << "   ";
-					if(ant_y < 5) ant_y = 4;
+					if (ant_y < 5) ant_y = 4;
 					else ant_y--;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
@@ -256,7 +237,7 @@ public:
 				case DOWN:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					if (ant_y > user->getHouseSize() +1) ant_y = user->getHouseSize() + 2;
+					if (ant_y > user->getHouseSize() + 1) ant_y = user->getHouseSize() + 2;
 					else ant_y++;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
@@ -264,7 +245,7 @@ public:
 				case RIGHT:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					if (ant_x > user->getHouseSize() + 3) ant_x = user->getHouseSize() + 4 ;
+					if (ant_x > user->getHouseSize() + 3) ant_x = user->getHouseSize() + 4;
 					else ant_x++;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
@@ -282,14 +263,61 @@ public:
 		}
 	}
 
+	void drawAntHouse(int r) {
+		//기본 집 그리기
+		/*gotoxy(5, 2);
+		cout << "집의 크기 : " << r << endl;*/
+
+		gotoxy(7, 3);
+		for (int i = 0; i < r; i++) { //맨 윗줄
+			cout << "□";
+		}
+		for (int i = 0; i < r - 1; i++) { //세로 1
+			gotoxy(7, 4 + i);
+			cout << "□";
+		}
+		for (int i = 0; i < r - 1; i++) { //세로 2
+			gotoxy(6 + r, 4 + i);
+			cout << "□";
+		}
+		gotoxy(7, 3 + r);
+		for (int i = 0; i < r; i++) { //맨 아랫줄
+
+			cout << "□";
+		}
+	}
+	~Ant() {}
+};
+Ant a1;
+
+class Feed {
+private:
+	int feed_x, feed_y;
+	int feedCnt = 3; //기본적으로 집에 3개 생성
+	char feedShape = '*';
+	Ant a;
+public:
+	int getFeedCnt() { //현재 개미집에 생성된 먹이의 수
+		return feedCnt;
+	}
+	void ranFeed() {
+		for (int i = 0; i < feedCnt; i++) {
+			feed_x = rand() % user->getHouseSize() + 3; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
+			feed_y = 4 + rand() % user->getHouseSize() + 2;
+			gotoxy(feed_x, feed_y);
+			cout << feedShape;
+			Sleep(5000); //5초마다 먹이 생성
+			feedCnt++;
+		}
+	}
 	void eatFeed() { //개미가 먹이를 먹은 경우 - 먹이를 지우고 미니게임 실행 
-		//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
-		//좌표가 겹칠 경우, 미니게임 실행
-		//case 0 -> RockPaperScissors
-		//case 1 -> QuizGame
-		//case 2 -> upDownGame
-		//case 3 -> timingGame
-		if (ant_x == feed_x && ant_y == feed_y) {
+	//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
+	//좌표가 겹칠 경우, 미니게임 실행
+	//case 0 -> RockPaperScissors
+	//case 1 -> QuizGame
+	//case 2 -> upDownGame
+	//case 3 -> timingGame
+		if (a1.getAntX() == feed_x && a1.getAntY() == feed_y) {
 			feedCnt--;
 			int miniGame;
 			miniGame = rand() % 4;
@@ -316,32 +344,8 @@ public:
 			}
 		}
 	}
-	void drawAntHouse(int r) {
-		//기본 집 그리기
-		/*gotoxy(5, 2);
-		cout << "집의 크기 : " << r << endl;*/
-
-		gotoxy(7, 3);
-		for (int i = 0; i < r; i++) { //맨 윗줄
-			cout << "□";
-		}
-		for (int i = 0; i < r-1; i++) { //세로 1
-			gotoxy(7, 4 + i);
-			cout << "□";
-		}
-		for (int i = 0; i < r-1; i++) { //세로 2
-			gotoxy(6+r, 4 + i);
-			cout << "□";
-		}
-		gotoxy(7, 3 + r);
-		for (int i = 0; i < r; i++) { //맨 아랫줄
-
-			cout << "□";
-		}
-	}
-	~ant() {}
 };
-ant a1;
+Feed f1;
 
 int checkGuest() { //게스트로 로그인 할건지 물음
 	DrawGuestLogin();
@@ -359,7 +363,6 @@ int checkGuest() { //게스트로 로그인 할건지 물음
 		}
 	}
 }
-
 
 //메인 메뉴 그리기
 void DrawReadyGame() {
@@ -385,7 +388,7 @@ void DrawReadyGame() {
 	gotoxy(22, 17);
 	cout << "나 가 기" << endl;
 
-	gotoxy(17, 22);
+	gotoxy(16, 22);
 	cout << plz_space;
 }
 
@@ -473,7 +476,7 @@ void DrawStartGame() {
 }
 //개미 죽는 모습 - 게임 오버 그리기
 void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
-	if (a1.getFeedCnt() > 9) {
+	if (f1.getFeedCnt() > 9) {
 		gotoxy(18, 10);
 		cout << user_Nickname << "님의 개미가 굶어죽었습니다.";
 		gotoxy(18, 11);
@@ -492,13 +495,13 @@ void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
 //미니게임 시작 화면 그리기
 void DrawStartMiniGame() {
 	system("cls");
-	gotoxy(18, 8);
+	gotoxy(17, 8);
 	cout << "--------------------------";
-	gotoxy(18, 9);
+	gotoxy(17, 9);
 	cout << "|   현재 집이 없으므로   |";
-	gotoxy(18, 10);
+	gotoxy(17, 10);
 	cout << "|  미니게임을 실행합니다 |";
-	gotoxy(18, 11);
+	gotoxy(17, 11);
 	cout << "--------------------------";
 	gotoxy(17, 14);
 	cout << plz_key;
@@ -1202,7 +1205,7 @@ void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
 			DrawStartGame(); //닉네임 생성 및 미니게임 시작
 			DrawStartMiniGame();
-			Sleep(2000);
+			system("pause>null");
 			startGame();
 		}
 		if (RockPaperScissors()) {
@@ -1223,7 +1226,6 @@ void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여�
 	if ((user->getLoginCheck())) { //로그인 성공
 		if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
 			DrawStartGame(); //닉네임 생성 및 미니게임 시작
-
 			startGame();
 		} // 로그인이 되어 있으면 바로 집 그리고 개미 생성하기
 		a1.drawAntHouse(user->getHouseSize());
@@ -1305,10 +1307,10 @@ int CreateAccount() {//계정 생성
 		}
 		system("cls");
 	}
-	ofs << acc << "A"; //name txt파일에 저장
-	ofs << pw << "P"; //pw txt파일에 저장
-	ofs << name << "N"; //name txt파일에 저장
-	ofs << idAnswer << "I"; //idAnswer txt파일에 저장
+	ofs << acc << " "; //name txt파일에 저장
+	ofs << pw << " "; //pw txt파일에 저장
+	ofs << name << " "; //name txt파일에 저장
+	ofs << idAnswer << " "; //idAnswer txt파일에 저장
 	ofs << pwAnswer << endl;
 
 	system("cls");
