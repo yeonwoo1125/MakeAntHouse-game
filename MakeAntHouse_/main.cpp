@@ -8,6 +8,7 @@
 #include<string>
 #include <cstring>
 #include<fstream> //파일처리
+#include <mmsystem.h> //음악 넣기
 
 #pragma comment(lib, "winmm.lib") // timeGetTime() 함수 사용을 위한 라이브러리
 
@@ -56,7 +57,6 @@ enum KEYBOARD {
 //콘솔창 설정
 void SetConsoleVIew_main();
 void SetConsoleVIew_house();
-
 
 //화면 그리는 함수
 void DrawFirstInfoGame();
@@ -123,9 +123,13 @@ void SetConsoleVIew_main() {
 
 //개미집 보여줄 때만 콘솔 크기 키우기, 이후에는 다시 원래 크기로
 void SetConsoleVIew_house() {
-	system("mode con:cols=100 lines=100"); //가로 , 세로 
+	system("mode con:cols=300 lines=80"); //가로 , 세로 
 }
 
+//전체화면
+void fullScreen() {
+	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
+}
 //void getFileDate() {
 //	char c;
 //	string str;
@@ -145,14 +149,14 @@ void SetConsoleVIew_house() {
 //}
 
 class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
-	string user_account;
-	string user_password;
+	string user_account; //유저계정
+	string user_password; //비번
 	bool loginCheck=false; //로그인 성공 여부 파악
-	string idAnswer;
-	int pwAnswer;
-	string user_name;
-	int houseSize;
-	string user_Nickname; //사용자 이름
+	string idAnswer; //아이디 힌트
+	int pwAnswer; //비번 힌트
+	string user_name; //이름
+	int houseSize; //개미집 크기
+	string user_Nickname; //사용자 별명, 인게임 내 사용되는 이름
 public:
 	Login() {
 		this->houseSize = 8;
