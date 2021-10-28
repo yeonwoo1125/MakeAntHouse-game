@@ -9,6 +9,7 @@
 #include <cstring>
 #include<fstream> //파일처리
 #include <mmsystem.h> //음악 넣기
+#include <thread> //thread 
 
 #pragma comment(lib, "winmm.lib") // timeGetTime() 함수 사용을 위한 라이브러리
 
@@ -27,12 +28,14 @@ string plz_key = "[ 아무 키나 눌러주세요. ]";
 ofstream ofs("antHouse.txt", ios::app);
 ifstream ifs("antHouse.txt");
 
+//게스트 로그인 메뉴
 enum GUEST {
 	LOGIN_USER,
 	START,
 	QUITGUEST
 };
 
+//로그인 메뉴
 enum LOGIN {
 	CREATE,
 	FIND,
@@ -40,6 +43,7 @@ enum LOGIN {
 	QUITLOGIN
 };
 
+//메인 메뉴
 enum MENU {
 	GAMESTART = 0,
 	INFO,
@@ -47,6 +51,7 @@ enum MENU {
 	ACCOUNT
 };
 
+//키보드 방향키 값
 enum KEYBOARD {
 	UP = 72,
 	LEFT = 75,
@@ -108,6 +113,7 @@ int QuestionAccount();
 //파일에서 데이터 불러와서 저장하기
 void getFileData();
 
+//마우스 좌표 
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 	COORD Pos;
 	Pos.X = 2 * x; //1칸보다는 2칸씩 움직여야 자연스러움
@@ -143,6 +149,7 @@ void fullScreen() {
 //	
 //}
 
+//로그인 시 필요한 거
 class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_account; //유저계정
 	string user_password; //비번
@@ -219,6 +226,7 @@ public:
 };
 Login* user = new Login;
 
+//개미 객체
 class Ant { //개미집에서 움직일 개미 객체
 private:
 	int ant_x, ant_y;
@@ -300,6 +308,7 @@ public:
 };
 Ant a1;
 
+//먹이 객체
 class Feed {
 private:
 	int feed_x, feed_y;
@@ -359,7 +368,8 @@ public://현재 개미집에 생성된 먹이의 수
 };
 Feed f1;
 
-int checkGuest() { //게스트로 로그인 할건지 물음
+//게스트로 로그인 할건지 물음
+int checkGuest() { 
 	DrawGuestLogin();
 
 	while (true) {
@@ -440,7 +450,7 @@ void DrawFirstInfoGame()
 	cout << ">";
 	system("pause>null");
 }
-
+//순서 설명 그리기
 void DrawSecondeInfoGame()
 {
 	system("cls");
@@ -479,8 +489,6 @@ void DrawSecondeInfoGame()
 
 
 //시작 화면 그리기
-//디비 연동 후 계정이 없는 처음에만 실행
-
 void DrawStartGame() {
 	string n;
 	if (user->getUserNickname().empty()) {
@@ -498,6 +506,7 @@ void DrawStartGame() {
 	}
 	//system("pause>null");
 }
+
 //개미 죽는 모습 - 게임 오버 그리기
 void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
 	if (f1.getFeedCnt() > 9) {
@@ -565,6 +574,7 @@ void DrawGamePass() {
 	cout << plz_key;
 	system("pause>null");
 }
+
 //로그인 화면 그리기
 void DrawLogin() {
 	system("cls");    //화면을 클리어 해주는 함수
@@ -662,6 +672,7 @@ void DrawFIndAcc() {
 	cout << plz_space;
 	
 }
+
 //아이디 찾기 화면 그리기
 void DrawFindId() {
 	string answer;
@@ -808,6 +819,7 @@ GUEST selectGuest() {
 		}
 	}
 }
+
 LOGIN SelectLogin() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
@@ -1251,7 +1263,8 @@ void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 
 }
 
-void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
+//게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
+void readyStart() { 
 	system("cls");
 	if ((user->getLoginCheck())) { //로그인 성공
 		if (user->getUserNickname().empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
@@ -1267,6 +1280,7 @@ void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여�
 	system("cls");
 }
 
+//게스트 로그인 시 
 int checkReady() {
 	switch (checkGuest()) {
 	case 0: return 0;
@@ -1275,7 +1289,8 @@ int checkReady() {
 	}
 }
 
-int CreateAccount() {//계정 생성
+//계정 생성
+int CreateAccount() {
 	system("cls");
 	string acc;
 	string pw;
@@ -1353,7 +1368,8 @@ int CreateAccount() {//계정 생성
 	return 0;
 }
 
-bool LoginAccount() {//생성한 계정 확인, 로그인하기
+//생성한 계정 확인, 로그인하기
+bool LoginAccount() {
 	system("cls");
 	string acc;
 	string pw;
@@ -1366,7 +1382,8 @@ bool LoginAccount() {//생성한 계정 확인, 로그인하기
 	return user->checkUser(acc, pw);
 }
 
-int QuestionAccount() { //계정 찾는 거 질문
+//계정 찾는 거 질문
+int QuestionAccount() { 
 	//아이디 찾기, 비밀번호 찾기, 로그인하기, 회원가입하기
 	int y = 0; //커서의 y 위치
 	int x = 0;
