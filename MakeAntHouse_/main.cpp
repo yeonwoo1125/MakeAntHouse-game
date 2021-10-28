@@ -1239,9 +1239,24 @@ void InfoGame() {
 	system("pause>null");
 }
 
+//스레드를 위한 함수
+void antMove() {
+	a1.moveInHouse();
+}
+void makeFeed() {
+	f1.ranFeed();
+}
+void threadStart() {
+	thread t1(antMove);
+	thread t2(makeFeed);
+	t1.join();
+	t2.join();
+}
+
 //게임 시작 뷰
 void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		system("cls");
+
 		if (user->getUserNickname().empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
 			DrawStartGame(); //닉네임 생성 및 미니게임 시작
 			DrawStartMiniGame();
@@ -1250,15 +1265,13 @@ void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		}
 		if (RockPaperScissors()) {
 			system("cls");
-			//a1.drawAntHouse(user->getHouseSize());
-			f1.ranFeed();
-			//a1.moveInHouse();
-			
+			a1.drawAntHouse(user->getHouseSize());
+			threadStart();
 		}
 		else {
 			system("cls");
 			a1.drawAntHouse(user->getHouseSize());
-			a1.moveInHouse();
+			threadStart();
 		}
 
 }
