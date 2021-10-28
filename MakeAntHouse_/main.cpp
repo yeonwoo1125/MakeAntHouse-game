@@ -113,6 +113,8 @@ int QuestionAccount();
 //파일에서 데이터 불러와서 저장하기
 void getFileData();
 
+void eatFeed();
+
 //마우스 좌표 
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 	COORD Pos;
@@ -247,10 +249,11 @@ public:
 				case UP:
 					gotoxy(ant_x, ant_y); //개미가 지나간 자리 지우기
 					cout << "   ";
-					if (ant_y < 5) ant_y = 4;
+					if (ant_y < 5) ant_y = 4; //벽이랑 충돌체크
 					else ant_y--;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
+					eatFeed();
 					break;
 				case DOWN:
 					gotoxy(ant_x, ant_y);
@@ -259,6 +262,7 @@ public:
 					else ant_y++;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
+					eatFeed();
 					break;
 				case RIGHT:
 					gotoxy(ant_x, ant_y);
@@ -267,6 +271,7 @@ public:
 					else ant_x++;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
+					eatFeed();
 					break;
 				case LEFT:
 					gotoxy(ant_x, ant_y);
@@ -275,6 +280,7 @@ public:
 					else ant_x--;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
+					eatFeed();
 					break;
 				}
 			}
@@ -319,7 +325,7 @@ public://현재 개미집에 생성된 먹이의 수
 	int getFeedCnt() { return feedCnt; }
 	int getFeedX() { return feed_x; }
 	int getFeedY() { return feed_y; }
-
+	void setFeedCnt(int n) { feedCnt -= n; }
 	void ranFeed() {
 		for (int i = 0; i < feedCnt; i++) {
 			feed_x = rand() % user->getHouseSize() + 3; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
@@ -329,44 +335,44 @@ public://현재 개미집에 생성된 먹이의 수
 			Sleep(5000); //5초마다 먹이 생성
 			feedCnt++;
 		}
-	}
+	}	
+};
+Feed f1;
 
-	void eatFeed() { //개미가 먹이를 먹은 경우 - 먹이를 지우고 미니게임 실행 
-	//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
+//개미가 먹이를 먹은 경우 - 먹이를 지우고 미니게임 실행 
+void eatFeed() { 
 	//좌표가 겹칠 경우, 미니게임 실행
 	//case 0 -> RockPaperScissors
 	//case 1 -> QuizGame
 	//case 2 -> upDownGame
 	//case 3 -> timingGame
-		if (a1.getAntX() == feed_x && a1.getAntY() == feed_y) {
-			feedCnt--;
-			int miniGame;
-			miniGame = rand() % 4;
-			switch (miniGame)
-			{
-			case 0:
-				system("cls");
-				RockPaperScissors();
-				break;
-			case 1:
-				system("cls");
-				QuizGame();
-				break;
-			case 2:
-				system("cls");
-				upDownGame();
-				break;
-			case 3:
-				system("cls");
-				cout << "보너스 게임";
-				cout << "얻는 점수만큼 집이 커집니다.";
-				timingGame();
-				break;
-			}
+	if (a1.getAntX() == f1.getFeedX() && a1.getAntY() ==f1.getFeedY()) {
+		f1.setFeedCnt(1);
+		int miniGame;
+		miniGame = rand() % 4;
+		switch (miniGame)
+		{
+		case 0:
+			system("cls");
+			RockPaperScissors();
+			break;
+		case 1:
+			system("cls");
+			QuizGame();
+			break;
+		case 2:
+			system("cls");
+			upDownGame();
+			break;
+		case 3:
+			system("cls");
+			cout << "보너스 게임";
+			cout << "얻는 점수만큼 집이 커집니다.";
+			timingGame();
+			break;
 		}
 	}
-};
-Feed f1;
+}
 
 //게스트로 로그인 할건지 물음
 int checkGuest() { 
@@ -1256,7 +1262,6 @@ void threadStart() {
 //게임 시작 뷰
 void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		system("cls");
-
 		if (user->getUserNickname().empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
 			DrawStartGame(); //닉네임 생성 및 미니게임 시작
 			DrawStartMiniGame();
