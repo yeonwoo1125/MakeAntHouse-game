@@ -315,6 +315,7 @@ public:
 	int getFeedCnt() { //현재 개미집에 생성된 먹이의 수
 		return feedCnt;
 	}
+
 	void ranFeed() {
 		for (int i = 0; i < feedCnt; i++) {
 			feed_x = rand() % user->getHouseSize() + 3; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
@@ -325,6 +326,7 @@ public:
 			feedCnt++;
 		}
 	}
+
 	void eatFeed() { //개미가 먹이를 먹은 경우 - 먹이를 지우고 미니게임 실행 
 	//개미 집 내부, 랜덤한 좌표에 먹이(*) 생성
 	//좌표가 겹칠 경우, 미니게임 실행
@@ -437,9 +439,9 @@ void DrawFirstInfoGame()
 	gotoxy(3, 18);
 	cout << "당신의 개미의 집이 가장 큰 집이 되도록 키워주세요.";
 
-	gotoxy(38, 22);
+	gotoxy(38, 24);
 	cout << "다음 페이지";
-	gotoxy(37, 22);
+	gotoxy(37, 24);
 	cout << ">";
 	system("pause>null");
 }
@@ -447,15 +449,15 @@ void DrawFirstInfoGame()
 void DrawSecondeInfoGame()
 {
 	system("cls");
-	gotoxy(3, 2);
+	gotoxy(3, 1);
 	cout << "****************";
+	gotoxy(3, 2);
+	cout << "*              *";
 	gotoxy(3, 3);
-	cout << "*              *";
-	gotoxy(3, 4);
 	cout << "*   순서설명   *";
-	gotoxy(3, 5);
+	gotoxy(3, 4);
 	cout << "*              *";
-	gotoxy(3, 6);
+	gotoxy(3, 5);
 	cout << "****************";
 
 	gotoxy(3, 9);
@@ -476,7 +478,7 @@ void DrawSecondeInfoGame()
 	cout << "또한 개미의 집이 너무 작아진다면 개미가 이사갈 수도 있으니 잘 관리해주세요.";
 	gotoxy(3, 20);
 	cout << "그럼 즐거운 시간 되세요!";
-	gotoxy(17, 23);
+	gotoxy(17, 24);
 	cout << plz_key;
 }
 
@@ -589,7 +591,7 @@ void DrawLogin() {
 	gotoxy(22, 16);
 	cout << "나 가 기";
 
-	gotoxy(16, 19);
+	gotoxy(16, 22);
 	cout << plz_space;
 }
 
@@ -1242,7 +1244,9 @@ void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		if (RockPaperScissors()) {
 			system("cls");
 			a1.drawAntHouse(user->getHouseSize());
+			f1.ranFeed();
 			a1.moveInHouse();
+			
 		}
 		else {
 			system("cls");
