@@ -146,7 +146,7 @@ class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 
 public:
 	Login() {
-		this->houseSize = 10;
+		this->houseSize = 8;
 	}
 	void setHouseSize(int h) { this->houseSize += h; }
 	int getHouseSize() { return houseSize; }
@@ -270,20 +270,20 @@ public:
 
 		gotoxy(7, 3);
 		for (int i = 0; i < r; i++) { //맨 윗줄
-			cout << "□";
+			cout << "▨";
 		}
 		for (int i = 0; i < r - 1; i++) { //세로 1
 			gotoxy(7, 4 + i);
-			cout << "□";
+			cout << "▨";
 		}
 		for (int i = 0; i < r - 1; i++) { //세로 2
 			gotoxy(6 + r, 4 + i);
-			cout << "□";
+			cout << "▨";
 		}
 		gotoxy(7, 3 + r);
 		for (int i = 0; i < r; i++) { //맨 아랫줄
 
-			cout << "□";
+			cout << "▨";
 		}
 	}
 	~Ant() {}
@@ -295,7 +295,7 @@ private:
 	int feed_x, feed_y;
 	int feedCnt = 3; //기본적으로 집에 3개 생성
 	char feedShape = '*';
-	Ant a;
+	
 public:
 	int getFeedCnt() { //현재 개미집에 생성된 먹이의 수
 		return feedCnt;
@@ -618,8 +618,12 @@ void DrawFIndAcc() {
 	gotoxy(20, 3);
 	cout << "*****************";
 	gotoxy(20, 4);
-	cout << "*   계정 찾기   *";
+	cout << "*               *";
 	gotoxy(20, 5);
+	cout << "*   계정 찾기   *";
+	gotoxy(20, 6);
+	cout << "*               *";
+	gotoxy(20, 7);
 	cout << "*****************";
 	gotoxy(15, 13);
 	cout << "계정명 찾기";
@@ -630,7 +634,7 @@ void DrawFIndAcc() {
 	gotoxy(27, 15);
 	cout << "메인으로 가기";
 
-	gotoxy(16, 18);
+	gotoxy(16, 20);
 	cout << plz_space;
 	
 }
