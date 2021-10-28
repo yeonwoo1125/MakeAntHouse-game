@@ -56,7 +56,7 @@ enum KEYBOARD {
 
 //콘솔창 설정
 void SetConsoleVIew_main();
-void SetConsoleVIew_house();
+void fullScreen();
 
 //화면 그리는 함수
 void DrawFirstInfoGame();
@@ -119,11 +119,6 @@ void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 void SetConsoleVIew_main() {
 	system("mode con:cols=100 lines=30"); //가로 50, 세로 30
 	system("title Make Ant House By Yeonwoo"); //타이틀
-}
-
-//개미집 보여줄 때만 콘솔 크기 키우기, 이후에는 다시 원래 크기로
-void SetConsoleVIew_house() {
-	system("mode con:cols=300 lines=80"); //가로 , 세로 
 }
 
 //전체화면
@@ -195,9 +190,9 @@ public:
 			system("cls");
 			gotoxy(21, 9);
 			cout << "로그인 실패" << endl;
-			gotoxy(14, 11);
+			gotoxy(15, 11);
 			cout << "다시 시도하시려면 스페이스를 눌러주세요." << endl;
-			gotoxy(14, 12);
+			gotoxy(15, 12);
 			cout << "스페이스를 누르면 로그인을 재시도합니다." << endl;
 			gotoxy(17, 13);
 			cout << "나가시려면 ESC를 눌러주세요.";
@@ -311,10 +306,10 @@ private:
 	int feedCnt = 3; //기본적으로 집에 3개 생성
 	char feedShape = '*';
 	
-public:
-	int getFeedCnt() { //현재 개미집에 생성된 먹이의 수
-		return feedCnt;
-	}
+public://현재 개미집에 생성된 먹이의 수
+	int getFeedCnt() { return feedCnt; }
+	int getFeedX() { return feed_x; }
+	int getFeedY() { return feed_y; }
 
 	void ranFeed() {
 		for (int i = 0; i < feedCnt; i++) {
@@ -680,10 +675,10 @@ void DrawFindId() {
 	cout << "******************";
 	while (true) {
 		system("cls");
-		if (user->getIdAnswer().empty()) {
+		if (user->getUserAcc().empty()) {
 			gotoxy(18, 11);
 			cout << "먼저 계정을 생성해주세요.";
-			gotoxy(16, 14);
+			gotoxy(18, 14);
 			cout << plz_key;
 			system("pause>null");
 			break;
@@ -705,9 +700,9 @@ void DrawFindId() {
 		}
 
 		else {
-			gotoxy(20, 14);
+			gotoxy(20, 16);
 			cout << "다시 입력해주세요.";
-			gotoxy(18, 15);
+			gotoxy(18, 17);
 			cout << "ESC를 누르면 종료합니다.";
 
 			input = _getch();
@@ -1243,9 +1238,9 @@ void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		}
 		if (RockPaperScissors()) {
 			system("cls");
-			a1.drawAntHouse(user->getHouseSize());
+			//a1.drawAntHouse(user->getHouseSize());
 			f1.ranFeed();
-			a1.moveInHouse();
+			//a1.moveInHouse();
 			
 		}
 		else {
@@ -1423,7 +1418,6 @@ int QuestionAccount() { //계정 찾는 거 질문
 				LoginAccount();
 				break;
 			case 12:
-				//system("cls");
 				DrawFindPw();
 				break;
 			case 14:
