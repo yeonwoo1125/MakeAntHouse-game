@@ -53,8 +53,12 @@ enum KEYBOARD {
 	DOWN = 80
 };
 
-//화면 그리는 함수
+//콘솔창 설정
+void SetConsoleVIew_main();
+void SetConsoleVIew_house();
 
+
+//화면 그리는 함수
 void DrawFirstInfoGame();
 void DrawSecondeInfoGame();
 void DrawStartGame();
@@ -112,9 +116,14 @@ void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
 }
 
 //콘솔 크기, 타이틀
-void SetConsoleVIew() {
-	system("mode con:cols=100 lines=30"); //가로 50, 세로 20
+void SetConsoleVIew_main() {
+	system("mode con:cols=100 lines=30"); //가로 50, 세로 30
 	system("title Make Ant House By Yeonwoo"); //타이틀
+}
+
+//개미집 보여줄 때만 콘솔 크기 키우기, 이후에는 다시 원래 크기로
+void SetConsoleVIew_house() {
+	system("mode con:cols=100 lines=100"); //가로 , 세로 
 }
 
 //void getFileDate() {
@@ -1436,8 +1445,8 @@ int userLogin() {
 //메인 루프
 int main() {
 	srand((unsigned int)time(NULL));
+	SetConsoleVIew_main(); //프로그램 시작할 때 콘솔 크기
 
-	SetConsoleVIew(); //프로그램 시작할 때 콘솔 크기
 	while (true) {
 		switch (ReadyGame()) { //리턴을 받아 판단
 		case GAMESTART:
