@@ -18,7 +18,7 @@ using namespace std;
 #define ENTER 13 //엔터 키 값
 #define ESC 27 //esc 키 값
 
-string user_Nickname; //사용자 이름
+
 string plz_space = "[ 스페이스나 엔터를 눌러주세요. ]";
 string plz_key = "[ 아무 키나 눌러주세요. ]";
 
@@ -143,11 +143,13 @@ class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	int pwAnswer;
 	string user_name;
 	int houseSize;
-
+	string user_Nickname; //사용자 이름
 public:
 	Login() {
 		this->houseSize = 8;
 	}
+	void setUserNickname(string n) { this->user_Nickname = n; }
+	string getUserNickname() { return user_Nickname; }
 	void setHouseSize(int h) { this->houseSize += h; }
 	int getHouseSize() { return houseSize; }
 	void setUserName(string userName) { this->user_name = userName; }
@@ -468,9 +470,10 @@ void DrawSecondeInfoGame()
 
 //시작 화면 그리기
 //디비 연동 후 계정이 없는 처음에만 실행
-//집 모양 및 개미 모양 선택하는것도 넣자
+
 void DrawStartGame() {
-	if (user_Nickname == "") {
+	string n;
+	if (user->getUserNickname().empty()) {
 		system("cls");
 		gotoxy(14, 9);
 		cout << "개미들이 다리를 다쳐 집을 짓지 못하고 있어요!";
@@ -480,7 +483,8 @@ void DrawStartGame() {
 		cout << "개미들에게 당신의 이름을 알려주면 보답을 할거예요.";
 		gotoxy(15, 12);
 		cout << " 당신의 이름이 무엇인가요? : ";
-		cin >> user_Nickname;
+		cin >> n;
+		user->setUserNickname(n);
 	}
 	//system("pause>null");
 }
@@ -488,15 +492,15 @@ void DrawStartGame() {
 void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
 	if (f1.getFeedCnt() > 9) {
 		gotoxy(18, 10);
-		cout << user_Nickname << "님의 개미가 굶어죽었습니다.";
+		cout << user->getUserNickname() << "님의 개미가 굶어죽었습니다.";
 		gotoxy(18, 11);
-		cout << user_Nickname << "님의 집의 크기는 " << user->getHouseSize() << "입니다.";
+		cout << user->getUserNickname() << "님의 집의 크기는 " << user->getHouseSize() << "입니다.";
 		gotoxy(18, 14);
 		DrawGameOver();
 	}
 	else if (user->getHouseSize() <= 0) {
 		gotoxy(18, 10);
-		cout << user_Nickname << "님의 집이 부숴져 개미가 이사를 갔습니다.";
+		cout << user->getUserNickname() << "님의 집이 부숴져 개미가 이사를 갔습니다.";
 		gotoxy(18, 12);
 		DrawGameOver();
 	}
@@ -907,7 +911,7 @@ bool RockPaperScissors() {
 		gotoxy(37, 5);
 		cout << win_cnt << "승 " << lose_cnt << "패 ";
 		gotoxy(14, 10);
-		cout << user_Nickname << " : ";
+		cout << user->getUserNickname() << " : ";
 		cin >> user_select;
 
 
@@ -1216,7 +1220,7 @@ void InfoGame() {
 //게임 시작 뷰
 void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 		system("cls");
-		if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
+		if (user->getUserNickname().empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
 			DrawStartGame(); //닉네임 생성 및 미니게임 시작
 			DrawStartMiniGame();
 			system("pause>null");
@@ -1238,7 +1242,7 @@ void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
 void readyStart() { //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
 	system("cls");
 	if ((user->getLoginCheck())) { //로그인 성공
-		if (user_Nickname.empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
+		if (user->getUserNickname().empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
 			DrawStartGame(); //닉네임 생성 및 미니게임 시작
 			startGame();
 		} // 로그인이 되어 있으면 바로 집 그리고 개미 생성하기
