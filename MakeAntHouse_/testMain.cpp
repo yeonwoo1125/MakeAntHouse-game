@@ -76,7 +76,7 @@ int startMiniGame();
 
 //뷰
 void InfoGame();
-void startGame();
+int startGame();
 
 //게임 시작 준비
 void readyStart();
@@ -1281,18 +1281,20 @@ int threadStart() {
 }
 
 //게임 시작 뷰
-void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
-		system("cls");
+int startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미니게임해야함
+		//system("cls");
 		if (player.getUserNickname().empty()) {// 닉네임이 없는 경우, 처음 로그인 한 경우
 			DrawStartGame(); //닉네임 생성 및 미니게임 시작
 			DrawStartMiniGame();
 			system("pause>null");
-			startGame();
+			startMiniGame();
 		}
 		startMiniGame();
 		system("cls");
 		a1.drawAntHouse(player.getHouseSize());
 		threadStart();
+
+		return 0;
 }
 
 //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
