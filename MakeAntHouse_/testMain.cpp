@@ -68,10 +68,11 @@ int readyGame();
 void DrawReadyGame();
 
 //미니게임
-bool RockPaperScissors();
-bool QuizGame();
-bool upDownGame();
+int RockPaperScissors();
+int QuizGame();
+int upDownGame();
 void timingGame();
+int startMiniGame();
 
 //뷰
 void InfoGame();
@@ -96,8 +97,6 @@ void setFileData(string acc, string pw, string name, string idAnswer, int pwAnsw
 void eatFeed();
 
 //스레드를 위한 함수
-void move();
-void makeFeed();
 int threadStart();
 
 //마우스 좌표 
@@ -342,29 +341,7 @@ void eatFeed() {
 		system("cls");
 		f1.setCheckEatFeed(true);
 		f1.setFeedCnt(1);
-		int miniGame;
-		miniGame = rand() % 4;
-		switch (miniGame)
-		{
-		case 0:
-			system("cls");
-			RockPaperScissors();
-			break;
-		case 1:
-			system("cls");
-			QuizGame();
-			break;
-		case 2:
-			system("cls");
-			upDownGame();
-			break;
-		case 3:
-			system("cls");
-			cout << "보너스 게임";
-			cout << "얻는 점수만큼 집이 커집니다.";
-			timingGame();
-			break;
-		}
+		startMiniGame();
 	}
 	else {
 		f1.setCheckEatFeed(false);
@@ -942,10 +919,35 @@ int readyGame() {
 	}
 }
 
-//미니 게임
-// 가위바위보
-bool RockPaperScissors() {
+//미니 게임실행
+int startMiniGame() {
+	int miniGame;
+	miniGame = rand() % 4;
+	switch (miniGame)
+	{
+	case 0:
+		system("cls");
+		RockPaperScissors();
+		return 0;
+	case 1:
+		system("cls");
+		QuizGame();
+		return 0;
+	case 2:
+		system("cls");
+		upDownGame();
+		return 0;
+	case 3:
+		system("cls");
+		cout << "보너스 게임";
+		cout << "얻는 점수만큼 집이 커집니다.";
+		timingGame();
+		return 0;
+	}
+}
 
+// 가위바위보
+int RockPaperScissors() {
 	string user_select;
 	string RPS[] = { "가위","바위","보","가위","바위","보","가위","바위","보","가위","바위","보" };
 	string com_select;
@@ -1030,8 +1032,7 @@ bool RockPaperScissors() {
 
 			player.setHouseSize(-rand() % 5 + 1);
 			if (player.getHouseSize() <= 0) DrawDieAnt();
-			return false;
-
+			return 0;
 		}
 		else if (win_cnt == 2) {
 			gotoxy(14, 15);
@@ -1042,7 +1043,7 @@ bool RockPaperScissors() {
 			
 			player.setHouseSize(rand() % 7 + 2);
 			if (player.getHouseSize() <= 0) DrawDieAnt();
-			return true;
+			return 0;
 		}
 		Sleep(1000);
 		system("cls"); //화면 지우기
@@ -1050,7 +1051,7 @@ bool RockPaperScissors() {
 }
 
 //퀴즈 게임
-bool QuizGame() {
+int QuizGame() {
 	string quiz[] = { "대한민국의 수도는?(두글자) : ", "3 * 3 = ", " 3 * 5 + 9 = ","좋아하는 노래를 적어주세요! : ","2 + 3 * 5 = ",
 		"부엉이가 수영할 때 내는 소리는?(세글자) : ","세상에서 가장 가난한 왕은?(네글자) : ","4 / 2 + 6 = ","7 * 8 / 4 = ","깃허브 아이콘의 동물 이름은? (세글자) : ", "좋아하는 전공은 ? : " };
 	string answer[] = { "서울","9","24","","17","첨부엉", "최저임금", "8", "14","고양이","" };
@@ -1093,7 +1094,7 @@ bool QuizGame() {
 			DrawGameOver();
 			player.setHouseSize(-rand() % 5 + 1);
 			if (player.getHouseSize() <= 0) DrawDieAnt();
-			return false;
+			return 0;
 		}
 		else if (win_cnt == 2) {
 			gotoxy(14, 15);
@@ -1102,7 +1103,7 @@ bool QuizGame() {
 			system("cls");
 			DrawGamePass();
 			player.setHouseSize(rand() % 7 + 2);
-			return true;
+			return 0;
 		}
 		Sleep(1500);
 		system("cls"); //화면 지우기
@@ -1110,7 +1111,7 @@ bool QuizGame() {
 }
 
 //업다운 게임
-bool upDownGame() {
+int upDownGame() {
 	int com_sel = rand() % 50 + 1;
 	int user_sel;
 	int cnt = 0;
@@ -1129,7 +1130,7 @@ bool upDownGame() {
 			cout << "개미가 고른 수는 " << com_sel << "입니다! 축하합니다~" << endl;
 			player.setHouseSize(rand() % 7 + 2);
 			DrawGamePass();
-			return true;
+			return 0;
 		}
 		if (cnt == 5) {
 			system("cls");
@@ -1139,10 +1140,10 @@ bool upDownGame() {
 			system("cls");
 			DrawGameOver();
 			player.setHouseSize(-rand() % 5 + 1);
-			return false;
+			return 0;
 		}
 
-		else if (com_sel > user_sel) {
+		if (com_sel > user_sel) {
 			gotoxy(11, 10);
 			cout << "개미는 더 큰 수를 골랐습니다!";
 			gotoxy(11, 11);
@@ -1288,16 +1289,10 @@ void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미
 			system("pause>null");
 			startGame();
 		}
-		if (RockPaperScissors()) {
-			system("cls");
-			a1.drawAntHouse(player.getHouseSize());
-			threadStart();
-		}
-		else {
-			system("cls");
-			a1.drawAntHouse(player.getHouseSize());
-			threadStart();
-		}
+		startMiniGame();
+		system("cls");
+		a1.drawAntHouse(player.getHouseSize());
+		threadStart();
 }
 
 //게임 시작 전 로그인 체크, 하우스 사이즈, 게스트 로그인 여부 묻기
