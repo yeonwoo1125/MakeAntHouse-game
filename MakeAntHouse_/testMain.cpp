@@ -89,7 +89,7 @@ bool checkSameAccount();
 bool checkCntAcc();
 
 //파일처리
-void getFileData();
+int getFileData();
 void setFileData(string acc, string pw, string name, string idAnswer, int pwAnswer);
 
 //먹이 먹는 함수
@@ -372,7 +372,7 @@ void setFileData(string acc, string pw, string name, string idAnswer, int pwAnsw
 	ofs.close();
 }
 //파일에 저장된 내용 가져와서 저장하기
-void getFileData() {
+int getFileData() {
 	char acc[20], pw[20], name[20], accAn[20];
 	int  pwAn, h;
 	cntAcc = 0;
@@ -383,7 +383,7 @@ void getFileData() {
 	while (!ifs.eof()){
 		if (getline(ifs, line)) cntAcc++;
 	}
-
+	if (cntAcc == 0) return 0;
 	for (int i = 0; i < cntAcc; i++) {
 		user[i] = new Login;
 		ifs >> acc;
