@@ -13,7 +13,6 @@
 #include <thread> //thread 
 
 #pragma comment(lib, "winmm.lib") 
-//#pragma execution_character_set( "utf-8" )
 
 using namespace std;
 
@@ -50,6 +49,7 @@ void DrawGameOver();
 void DrawGamePass();
 void DrawStartMiniGame();
 void DrawDieAnt();
+void DrawInGameMenu();
 
 //계정찾기
 void DrawFIndAcc();
@@ -215,7 +215,6 @@ public:
 	Ant() : ant_x(8), ant_y(6) {}
 	int getAntX() { return ant_x; }
 	int getAntY() { return ant_y; }
-	
 
 	int moveInHouse() { //개미집 안에서 움직임
 		while (true) {
@@ -245,7 +244,7 @@ public:
 				case RIGHT:
 					gotoxy(ant_x, ant_y);
 					cout << "   ";
-					if (ant_x > player.getHouseSize() + 3) ant_x = player.getHouseSize() + 4;
+					if (ant_x > player.getHouseSize() + 3) return 0; 
 					else ant_x++;
 					gotoxy(ant_x, ant_y);
 					cout << antShape;
@@ -311,8 +310,14 @@ public://현재 개미집에 생성된 먹이의 수
 	void setCheckEatFeed(bool f) { this->checkEatFeed = f; }
 	int ranFeed() {
 		while(true) {
-			if (getFeedCnt() > 9) 
+			if (getFeedCnt() > 9) {
 				DrawDieAnt();
+				return 0;
+			}
+			if (a1.moveInHouse() == 0) {
+				system("cls");
+				return 0;
+			}
 			feed_x = rand() % (player.getHouseSize()-5)+7; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
 			feed_y = 4 + rand() % (player.getHouseSize()-5) +3;
 			gotoxy(feed_x, feed_y);
@@ -400,6 +405,11 @@ int getFileData() {
 		Sleep(3000);
 	}	
 	
+}
+//개미집에서 보이는 메뉴 그리기
+void DrawInGameMenu() {
+	gotoxy(25, 10);
+	cout << "나가기";
 }
 
 //메인 메뉴 그리기
@@ -1259,12 +1269,6 @@ void InfoGame() {
 	system("pause>null");
 }
 
-void move() {
-	a1.moveInHouse();
-}
-void makeFeed() {
-	f1.ranFeed();
-}
 //스레드 실행하는 부분
 int threadStart() {
 	thread moveInHouse(&Ant::moveInHouse, a1);
@@ -1488,8 +1492,6 @@ int QuestionAccount() {
 //메인 루프
 int main() {
 	PlaySound("ant's_day", 0, SND_FILENAME | SND_ASYNC | SND_LOOP); //루프 재생
-	//console창 utf-8로 설정
-	//SetConsoleOutputCP(65001);
 	//시작 전 저장된 데이터가 있으면 가져와서 저장
 	//getFileData();
 
