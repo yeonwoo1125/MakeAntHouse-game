@@ -113,7 +113,11 @@ int QuestionAccount();
 //파일에서 데이터 불러와서 저장하기
 void getFileData();
 
+//먹이 먹는 함수
 void eatFeed();
+
+//스레드를 위한 함수
+int threadStart();
 
 //마우스 좌표 
 void gotoxy(int x, int y) { //커서를 특정 위치로 이동시키는 함수
@@ -234,11 +238,13 @@ private:
 	int ant_x, ant_y;
 	int input = 0;
 	string antShape = "@@@";
+	bool checkEatFeed = false;
 public:
 	Ant() : ant_x(8), ant_y(user->getHouseSize()) {}
 	int getAntX() { return ant_x; }
 	int getAntY() { return ant_y; }
-	
+	void setCheckEatFeed(bool f) { this->checkEatFeed = f; }
+	bool getCheckEatFeed() { return checkEatFeed; }
 	void moveInHouse() { //개미집 안에서 움직임
 		while (true) {
 			input = _getch();
@@ -328,8 +334,8 @@ public://현재 개미집에 생성된 먹이의 수
 	void setFeedCnt(int n) { feedCnt -= n; }
 	void ranFeed() {
 		for (int i = 0; i < feedCnt; i++) {
-			feed_x = rand() % user->getHouseSize() + 3; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
-			feed_y = 4 + rand() % user->getHouseSize() + 2;
+			feed_x = rand() % user->getHouseSize()+4; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
+			feed_y = 4 + rand() % user->getHouseSize() +3;
 			gotoxy(feed_x, feed_y);
 			cout << feedShape;
 			Sleep(5000); //5초마다 먹이 생성
@@ -347,6 +353,7 @@ void eatFeed() {
 	//case 2 -> upDownGame
 	//case 3 -> timingGame
 	if (a1.getAntX() == f1.getFeedX() && a1.getAntY() ==f1.getFeedY()) {
+		a1.setCheckEatFeed(true);
 		f1.setFeedCnt(1);
 		int miniGame;
 		miniGame = rand() % 4;
@@ -371,6 +378,9 @@ void eatFeed() {
 			timingGame();
 			break;
 		}
+	}
+	else {
+		a1.setCheckEatFeed(false);
 	}
 }
 
@@ -942,14 +952,12 @@ bool RockPaperScissors() {
 		cout << user->getUserNickname() << " : ";
 		cin >> user_select;
 
-
 		com_select = RPS[rand() % 12]; //컴퓨터는 가위바위보 중 하나를 랜덤으로 가져옴
 		gotoxy(14, 12);
 		cout << "나쁜 개미 : " << com_select;
 
 		if (user_select == "가위") { //유저가 가위를 골랐을 경우
 			if (com_select == "바위") {
-
 				gotoxy(14, 14);
 				cout << "졌습니다.";
 				lose_cnt++;
@@ -1245,16 +1253,10 @@ void InfoGame() {
 	system("pause>null");
 }
 
-//스레드를 위한 함수
-void antMove() {
-	a1.moveInHouse();
-}
-void makeFeed() {
-	f1.ranFeed();
-}
-void threadStart() {
-	thread t1(antMove);
-	thread t2(makeFeed);
+//스레드 실행하는 부분
+int threadStart() {
+	thread t1(&Ant::moveInHouse,a1);
+	thread t2(&Feed::ranFeed,f1);
 	t1.join();
 	t2.join();
 }
