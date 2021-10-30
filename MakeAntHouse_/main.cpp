@@ -228,7 +228,7 @@ private:
 	string antShape = "@@@";
 	bool checkEatFeed = false;
 public:
-	Ant() : ant_x(8), ant_y(player.getHouseSize()) {}
+	Ant() : ant_x(8), ant_y(6) {}
 	int getAntX() { return ant_x; }
 	int getAntY() { return ant_y; }
 	
@@ -323,7 +323,7 @@ public://현재 개미집에 생성된 먹이의 수
 	void setFeedCnt(int n) { feedCnt -= n; }
 	int ranFeed() {
 		while(true) {
-			if (f1.getFeedCnt() > 9) 
+			if (getFeedCnt() > 9) 
 				DrawDieAnt();
 			feed_x = rand() % player.getHouseSize()+4; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
 			feed_y = 4 + rand() % player.getHouseSize() +3;
