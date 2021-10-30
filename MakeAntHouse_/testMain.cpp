@@ -30,29 +30,6 @@ string plz_key = "[ 아무 키나 눌러주세요. ]";
 ofstream ofs("antHouse.txt", ios::app);
 ifstream ifs;
 
-//게스트 로그인 메뉴
-enum GUEST {
-	LOGIN_USER,
-	START,
-	QUITGUEST
-};
-
-//로그인 메뉴
-enum LOGIN {
-	CREATE,
-	QUESTION,
-	QUITLOGIN,
-	ALLACC
-};
-
-//메인 메뉴
-enum MENU {
-	GAMESTART = 0,
-	INFO,
-	QUIT,
-	ACCOUNT
-};
-
 //키보드 방향키 값
 enum KEYBOARD {
 	UP = 72,
@@ -83,11 +60,11 @@ void DrawRetryId();
 void DrawRetryPwAnswer();
 
 //메뉴 고르기
-GUEST selectGuest();
+int selectGuest();
 void DrawGuestLogin();
-LOGIN SelectLogin();
+int selectLogin();
 void DrawLogin();
-MENU ReadyGame();
+int readyGame();
 void DrawReadyGame();
 
 //미니게임
@@ -99,11 +76,8 @@ void timingGame();
 //뷰
 void InfoGame();
 void startGame();
-int userLogin();
 
 //게임 시작 준비
-int checkReady();
-int checkGuest();
 void readyStart();
 
 //로그인 관련
@@ -122,6 +96,8 @@ void setFileData(string acc, string pw, string name, string idAnswer, int pwAnsw
 void eatFeed();
 
 //스레드를 위한 함수
+void move();
+void makeFeed();
 int threadStart();
 
 //마우스 좌표 
@@ -358,6 +334,7 @@ void eatFeed() {
 	//case 2 -> upDownGame
 	//case 3 -> timingGame
 	if (a1.getAntX() == f1.getFeedX() && a1.getAntY() ==f1.getFeedY()) {
+		system("cls");
 		f1.setCheckEatFeed(true);
 		f1.setFeedCnt(1);
 		int miniGame;
@@ -403,12 +380,9 @@ void getFileData() {
 	ifs.open("antHouse.txt");
 	string line;
 	//라인수세기
-	while (!ifs.eof())
-	{
+	while (!ifs.eof()){
 		if (getline(ifs, line)) cntAcc++;
-
 	}
-	cout << cntAcc << endl;
 
 	for (int i = 0; i < cntAcc; i++) {
 		user[i] = new Login;
@@ -422,28 +396,10 @@ void getFileData() {
 		user[i]->setIdAnswer(accAn);
 		ifs >> pwAn;
 		user[i]->setPwAnswer(pwAn);
-		//cout << acc << " " << pw << " " << name << " " << accAn << " " << pwAn << "ddd"<<endl;
-		//Sleep(3000);
+		cout << acc << " " << pw << " " << name << " " << accAn << " " << pwAn << "ddd"<<endl;
+		Sleep(3000);
 	}	
 	
-}
-
-//게스트로 로그인 할건지 물음
-int checkGuest() { 
-	DrawGuestLogin();
-
-	while (true) {
-		switch (selectGuest()) { //리턴을 받아 판단
-		case LOGIN_USER:
-			return 2;
-			break;
-		case START:
-			return 1;
-			break;
-		case QUITGUEST:
-			return 0;
-		}
-	}
 }
 
 //메인 메뉴 그리기
@@ -538,7 +494,6 @@ void DrawSecondeInfoGame()
 	gotoxy(17, 24);
 	cout << plz_key;
 }
-
 
 //시작 화면 그리기
 void DrawStartGame() {
@@ -829,17 +784,19 @@ void FindPw() {
 	}
 }
 
-GUEST selectGuest() {
+int selectGuest() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
+	DrawGuestLogin();
 	while (true) { //게임 루프
 
-		if (y <= 0) { //커서가 위로 그만 올라가게
-			y = 0;
-		}
-		else if (y >= 2) { //커서가 아래로 그만 내려가게
+		if (y < 0) { //커서가 위로 그만 올라가게
 			y = 2;
 		}
+		else if (y > 2) { //커서가 아래로 그만 내려가게
+			y = 0;
+		}
+
 		gotoxy(22, 12 + y); //위치조정
 		cout << ">";
 
@@ -861,28 +818,31 @@ GUEST selectGuest() {
 		else if (input == SPACE || input == ENTER) { //키보드가 스페이스일 경우
 			switch (y) { //y위치에 따라 판단
 			case 0:
-				return LOGIN_USER;
+				LoginAccount();
+				break;
 			case 1:
-				return START;
+				startGame();
+				break;
 			case 2:
-				return QUITGUEST;
+				return 0;
 			}
 		}
 	}
 }
 
-LOGIN SelectLogin() {
+int selectLogin() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
 	while (true) { //게임 루프
 		DrawLogin(); //준비화면 그리기
 
-		if (y <= 0) { //커서가 위로 그만 올라가게
-			y = 0;
-		}
-		else if (y >= 6) { //커서가 아래로 그만 내려가게
+		if (y < 0) { //커서가 위로 그만 올라가게
 			y = 6;
 		}
+		else if (y > 6) { //커서가 아래로 그만 내려가게
+			y = 0;
+		}
+
 		gotoxy(21, 12 + y); //위치조정
 		cout << ">";
 
@@ -903,32 +863,33 @@ LOGIN SelectLogin() {
 		else if (input == SPACE || input == ENTER) { //키보드가 스페이스일 경우
 			switch (y) { //y위치에 따라 판단
 			case 0:
-				return CREATE;
+				CreateAccount();
+				break;
 			case 2:
-				return QUESTION;
+				QuestionAccount();
+				break;
 			case 4:
-				return ALLACC;
+				allAccount();
+				break;
 			case 6:
-				return QUITLOGIN;
+				return 0;
 			}
 		}
 	}
 }
 
-MENU ReadyGame() {
+int readyGame() {
 	int y = 0; //커서의 y 위치
 	int input = 0; //키보드 입력을 받을 변수
 	while (true) { //게임 루프
 		DrawReadyGame(); //준비화면 그리기
 
-		if (y <= 0) { //커서가 위로 그만 올라가게
-			y = 0;
-		}
-		else if (y >= 6) { //커서가 아래로 그만 내려가게
+		if (y < 0) { //커서가 위로 그만 올라가게
 			y = 6;
 		}
-
-
+		else if (y >6) { //커서가 아래로 그만 내려가게
+			y = 0;
+		}
 		if (y == 4) {
 			gotoxy(18, 11 + y); //위치조정
 			cout << ">";
@@ -954,14 +915,18 @@ MENU ReadyGame() {
 		else if (input == SPACE || input == ENTER) { //키보드가 스페이스일 경우
 			switch (y) { //y위치에 따라 판단
 			case 0:
-				return GAMESTART;
+				readyStart();
+				break;
 			case 2:
-				return INFO;
+				InfoGame();
+				break;
 			case 4:
-				return ACCOUNT;
+				selectLogin();
+				break;
 			case 6:
 				system("cls");
-				return QUIT;
+				//delete[] user;
+				return 0;
 			}
 		}
 	}
@@ -1294,12 +1259,18 @@ void InfoGame() {
 	system("pause>null");
 }
 
-
+void move() {
+	a1.moveInHouse();
+}
+void makeFeed() {
+	f1.ranFeed();
+}
 //스레드 실행하는 부분
 int threadStart() {
 	thread moveInHouse(&Ant::moveInHouse, a1);
-	a1.drawAntHouse(player.getHouseSize());
-	f1.ranFeed();
+	thread makeFeed(&Feed::ranFeed, f1);
+
+	makeFeed.join();
 	moveInHouse.join();
 	return 0;
 }
@@ -1315,10 +1286,12 @@ void startGame() { //게스트 로그인 시 게임 시작 부분, 무조건 미
 		}
 		if (RockPaperScissors()) {
 			system("cls");
+			a1.drawAntHouse(player.getHouseSize());
 			threadStart();
 		}
 		else {
 			system("cls");
+			a1.drawAntHouse(player.getHouseSize());
 			threadStart();
 		}
 }
@@ -1332,21 +1305,12 @@ void readyStart() {
 			startGame();
 		} // 로그인이 되어 있으면 바로 집 그리고 개미 생성하기
 		a1.drawAntHouse(player.getHouseSize());
-		a1.moveInHouse();
+		threadStart();
 	}
 	else { //로그인이 안됐을 경우
-		checkReady(); //게스트 로그인 여부 묻기
+		selectGuest(); //게스트 로그인 여부 묻기
 	}
 	system("cls");
-}
-
-//게스트 로그인 시 
-int checkReady() {
-	switch (checkGuest()) {
-	case 0: return 0;
-	case 1: startGame();
-	case 2: LoginAccount();
-	}
 }
 
 //아이디 중복 체크
@@ -1521,26 +1485,6 @@ int QuestionAccount() {
 	}
 }
 
-//로그인 뷰
-int userLogin() {
-	DrawLogin();
-	while (true) {
-		switch (SelectLogin()) { //리턴을 받아 판단
-		case CREATE:
-			CreateAccount();
-			break;
-		case QUESTION:
-			QuestionAccount();
-			break;
-		case ALLACC:
-			allAccount();
-			break;
-		case QUITLOGIN:
-			return 0;
-		}
-	}
-}
-
 //메인 루프
 int main() {
 	//console창 utf-8로 설정
@@ -1551,21 +1495,7 @@ int main() {
 	srand((unsigned int)time(NULL));
 	SetConsoleVIew_main(); 
 
-	while (true) {
-		switch (ReadyGame()) { 
-		case GAMESTART:
-			readyStart();
-			break;
-		case INFO:
-			InfoGame();
-			break;
-		case ACCOUNT:
-			userLogin();
-			break;
-		case QUIT:
-			//delete[] user;
-			return 0;
-		}
-	}
+	readyGame();
+
 	return 0;
 }
