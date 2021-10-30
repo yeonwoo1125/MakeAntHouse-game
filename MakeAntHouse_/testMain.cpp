@@ -1487,14 +1487,15 @@ int QuestionAccount() {
 
 //메인 루프
 int main() {
+	PlaySound("ant's_day", 0, SND_FILENAME | SND_ASYNC | SND_LOOP); //루프 재생
 	//console창 utf-8로 설정
 	//SetConsoleOutputCP(65001);
 	//시작 전 저장된 데이터가 있으면 가져와서 저장
-	getFileData();
+	//getFileData();
 
 	srand((unsigned int)time(NULL));
 	SetConsoleVIew_main(); 
-
+	
 	readyGame();
 
 	return 0;
