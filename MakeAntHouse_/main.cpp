@@ -152,7 +152,7 @@ class Login { //유저가 로그인 시 계정 저장 및 계정 생성 시 정보 저장
 	string user_Nickname; //사용자 별명, 인게임 내 사용되는 이름
 public:                        
 	Login() {
-		this->houseSize = 8;
+		this->houseSize = 10;
 	}
 	void setUserNickname(string n) { this->user_Nickname = n; }
 	string getUserNickname() { return user_Nickname; }
@@ -212,10 +212,8 @@ public:
 			}
 			return false;
 		}
-
 	}
 	~Login() {}
-	
 };
 Login *user[3];
 Login player;
@@ -226,12 +224,13 @@ private:
 	int ant_x, ant_y;
 	int input = 0;
 	string antShape = "@@@";
-	bool checkEatFeed = false;
+	
 public:
 	Ant() : ant_x(8), ant_y(6) {}
 	int getAntX() { return ant_x; }
 	int getAntY() { return ant_y; }
 	
+
 	int moveInHouse() { //개미집 안에서 움직임
 		while (true) {
 			input = _getch();
@@ -315,18 +314,21 @@ private:
 	int feed_x, feed_y;
 	int feedCnt = 3; //기본적으로 집에 3개 생성
 	char feedShape = '*';
+	bool checkEatFeed = false;
 	
 public://현재 개미집에 생성된 먹이의 수
 	int getFeedCnt() { return feedCnt; }
 	int getFeedX() { return feed_x; }
 	int getFeedY() { return feed_y; }
 	void setFeedCnt(int n) { feedCnt -= n; }
+	bool getCheckEatFeed() { return checkEatFeed; }
+	void setCheckEatFeed(bool f) { this->checkEatFeed = f; }
 	int ranFeed() {
 		while(true) {
 			if (getFeedCnt() > 9) 
 				DrawDieAnt();
-			feed_x = rand() % player.getHouseSize()+4; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
-			feed_y = 4 + rand() % player.getHouseSize() +3;
+			feed_x = rand() % (player.getHouseSize()-5)+7; //개미집 내부에 먹이 생성 - >개미집 가로세로보다 작은 수임
+			feed_y = 4 + rand() % (player.getHouseSize()-5) +3;
 			gotoxy(feed_x, feed_y);
 			cout << feedShape;
 			Sleep(5000);
@@ -346,6 +348,7 @@ void eatFeed() {
 	//case 2 -> upDownGame
 	//case 3 -> timingGame
 	if (a1.getAntX() == f1.getFeedX() && a1.getAntY() ==f1.getFeedY()) {
+		f1.setCheckEatFeed(true);
 		f1.setFeedCnt(1);
 		int miniGame;
 		miniGame = rand() % 4;
@@ -371,6 +374,9 @@ void eatFeed() {
 			break;
 		}
 	}
+	else {
+		f1.setCheckEatFeed(false);
+	}
 }
 
 //파일에 저장하기
@@ -379,26 +385,32 @@ void setFileData(string acc, string pw, string name, string idAnswer, int pwAnsw
 	ofs << pw << " "; //pw txt파일에 저장
 	ofs << name << " "; //name txt파일에 저장
 	ofs << idAnswer << " "; //idAnswer txt파일에 저장
-	ofs << pwAnswer << " ";
+	ofs << pwAnswer << endl;
 	ofs.close();
 }
 //파일에 저장된 내용 가져와서 저장하기
 void getFileData() {
-	string acc, pw, name, accAn, pwAn, h;
+	string acc, pw, name, accAn;
+	int  pwAn, h;
 	int cnt = 0;
 	fp1 = fopen("antHouse.txt", "r");
+	char c;
 
-	while (!feof(fp1)) {
+	//라인수세기
+	while (fscanf(fp1, "%c",&c) != EOF) {
+		if (c == '\n')
+			cnt++;
+	}
+	
+	for (int i = 0; i < cnt; i++) {
 		user[cnt] = new Login;
-		fscanf(fp1, "%s %s %s %s %s %s", &acc, &pw, &name, &accAn, &pwAn, &h);
+		fscanf(fp1, "%s %s %s %s %d", &acc, &pw, &name, &accAn, &pwAn);
 		user[cnt]->setUserAcc(acc);
 		user[cnt]->setUserPw(pw);
 		user[cnt]->setUserName(name);
 		user[cnt]->setIdAnswer(accAn);
-		user[cnt]->setPwAnswer(stoi(pwAn));
-		user[cnt]->setHouseSize(stoi(h));
-		cnt++;
-
+		user[cnt]->setPwAnswer(pwAn);
+		//user[cnt]->setHouseSize(h);
 	}
 	fclose(fp1);
 }
@@ -535,20 +547,21 @@ void DrawStartGame() {
 
 //개미 죽는 모습 - 게임 오버 그리기
 void DrawDieAnt() { //개미집이 0보다 작아졌을 경우, 먹이를 먹지 않았을 경우
+	system("cls");
 	if (f1.getFeedCnt() > 9) {
 		gotoxy(18, 10);
 		cout << player.getUserNickname() << "님의 개미가 굶어죽었습니다.";
 		gotoxy(18, 11);
 		cout << player.getUserNickname() << "님의 집의 크기는 " << player.getHouseSize() << "입니다.";
-		gotoxy(18, 14);
-		DrawGameOver();
+		/*gotoxy(18, 14);
+		DrawGameOver();*/
 		
 	}
 	else if (player.getHouseSize() <= 0) {
 		gotoxy(18, 10);
 		cout << player.getUserNickname() << "님의 집이 부숴져 개미가 이사를 갔습니다.";
-		gotoxy(18, 12);
-		DrawGameOver();
+		/*gotoxy(18, 12);
+		DrawGameOver();*/
 	}
 }
 
@@ -666,6 +679,7 @@ void DrawRetryPwAnswer() {
 
 //계정 3개까지만 만드세요
 bool checkCntAcc() {
+
 	return true;
 }
 
@@ -1024,7 +1038,6 @@ bool RockPaperScissors() {
 			DrawGameOver();
 
 			player.setHouseSize(-rand() % 5 + 1);
-			
 			if (player.getHouseSize() <= 0) DrawDieAnt();
 			return false;
 
@@ -1035,8 +1048,9 @@ bool RockPaperScissors() {
 			Sleep(2000);
 			system("cls");
 			DrawGamePass();
+			
 			player.setHouseSize(rand() % 7 + 2);
-			system("pause>null");
+			if (player.getHouseSize() <= 0) DrawDieAnt();
 			return true;
 		}
 		Sleep(1000);
@@ -1264,10 +1278,23 @@ void InfoGame() {
 	system("pause>null");
 }
 
+//스레드생성할때쓸메서드
+int startMove() {
+	a1.moveInHouse();
+	if(!f1.getCheckEatFeed())
+		return 0;
+}
+int startFeed() {
+	f1.ranFeed();
+	if (!f1.getCheckEatFeed())
+		return 0;
+}
 //스레드 실행하는 부분
 int threadStart() {
-	thread t1(&Ant::moveInHouse,a1);
-	thread t2(&Feed::ranFeed,f1);
+	/*thread t1(&Ant::moveInHouse,a1);
+	thread t2(&Feed::ranFeed,f1);*/
+	thread t1(startMove);
+	thread t2(startFeed);
 
 	t1.join();
 	t2.join();
@@ -1368,7 +1395,6 @@ int CreateAccount() {
 	gotoxy(12, 15);
 	cout << "가장 좋아하는 전공은? : ";
 	cin >> idAnswer;
-	
 
 	while (true) {
 		gotoxy(12, 8);
@@ -1526,8 +1552,6 @@ int main() {
 			userLogin();
 			break;
 		case QUIT:
-			ofs << player.getHouseSize() << endl;
-			ofs.close();
 			delete[] user;
 			return 0;
 		}
