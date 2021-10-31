@@ -28,7 +28,7 @@ string plz_key = "[ 아무 키나 눌러주세요. ]";
 //파일 처리
 ofstream ofs("antHouse.txt", ios::app);
 ifstream ifs("antHouse.txt");
-
+FILE* fp1;
 //키보드 방향키 값
 enum KEYBOARD {
 	UP = 72,
@@ -360,8 +360,9 @@ void setFileData(string acc, string pw, string name, string idAnswer, int pwAnsw
 }
 //파일에 저장된 내용 가져와서 저장하기
 int getFileData() {
+	fp1 = fopen("antHouse.txt", "r");
 	char acc[20], pw[20], name[20], accAn[20];
-	int  pwAn, h;
+	int  pwAn;
 	cntAcc = 0;
 
 	string line;
@@ -369,21 +370,24 @@ int getFileData() {
 	while (!ifs.eof()){
 		if (getline(ifs, line)) cntAcc++;
 	}
-	if (cntAcc == 0) return 0;
-	for (int i = 1; i < cntAcc; i++) {
-		user[i] = new Login;
-		ifs >> acc;
-		user[i]->setUserAcc(acc);
-		ifs >> pw;
-		user[i]->setUserPw(pw);
-		ifs >> name;
-		user[i]->setUserName(name);
-		ifs >> accAn;
-		user[i]->setIdAnswer(accAn);
-		ifs >> pwAn;
-		user[i]->setPwAnswer(pwAn);
-	}	
 	ifs.close();
+	if (cntAcc == 0) return 0;
+
+	for (int i = 1; i < cntAcc; i++) {
+		fscanf_s(fp1, "%s", acc, 20);
+		fscanf_s(fp1, "%s", pw, 20);
+		fscanf_s(fp1, "%s", name, 20);
+		fscanf_s(fp1, "%s", accAn, 20);
+		fscanf_s(fp1, "%d", &pwAn);
+		user[i] = new Login;
+		user[i]->setUserAcc(acc);
+		user[i]->setUserPw(pw);
+		user[i]->setUserName(name);
+		user[i]->setIdAnswer(accAn);
+		user[i]->setPwAnswer(pwAn);
+		//cout << user[i]->getUserAcc() << user[i]->getUserPw() << user[i]->getUserName() << user[i]->getIdAnswer() << user[i]->getPwAnswer() << endl;
+	}	
+
 	return 0;
 }
 //개미집에서 보이는 메뉴 그리기
@@ -635,7 +639,7 @@ void DrawRetryPwAnswer() {
 
 //계정 3개까지만 만드세요
 bool checkCntAcc() {
-	if (cntAcc >= 2) return false;
+	if (cntAcc > 2) return false;
 	return true;
 }
 
@@ -1428,8 +1432,10 @@ int CreateAccount() {
 	}
 	else {
 		system("cls");
-		gotoxy(17, 12);
-		cout << "계정 생성이 실패하였습니다.";
+		gotoxy(12, 12);
+		cout << "현재 생성된 계정이 " << cntAcc << "개 이므로 생성할 수 없습니다.";
+		gotoxy(11, 13);
+		cout << "계정을 잃어버리셨다면 계정 찾기를 이용해주시기 바랍니다.";
 		gotoxy(17, 17);
 		cout << plz_key;
 		system("pause>null");

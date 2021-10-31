@@ -1,2 +1,3 @@
-name	rkdusdn	강녀우	자자자	1
-name	1234	가연우	자바	4
+yeonwoo	1125	가연우	없음	11
+p1	11	11	ddd	5
+name	1234	ㅇㅇㅇㅇ	c++	7
