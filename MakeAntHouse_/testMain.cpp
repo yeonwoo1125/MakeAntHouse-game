@@ -51,6 +51,7 @@ void DrawGamePass();
 void DrawStartMiniGame();
 void DrawDieAnt();
 void DrawInGameMenu();
+int progressBar();
 
 //계정찾기
 void DrawFIndAcc();
@@ -84,7 +85,7 @@ bool readyGame();
 int CreateAccount();
 void LoginAccount();
 int QuestionAccount();
-void allAccount();
+int allAccount();
 bool checkSameAccount();
 bool checkCntAcc();
 bool checkUser(string acc, string pw);
@@ -301,7 +302,6 @@ bool checkUser(string acc, string pw) {
 			cout << "로그인 성공";
 			gotoxy(18, 15);
 			cout << plz_key;
-			system("pause>null");
 			return true;
 		}
 		else if (user[i]->getUserPw() != pw || user[i]->getUserAcc() != acc) {
@@ -331,10 +331,8 @@ bool checkUser(string acc, string pw) {
 					checkUser(acc, pw);
 				}
 			}
-			return false;
 		}
 	}
-	
 }
 
 //개미가 먹이를 먹은 경우 - 먹이를 지우고 미니게임 실행 
@@ -375,7 +373,7 @@ int getFileData() {
 	ifs.close();
 	if (cntAcc == 0) return 0;
 
-	for (int i = 1; i < cntAcc; i++) {
+	for (int i = 0; i < cntAcc; i++) {
 		fscanf_s(fp1, "%s", acc, 20);
 		fscanf_s(fp1, "%s", pw, 20);
 		fscanf_s(fp1, "%s", name, 20);
@@ -387,7 +385,8 @@ int getFileData() {
 		user[i]->setUserName(name);
 		user[i]->setIdAnswer(accAn);
 		user[i]->setPwAnswer(pwAn);
-		//cout << user[i]->getUserAcc() << user[i]->getUserPw() << user[i]->getUserName() << user[i]->getIdAnswer() << user[i]->getPwAnswer() << endl;
+		/*cout << user[i]->getUserAcc() << user[i]->getUserPw() << user[i]->getUserName() << user[i]->getIdAnswer() << user[i]->getPwAnswer() << endl;
+		Sleep(1000);*/
 	}	
 
 	return 0;
@@ -685,7 +684,7 @@ void FindId() {
 	cout << "******************";
 	while (true) {
 		system("cls");
-		if (user[0]->getUserAcc().empty()) {
+		if (cntAcc==0) {
 			gotoxy(18, 11);
 			cout << "먼저 계정을 생성해주세요.";
 			gotoxy(18, 14);
@@ -738,10 +737,10 @@ void FindPw() {
 	cout << "********************";
 	while (true) {
 		system("cls");
-		if (user[0]->getUserAcc().empty()) {
+		if (cntAcc == 0) {
 			gotoxy(18, 11);
 			cout << "먼저 계정을 생성해주세요.";
-			gotoxy(16, 14);
+			gotoxy(17, 18);
 			cout << plz_key;
 			system("pause>null");
 			break;
@@ -1325,14 +1324,14 @@ int threadStart() {
 
 //집 그리기 또는 미니게임 시작
 int startGame() { 
-		//system("cls");
+	system("cls");
 	
-	//if (readyGame()) {
-	//	startMiniGame();
-	//}
-	//else {
-	//	guestMenu();
-	//}
+	if (readyGame()) {
+		startMiniGame();
+	}
+	else {
+		guestMenu();
+	}
 	return 0;
 }
 
@@ -1448,14 +1447,21 @@ int CreateAccount() {
 }
 
 //생성된 계정 모두 보여주기
-void allAccount() {
-	for (int i = 0; i < cntAcc; i++) {
-		if (user[i]->getUserAcc().empty()) {
-			cout << "계정 없음";
-			system("pause>null");
-		}
-		else cout << user[i]->getUserAcc() << endl;
+int allAccount() {
+	getFileData();
+
+	system("cls");
+	if (cntAcc == 0) {
+		cout <<"계정 없음";
+		gotoxy(17, 18);
+		cout << plz_key;
+		system("pause>null");
+		return 0;
 	}
+	for (int i = 0; i < cntAcc; i++) {
+		cout << user[i]->getUserAcc() << endl;
+	}
+	return 0;
 }
 
 //생성한 계정 확인, 로그인하기
@@ -1535,16 +1541,35 @@ int QuestionAccount() {
 	}
 }
 
+//로딩바
+int progressBar() {
+	int x=11, y=15;
+	
+	for (int i = 0; i <= 10; i++) {
+		system("cls");
+		gotoxy(15, 10);
+		cout << "저장되어 있는 파일을 불러오는 중입니다.";
+		gotoxy(12, y + 1);
+		cout << "=============================================== "<<i*10<<"%";
+		gotoxy(x+=2, y);
+		cout << "***";
+		Sleep(450);          //0.5초 대기
+	}
+	gotoxy(17, 20);
+	cout << plz_key;
+	system("pause>null");
+	return 0;
+}
+
 //메인 루프
 int main() {
-	PlaySound("ant's_day", 0, SND_FILENAME | SND_ASYNC | SND_LOOP); //루프 재생
-	Sleep(3000);
+	SetConsoleVIew_main();
 	//시작 전 저장된 데이터가 있으면 가져와서 저장
 	getFileData();
-
+	progressBar();
+	PlaySound("ant's_day", 0, SND_FILENAME | SND_ASYNC | SND_LOOP); //루프 재생
 	srand((unsigned int)time(NULL));
-	SetConsoleVIew_main(); 
-	
+	 
 	mainMenu();
 
 	return 0;
