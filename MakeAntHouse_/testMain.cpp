@@ -27,7 +27,7 @@ string plz_key = "[ 아무 키나 눌러주세요. ]";
 
 //파일 처리
 ofstream ofs("antHouse.txt", ios::app);
-ifstream ifs;
+ifstream ifs("antHouse.txt");
 
 //키보드 방향키 값
 enum KEYBOARD {
@@ -357,7 +357,6 @@ int getFileData() {
 	int  pwAn, h;
 	cntAcc = 0;
 
-	ifs.open("antHouse.txt");
 	string line;
 	//라인수세기
 	while (!ifs.eof()){
@@ -377,7 +376,8 @@ int getFileData() {
 		ifs >> pwAn;
 		user[i]->setPwAnswer(pwAn);
 	}	
-	
+	ifs.close();
+	return 0;
 }
 //개미집에서 보이는 메뉴 그리기
 
@@ -672,7 +672,7 @@ void FindId() {
 	cout << "******************";
 	while (true) {
 		system("cls");
-		if (player.getUserAcc().empty()) {
+		if (user[0]->getUserAcc().empty()) {
 			gotoxy(18, 11);
 			cout << "먼저 계정을 생성해주세요.";
 			gotoxy(18, 14);
@@ -687,25 +687,27 @@ void FindId() {
 		cout << "가장 좋아하는 전공은? : ";
 		cin >> answer;
 
-		if (player.getIdAnswer() == answer) {
-			gotoxy(15, 12);
-			cout << player.getUserName() << "님의 아이디는 " << player.getUserAcc()<<"입니다";
-			gotoxy(18, 17);
-			cout << plz_key;
-			system("pause>null");
-			break;
-		}
+		for (int i = 0; i < cntAcc; i++) {
+			if (answer == user[i]->getIdAnswer()) {
+				gotoxy(15, 12);
+				cout <<user[i]->getUserName() << "님의 아이디는 " << user[i]->getUserAcc() << "입니다";
+				gotoxy(18, 17);
+				cout << plz_key;
+				system("pause>null");
+				break;
+			}
+			else {
+				gotoxy(20, 16);
+				cout << "다시 입력해주세요.";
+				gotoxy(18, 17);
+				cout << "ESC를 누르면 종료합니다.";
 
-		else {
-			gotoxy(20, 16);
-			cout << "다시 입력해주세요.";
-			gotoxy(18, 17);
-			cout << "ESC를 누르면 종료합니다.";
-
-			input = _getch();
-			if (input == ESC) break;
-			else continue;
+				input = _getch();
+				if (input == ESC) break;
+				else continue;
+			}
 		}
+		break;
 	}
 }
 
@@ -723,7 +725,7 @@ void FindPw() {
 	cout << "********************";
 	while (true) {
 		system("cls");
-		if (player.getPwAnswer()==NULL) {
+		if (user[0]->getUserAcc().empty()) {
 			gotoxy(18, 11);
 			cout << "먼저 계정을 생성해주세요.";
 			gotoxy(16, 14);
@@ -741,25 +743,27 @@ void FindPw() {
 		cout << "태어난 달은? (두글자) :  ";
 		cin >> answer;
 
-		if (player.getUserAcc() == userId && player.getPwAnswer() == answer) {
-			gotoxy(15, 15);
-			cout << player.getUserName() << "님의 비밀번호는 " << player.getUserPw();
-			gotoxy(16, 14);
-			cout << plz_key;
-			system("pause>null");
-			break;
-		}
+		for (int i = 0; i < cntAcc; i++) {
+			if (answer == user[i]->getPwAnswer()) {
+				gotoxy(15, 15);
+				cout <<user[i]->getUserName() << "님의 비밀번호는 " << user[i]->getUserPw();
+				gotoxy(17, 14);
+				cout << plz_key;
+				system("pause>null");
+				break;
+			}
+			else {
+				gotoxy(20, 15);
+				cout << "다시 입력해주세요.";
+				gotoxy(18, 16);
+				cout << "ESC를 누르면 종료합니다.";
 
-		else {
-			gotoxy(20, 15);
-			cout << "다시 입력해주세요.";
-			gotoxy(18, 16);
-			cout << "ESC를 누르면 종료합니다.";
-
-			input = _getch();
-			if (input == ESC) break;
-			else continue;
+				input = _getch();
+				if (input == ESC) break;
+				else continue;
+			}
 		}
+		break;
 	}
 }
 
@@ -1517,6 +1521,7 @@ int QuestionAccount() {
 //메인 루프
 int main() {
 	PlaySound("ant's_day", 0, SND_FILENAME | SND_ASYNC | SND_LOOP); //루프 재생
+	Sleep(3000);
 	//시작 전 저장된 데이터가 있으면 가져와서 저장
 	getFileData();
 
