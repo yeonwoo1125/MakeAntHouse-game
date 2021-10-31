@@ -79,6 +79,7 @@ int startMiniGame();
 void InfoGame();
 int startGame();
 bool readyGame();
+
 //로그인 관련
 int CreateAccount();
 void LoginAccount();
@@ -86,6 +87,7 @@ int QuestionAccount();
 void allAccount();
 bool checkSameAccount();
 bool checkCntAcc();
+bool checkUser(string acc, string pw);
 
 //파일처리
 int getFileData();
@@ -148,54 +150,7 @@ public:
 	void setLoginCheck(bool loginCheck) { this->loginCheck = loginCheck; }
 	bool getLoginCheck() { return loginCheck; }
 
-	bool checkUser(string acc, string pw) { //사용자가 입력한 계정이 있는 계정인지 체크
-		int input = 0;
-		if (getUserAcc() == acc && getUserPw() == pw) {
-			setUserAcc(acc);
-			setUserName(user_name);
-			setUserPw(pw);
-			setIdAnswer(idAnswer);
-			setPwAnswer(pwAnswer);
-
-			this->setLoginCheck(true);
-			system("cls");
-			gotoxy(21, 12);
-			cout << "로그인 성공";
-			gotoxy(18, 15);
-			cout << plz_key;
-			system("pause>null");
-			return true;
-		}
-		else if (getUserPw() != pw || getUserAcc() != acc) {
-			this->setLoginCheck(false);
-			system("cls");
-			gotoxy(21, 9);
-			cout << "로그인 실패" << endl;
-			gotoxy(15, 11);
-			cout << "다시 시도하시려면 스페이스를 눌러주세요." << endl;
-			gotoxy(15, 12);
-			cout << "스페이스를 누르면 로그인을 재시도합니다." << endl;
-			gotoxy(17, 13);
-			cout << "나가시려면 ESC를 눌러주세요.";
-			while (true) {
-				input = _getch();
-				if (input == ESC) { return false; }
-				if (input == SPACE) {
-					system("cls");
-					string acc;
-					string pw;
-					gotoxy(16, 8);
-					cout << "계정 입력 : ";
-					cin >> acc;
-					gotoxy(16, 10);
-					cout << "비밀번호 입력 : ";
-					cin >> pw;
-					this->checkUser(acc, pw);
-				}
-			}
-			return false;
-		}
-	}
+	
 	~Login() {}
 };
 Login *user[3];
@@ -328,6 +283,58 @@ public://현재 개미집에 생성된 먹이의 수
 };
 Feed f1;
 
+//사용자가 입력한 계정이 있는 계정인지 체크
+bool checkUser(string acc, string pw) { 
+	int input = 0;
+	for (int i = 0; i < cntAcc; i++) {
+		if (user[i]->getUserAcc() == acc && user[i]->getUserPw() == pw) {
+			player.setUserAcc(acc);
+			player.setUserName(user[i]->getUserName());
+			player.setUserPw(pw);
+			player.setIdAnswer(user[i]->getIdAnswer());
+			player.setPwAnswer(user[i]->getPwAnswer());
+
+			player.setLoginCheck(true);
+			system("cls");
+			gotoxy(21, 12);
+			cout << "로그인 성공";
+			gotoxy(18, 15);
+			cout << plz_key;
+			system("pause>null");
+			return true;
+		}
+		else if (user[i]->getUserPw() != pw || user[i]->getUserAcc() != acc) {
+			player.setLoginCheck(false);
+			system("cls");
+			gotoxy(21, 9);
+			cout << "로그인 실패" << endl;
+			gotoxy(15, 11);
+			cout << "다시 시도하시려면 스페이스를 눌러주세요." << endl;
+			gotoxy(15, 12);
+			cout << "스페이스를 누르면 로그인을 재시도합니다." << endl;
+			gotoxy(17, 13);
+			cout << "나가시려면 ESC를 눌러주세요.";
+			while (true) {
+				input = _getch();
+				if (input == ESC) { return false; }
+				if (input == SPACE) {
+					system("cls");
+					string acc;
+					string pw;
+					gotoxy(16, 8);
+					cout << "계정 입력 : ";
+					cin >> acc;
+					gotoxy(16, 10);
+					cout << "비밀번호 입력 : ";
+					cin >> pw;
+					checkUser(acc, pw);
+				}
+			}
+			return false;
+		}
+	}
+	
+}
 //개미가 먹이를 먹은 경우 - 먹이를 지우고 미니게임 실행 
 void eatFeed() { 
 	//좌표가 겹칠 경우, 미니게임 실행
@@ -363,7 +370,7 @@ int getFileData() {
 		if (getline(ifs, line)) cntAcc++;
 	}
 	if (cntAcc == 0) return 0;
-	for (int i = 0; i < cntAcc; i++) {
+	for (int i = 1; i < cntAcc; i++) {
 		user[i] = new Login;
 		ifs >> acc;
 		user[i]->setUserAcc(acc);
@@ -1453,7 +1460,7 @@ void LoginAccount() {
 	cout << "비밀번호 입력 : ";
 	cin >> pw;
 
-	player.checkUser(acc, pw);
+	checkUser(acc, pw);
 }
 
 //계정 찾는 거 질문
