@@ -219,6 +219,7 @@ public:
 	}
 
 	void drawAntHouse(int r) {
+		fullScreen();
 		//기본 집 그리기
 		/*gotoxy(5, 2);
 		cout << "집의 크기 : " << r << endl;*/
@@ -335,6 +336,7 @@ bool checkUser(string acc, string pw) {
 	}
 	
 }
+
 //개미가 먹이를 먹은 경우 - 먹이를 지우고 미니게임 실행 
 void eatFeed() { 
 	//좌표가 겹칠 경우, 미니게임 실행
@@ -390,8 +392,8 @@ int getFileData() {
 
 	return 0;
 }
-//개미집에서 보이는 메뉴 그리기
 
+//개미집에서 보이는 메뉴 그리기
 void DrawInGameMenu() {
 	gotoxy(25, 10);
 	cout << "나가기";
@@ -1324,12 +1326,13 @@ int threadStart() {
 //집 그리기 또는 미니게임 시작
 int startGame() { 
 		//system("cls");
-	if (readyGame()) {
-		startMiniGame();
-	}
-	else {
-		guestMenu();
-	}
+	
+	//if (readyGame()) {
+	//	startMiniGame();
+	//}
+	//else {
+	//	guestMenu();
+	//}
 	return 0;
 }
 
@@ -1349,6 +1352,7 @@ bool readyGame() {
 	system("cls");
 
 }
+
 //아이디 중복 체크
 bool checkSameAccount() {
 	for (int i = 0; i < cntAcc; i++) {
